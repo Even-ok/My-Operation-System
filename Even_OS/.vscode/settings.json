@@ -3,7 +3,8 @@
         "apilib.h": "c",
         "string.h": "c",
         "stdlib.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "bootpack.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

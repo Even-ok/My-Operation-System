@@ -18,6 +18,9 @@ struct BOOTINFO { /* 0x0ff0-0x0fff */
 };
 #define ADR_BOOTINFO	0x00000ff0
 #define ADR_DISKIMG		0x00100000
+#define FILEINFO_SIZE 32
+#define FILE_CONTENT_HEAD_ADDR 0x00103e00//文件内容起始地址
+#define DISK_SECTOR_SIZE 512
 
 /* naskfunc.nas */
 void io_hlt(void);
@@ -264,7 +267,7 @@ struct CONSOLE {
 	struct TIMER *timer;
 };
 struct FILEHANDLE {
-	char *buf;
+	char *buf;   //读取文件内容
 	int size;
 	int pos;
 };

@@ -225,6 +225,9 @@ void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal)
 	{
 		cmd_stamp(cons, cmdline);
 	}
+	else if (strncmp(cmdline, "ls ", 3) == 0){
+		cmd_open(cons, cmdline);  //打开文件内容
+	}
 	else if (cmdline[0] != 0) {
 		if (cmd_app(cons, fat, cmdline) == 0) {
 			cons_putstr0(cons, " û�д������\n Bad command !\n\n");
@@ -341,6 +344,91 @@ void cmd_langmode(struct CONSOLE *cons, char *cmdline)
 		task->langmode = mode;
 	} else {
 		cons_putstr0(cons, "mode number error.\n");
+	}
+	cons_newline(cons);
+	return;
+}
+
+void cmd_open(struct CONSOLE *cons, char *cmdline)
+{
+	struct TASK *task = task_now();
+	char name[13];
+	int p = 0,x;
+	name[12] = 0;
+	for(x=0;x<12;x++) //初始化
+		name[x]=' ';
+
+	for (x = 3; x < 17; x++) {  //控制第8个符号必须得是.
+		if (cmdline[x] != 0) {
+			if(cmdline[x]=='.'&&p<8)  //cmdline到了.，但是太短了，补空格
+			{
+				for(;p<8;p++)
+					name[p]=' ';
+				name[p]='.';
+				p++;
+			}
+			else
+			{
+				name[p] = cmdline[x];
+				if ('a' <= name[p] && name[p] <= 'z') {
+                /* 将文件名转为大写字符 */
+                	name[p] -= 0x20;
+            } 
+				p++;
+			}
+		}
+		else 
+		{break;}
+	}
+	name[p] = 0;
+	//cons_putstr0(cons, name);
+
+	struct FILEINFO *finfo = (struct FILEINFO *) (ADR_DISKIMG + 0x002600);
+	while (finfo->name[0] != 0) {
+		char s[13];
+		s[12] = 0;
+		for(x=0;x<12;x++) //初始化
+			s[x]=' ';
+		int k;
+		for (k = 0; k < 8; k++) {
+			if (finfo->name[k] != 0) {
+				s[k] = finfo->name[k];
+			}else {
+				break;
+			}
+		}
+
+		int t = 0;
+		s[k] = '.'; //k=8
+		k++;
+		for (t = 0; t < 3; t++) {
+			s[k] = finfo->ext[t];
+			k++;
+		}
+
+		//cons_putstr0(cons, s);
+
+		if (strcmp(name, s) == 0) {
+			//cons_putstr0(cons, name);
+			int i;
+			char *p = (char *) (finfo->clustno * 512 + 0x003e00 + ADR_DISKIMG);
+			int sz = finfo->size;
+			char exp[30];
+			sprintf(exp,"clu:%d,size:%d",finfo->clustno,finfo->size);
+			cons_putstr0(cons,exp);
+			// for(i=0;i<10;i++)
+			// 	cons_putchar(cons,p[i],1);
+			//cons_putchar(cons,p[0],1);
+			
+			// int t = 0;
+			// for (t = 0; t < sz; t++) {
+			// 	cons_putchar(cons,p[t],1);  //需要移动
+			// }
+
+			break;
+		}
+
+		finfo++;
 	}
 	cons_newline(cons);
 	return;
