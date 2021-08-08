@@ -21,6 +21,7 @@ struct BOOTINFO { /* 0x0ff0-0x0fff */
 #define FILEINFO_SIZE 32
 #define FILE_CONTENT_HEAD_ADDR 0x00103e00//文件内容起始地址
 #define DISK_SECTOR_SIZE 512
+#define MAX_CMDLINE	50
 
 /* naskfunc.nas */
 void io_hlt(void);
@@ -265,12 +266,15 @@ struct CONSOLE {
 	struct SHEET *sht;
 	int cur_x, cur_y, cur_c;
 	struct TIMER *timer;
+	struct MYDIRINFO *current_dir;
+	unsigned int id;
 };
 struct FILEHANDLE {
 	char *buf;   //读取文件内容
 	int size;
 	int pos;
 };
+void debug_print(char *str);
 void console_task(struct SHEET *sheet, int memtotal);
 void cons_putchar(struct CONSOLE *cons, int chr, char move);
 void cons_newline(struct CONSOLE *cons);
@@ -289,8 +293,58 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 int *inthandler0d(int *esp);
 int *inthandler0c(int *esp);
 void hrb_api_linewin(struct SHEET *sht, int x0, int y0, int x1, int y1, int col);
+//自己加入的函数：
+int cons_putdir(struct CONSOLE *cons);
+void get_pathname(char *pathname, struct MYDIRINFO *dinfo);
+void cmd_cd(struct CONSOLE *cons, char *cmdline);
+struct MYDIRINFO *parse_cdline(struct CONSOLE *cons, char *cdline);
+void cd_error(struct CONSOLE *cons, char *message);
+void cmd_edit(struct CONSOLE *cons, char *cmdline);
+void cmd_mkdir(struct CONSOLE *cons, char *cmdline);
+void cmd_mkfile(struct CONSOLE *cons, char *cmdline);
+void cmd_show(struct CONSOLE *cons, char *cmdline);
+void cmd_fview(struct CONSOLE *cons, char *cmdline);
+void cmd_setlog(struct CONSOLE *cons);
+void cmd_memmap(struct CONSOLE *cons, int memtotal);
+void cmd_log(struct CONSOLE *cons);
+void cmd_cat(struct CONSOLE *cons, int *fat, char *cmdline);
+void cmd_logcls(struct CONSOLE *cons);
+void cmd_test(struct CONSOLE *cons);
+void cmd_mkfs(struct CONSOLE *cons);
+void cmd_fddir(struct CONSOLE *cons);
 
 /* file.c */
+
+#define ROOT_DIR_ADDR	0x00400000
+#define ROOT_DATA_ADDR	0x00500000
+#define LAST_DATA_ADDR	0x00600000	// �f�[�^�Ǘ��̈�̏I���+1
+#define MAX_FINFO_NUM 50	// �t�@�C�����̍ő�o�^��
+#define MAX_NAME_LENGTH 8	// �f�B���N�g����/�t�@�C�����̍ő啶����
+
+/* finfo->fdata->head.char�p�̃r�b�g�z��
+ * 0x08, 0x10, 0x20, 0x40, 0x80�͖��g�p  */
+#define STAT_ALL	0xFF	/* �r������p */
+#define STAT_VALID	0x01	/* valid bit */
+#define STAT_CONT	0x02	/* continuous bit */
+#define STAT_BUF	0x04	/* buffer bit:�o�b�t�@�̈�ɂ���t�@�C���f�[�^�ł��邱�Ƃ����� */
+#define STAT_OPENED	0x08	/* file open����Ă��邩�ǂ���������(�f�t�H���g��0) */
+
+/*�@finfo->type�p�̃r�b�g�z��(����ł�, �f�B���N�g���ƃt�@�C���̂Q��ނ�����ʂ��Ă��Ȃ�)
+ * 0x10: �f�B���N�g�����
+ * 0x20: �t�@�C�����
+ * 0x40: �V�X�e���t�@�C��
+ * 0x80: ����ȊO�̏��(�f�B�X�N�̖��O�Ƃ�)*/
+#define FTYPE_DIR	0x10
+#define FTYPE_FILE	0x20
+#define FTYPE_SYS	0x40
+#define FTYPE_OTHER	0x80
+
+/* �u���b�N�Ɋւ����` */
+#define BLOCK_SIZE 1024	// �t�@�C���f�[�^�̃T�C�Y(default��4,096)
+#define BODY_SIZE (BLOCK_SIZE - sizeof(struct HEAD))	//1�u���b�N������̎��f�[�^�̃T�C�Y
+#define BODY_SIZE_OFFSET 128	// �]���Ɋm�ۂ���T�C�Y(�����Ă��悢�H)
+#define MAX_BLOCK_NUM 50 // �ő�u���b�N��(����ȏ�̃u���b�N�̊m�ۂ͋����Ȃ�)
+
 struct FILEINFO {
 	unsigned char name[8], ext[3], type;
 	char reserve[10];
@@ -302,6 +356,64 @@ void file_loadfile(int clustno, int size, char *buf, int *fat, char *img);
 struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max);
 char *file_loadfile2(int clustno, int *psize, int *fat);
 
+/* my original file information */
+struct MYFILEINFO{
+	unsigned char name[MAX_NAME_LENGTH], ext[3], type;
+	char reserve[10];
+	unsigned short time, date, clustno;
+	unsigned int size;
+	struct MYDIRINFO *child_dir;
+	struct MYFILEDATA *fdata;
+};
+
+/* my original directory information */
+struct MYDIRINFO {
+	struct MYFILEINFO finfo[MAX_FINFO_NUM];
+	unsigned char name[MAX_NAME_LENGTH];
+	struct MYDIRINFO *parent_dir;
+	struct MYDIRINFO *this_dir; // ����͕ʂɂȂ��Ă���薳���͂�
+};
+
+/* my original file data */
+struct HEAD{
+	unsigned char stat;
+	char name[12];
+	struct MYFILEDATA *this_fdata;	// �f�[�^�̈�̃A�h���X
+	struct MYDIRINFO *this_dir;		// �ܗL���Ă���f�B���N�g���̃A�h���X
+	struct MYFILEDATA *next_fdata;	// ���̃t�@�C���f�[�^(�f�[�^����𒴂��Ă����ꍇ�g�p����)
+	// next_data�̃f�t�H���g�̒l��0x0000 0000(�G���hflag bit�������Ă��鎞�Ɠ���)
+	/* stat is a bit arguments shown below
+	 * valid bit: 0x01
+	 * continuous bit: 0x02�@(����������t�@�C���B�����̃t�@�C���f�[�^����\������Ă���)
+	 * end file: 0x04 (����Ȃ��H)
+	 * opened file 0x08
+	 */
+};
+struct MYFILEDATA{
+	struct HEAD head;
+	char body[BODY_SIZE];	// ���v�T�C�Y��1024byte�ɂȂ�悤�ɂ���
+};
+
+struct MYFILEINFO *myfinfo_search(char *name, struct MYDIRINFO *dinfo, int max);
+// �t�@�C�����Ǘ��̈悩��A�g���Ă��Ȃ��f�B���N�g����Ԃ�T���A�����������̂��A���̏ꏊ��Ԃ�
+struct MYDIRINFO *get_newdinfo();
+// �f�[�^�Ǘ��̈�̎g���Ă��Ȃ���Ԃ�T���A���̏ꏊ��������
+struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata);
+// �t�@�C�����f�[�^�Ǘ��̈悩��R�s�[���āA�R�s�[��̔Ԓn��������
+struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo);
+// �f�[�^�Ǘ��̈�̊Y���t�@�C�����I�[�v������Ă�����A��������������Astatus bit��opened������������B
+int myfclose(struct MYFILEDATA *opened_fdata);
+// �f�[�^�Ǘ��̈�̊Y���t�@�C�����Z�[�u�\�Ȃ�΁Afdata->body�̓��e��ۑ�����
+int myfsave(struct MYFILEDATA *opened_fdata);
+int myfwrite(struct MYFILEDATA *fdata, char *str);
+int myfread(char *str, struct MYFILEDATA *fdata);
+int myfcopy(struct MYFILEDATA *fdata1, struct MYFILEDATA *fdata2);
+unsigned int get_size_myfdata(struct MYFILEDATA *fdata);
+unsigned int get_size_str(char *str);
+unsigned int get_blocknum_myfdata(struct MYFILEDATA *fdata);
+unsigned int add_status_myfdata(struct MYFILEDATA *fdata, unsigned char stat);
+
+
 /* tek.c */
 int tek_getsize(unsigned char *p);
 int tek_decomp(unsigned char *p, char *q, int size);
@@ -309,6 +421,7 @@ int tek_decomp(unsigned char *p, char *q, int size);
 /* bootpack.c */
 struct TASK *open_constask(struct SHEET *sht, unsigned int memtotal);
 struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal);
+struct SHEET *open_log(struct SHTCTL *shtctl, unsigned int memtotal);
 
 /*jpeg.c*/
 struct DLL_STRPICENV{
