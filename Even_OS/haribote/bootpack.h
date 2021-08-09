@@ -256,11 +256,14 @@ void task_switch(void);
 void task_sleep(struct TASK *task);
 
 /* window.c */
+void make_window6(unsigned char *buf, int xsize, int ysize, char *title);
+void make_window7(unsigned char *buf, int xsize, int ysize, char *title);//绘制窗口
 void make_window8(unsigned char *buf, int xsize, int ysize, char *title, char act);
 void putfonts8_asc_sht(struct SHEET *sht, int x, int y, int c, int b, char *s, int l);
 void make_textbox8(struct SHEET *sht, int x0, int y0, int sx, int sy, int c);
 void make_wtitle8(unsigned char *buf, int xsize, char *title, char act);
 void change_wtitle8(struct SHEET *sht, char act);
+void bootpage(unsigned char *buf, int xsize, int ysize);
 
 /* console.c */
 struct CONSOLE {

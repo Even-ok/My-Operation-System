@@ -1,14 +1,142 @@
 /* --------------------------------
 	B Y : S T O N
-	WINDOW 窗口接口
-	HELO OS 系统专用源程序
-	HELO OS 核心文件
+	WINDOW 锟斤拷锟节接匡拷
+	HELO OS 系统专锟斤拷源锟斤拷锟斤拷
+	HELO OS 锟斤拷锟斤拷锟侥硷拷
 	    ver. 1.0
          DATE : 2019-1-19  
 ----------------------------------- */
 /* copyright(C) 2019 PZK . */
 
 #include "bootpack.h"
+
+void make_window6(unsigned char *buf, int xsize, int ysize, char *title) //绐楀彛缁樺埗
+{
+	static char closebtn[14][16] = {
+		"OOOOOOOOOOOOOOO@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQ@@QQQQ@@QQ$@",
+		"OQQQQ@@QQ@@QQQ$@",
+		"OQQQQQ@@@@QQQQ$@",
+		"OQQQQQQ@@QQQQQ$@",
+		"OQQQQQ@@@@QQQQ$@",
+		"OQQQQ@@QQ@@QQQ$@",
+		"OQQQ@@QQQQ@@QQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"O$$$$$$$$$$$$$$@",
+		"@@@@@@@@@@@@@@@@"
+	};
+	int x, y;
+	char c;
+	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         xsize - 1, 0        );
+	boxfill8(buf, xsize, COL8_FFFFFF, 1,         1,         xsize - 2, 1        );
+	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         0,         ysize - 1);
+	boxfill8(buf, xsize, COL8_FFFFFF, 1,         1,         1,         ysize - 2);
+	boxfill8(buf, xsize, COL8_848484, xsize - 2, 1,         xsize - 2, ysize - 2);
+	boxfill8(buf, xsize, COL8_000000, xsize - 1, 0,         xsize - 1, ysize - 1);
+	boxfill8(buf, xsize, COL8_C6C6C6, 2,         2,         xsize - 3, ysize - 3);
+	boxfill8(buf, xsize, COL8_000084, 3,         3,         xsize - 4, 20       );
+	boxfill8(buf, xsize, COL8_848484, 1,         ysize - 2, xsize - 2, ysize - 2);
+	boxfill8(buf, xsize, COL8_000000, 0,         ysize - 1, xsize - 1, ysize - 1);
+
+	boxfill8(buf, xsize, 0, 2, 22, 16, 36);
+	boxfill8(buf, xsize, 1, 16, 22, 30, 36);
+	boxfill8(buf, xsize, 2, 30, 22, 44, 36);
+	boxfill8(buf, xsize, 3, 44, 22, 58, 36);
+	boxfill8(buf, xsize, 4, 58, 22, 72, 36);
+	boxfill8(buf, xsize, 5, 72, 22, 86, 36);
+	boxfill8(buf, xsize, 6, 86, 22, 100, 36);
+	boxfill8(buf, xsize, 9, 100, 22, 114, 36);
+	boxfill8(buf, xsize, 10, 114, 22, 128, 36);
+	boxfill8(buf, xsize, 11, 128, 22, 142, 36);
+	boxfill8(buf, xsize, 12, 142, 22, 156, 36);
+	//boxfill8(buf, xsize, 13, 156, 22, 170, 36);
+
+	boxfill8(buf, xsize, 14, 2, 36, 16, 50);
+	boxfill8(buf, xsize, 17, 16, 36, 30, 50);
+	boxfill8(buf, xsize, 18, 30, 36, 44, 50);
+	boxfill8(buf, xsize, 19, 44, 36, 58, 50);
+	boxfill8(buf, xsize, 20, 58, 36, 72, 50);
+    boxfill8(buf, xsize, 21, 72, 36, 86, 50);
+	boxfill8(buf, xsize, 22, 86, 36, 100, 50);
+	boxfill8(buf, xsize, 23, 100, 36, 114, 50);
+	boxfill8(buf, xsize, 24, 114, 36, 128, 50);
+	boxfill8(buf, xsize, 25, 128, 36, 142, 50);
+	//boxfill8(buf, xsize, 26, 142, 36, 156, 50);
+	boxfill8(buf, xsize, 7, 142, 36, 156, 50);
+	//boxfill8(buf, xsize, 19, 33, 80, 49, 96);
+	//boxfill8(buf, xsize, 20, 54, 80, 70, 96);
+	//boxfill8(buf, xsize, 25, 75, 80, 91, 96);
+
+	putfonts8_asc(buf, xsize, 24, 4, COL8_FFFFFF, title);
+	for (y = 0; y < 14; y++) {
+		for (x = 0; x < 16; x++) {
+			c = closebtn[y][x];
+			if (c == '@') {
+				c = COL8_000000;
+			} else if (c == '$') {
+				c = COL8_848484;
+			} else if (c == 'Q') {
+				c = COL8_C6C6C6;
+			} else {
+				c = COL8_FFFFFF;
+			}
+			buf[(5 + y) * xsize + (xsize - 21 + x)] = c;
+		}
+	}
+	return;
+}
+
+void make_window7(unsigned char *buf, int xsize, int ysize, char *title) //绐楀彛缁樺埗
+{
+	static char closebtn[14][16] = {
+		"OOOOOOOOOOOOOOO@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQ@@QQQQ@@QQ$@",
+		"OQQQQ@@QQ@@QQQ$@",
+		"OQQQQQ@@@@QQQQ$@",
+		"OQQQQQQ@@QQQQQ$@",
+		"OQQQQQ@@@@QQQQ$@",
+		"OQQQQ@@QQ@@QQQ$@",
+		"OQQQ@@QQQQ@@QQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"O$$$$$$$$$$$$$$@",
+		"@@@@@@@@@@@@@@@@"
+	};
+	int x, y;
+	char c;
+	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         xsize - 1, 0        );
+	boxfill8(buf, xsize, COL8_FFFFFF, 1,         1,         xsize - 2, 1        );
+	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         0,         ysize - 1);
+	boxfill8(buf, xsize, COL8_FFFFFF, 1,         1,         1,         ysize - 2);
+	boxfill8(buf, xsize, COL8_848484, xsize - 2, 1,         xsize - 2, ysize - 2);
+	boxfill8(buf, xsize, COL8_000000, xsize - 1, 0,         xsize - 1, ysize - 1);
+	boxfill8(buf, xsize, COL8_C6C6C6, 2,         2,         xsize - 3, ysize - 3);
+	boxfill8(buf, xsize, COL8_000084, 3,         3,         xsize - 4, 20       );
+	boxfill8(buf, xsize, COL8_848484, 1,         ysize - 2, xsize - 2, ysize - 2);
+	boxfill8(buf, xsize, COL8_000000, 0,         ysize - 1, xsize - 1, ysize - 1);
+	putfonts8_asc(buf, xsize, 24, 4, COL8_FFFFFF, title);
+	for (y = 0; y < 14; y++) {
+		for (x = 0; x < 16; x++) {
+			c = closebtn[y][x];
+			if (c == '@') {
+				c = COL8_000000;
+			} else if (c == '$') {
+				c = COL8_848484;
+			} else if (c == 'Q') {
+				c = COL8_C6C6C6;
+			} else {
+				c = COL8_FFFFFF;
+			}
+			buf[(5 + y) * xsize + (xsize - 21 + x)] = c;
+		}
+	}
+	return;
+}
 
 void make_window8(unsigned char *buf, int xsize, int ysize, char *title, char act)
 {
@@ -132,3 +260,4 @@ void change_wtitle8(struct SHEET *sht, char act)
 	sheet_refresh(sht, 3, 3, xsize, 21);
 	return;
 }
+

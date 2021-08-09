@@ -1,6 +1,6 @@
 /* --------------------------------
 	B Y : S T O N
-	HELO OS ÏµÍ³×¨ÓÃÔ´³ÌĞò
+	HELO OS ÏµÍ³×¨ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½
 	    ver. 1.0
          DATE : 2019-1-19  
 ----------------------------------- */
@@ -12,22 +12,22 @@
 void init_palette(void)
 {
 	static unsigned char table_rgb[16 * 3] = {
-		0x00, 0x00, 0x00,	/*  0:• */
-		0xff, 0x00, 0x00,	/*  1:–¾‚é‚¢Ô */
-		0x00, 0xff, 0x00,	/*  2:–¾‚é‚¢—Î */
-		0xff, 0xff, 0x00,	/*  3:–¾‚é‚¢‰©F */
-		0x00, 0x00, 0xff,	/*  4:–¾‚é‚¢Â */
-		0xff, 0x00, 0xff,	/*  5:–¾‚é‚¢‡ */
-		0x00, 0xff, 0xff,	/*  6:–¾‚é‚¢…F */
-		0xff, 0xff, 0xff,	/*  7:”’ */
-		0xc6, 0xc6, 0xc6,	/*  8:–¾‚é‚¢ŠDF */
-		0x84, 0x00, 0x00,	/*  9:ˆÃ‚¢Ô */
-		0x00, 0x84, 0x00,	/* 10:ˆÃ‚¢—Î */
-		0x84, 0x84, 0x00,	/* 11:ˆÃ‚¢‰©F */
-		0x00, 0x00, 0x84,	/* 12:ˆÃ‚¢Â */
-		0x84, 0x00, 0x84,	/* 13:ˆÃ‚¢‡ */
-		0x00, 0x84, 0x84,	/* 14:ˆÃ‚¢…F */
-		0x84, 0x84, 0x84	/* 15:ˆÃ‚¢ŠDF */
+		0x00, 0x00, 0x00,	/*  0:ï¿½ï¿½ */
+		0xff, 0x00, 0x00,	/*  1:ï¿½ï¿½ï¿½é‚¢ï¿½ï¿½ */
+		0x00, 0xff, 0x00,	/*  2:ï¿½ï¿½ï¿½é‚¢ï¿½ï¿½ */
+		0xff, 0xff, 0x00,	/*  3:ï¿½ï¿½ï¿½é‚¢ï¿½ï¿½ï¿½F */
+		0x00, 0x00, 0xff,	/*  4:ï¿½ï¿½ï¿½é‚¢ï¿½ï¿½ */
+		0xff, 0x00, 0xff,	/*  5:ï¿½ï¿½ï¿½é‚¢ï¿½ï¿½ */
+		0x00, 0xff, 0xff,	/*  6:ï¿½ï¿½ï¿½é‚¢ï¿½ï¿½ï¿½F */
+		0xff, 0xff, 0xff,	/*  7:ï¿½ï¿½ */
+		0xc6, 0xc6, 0xc6,	/*  8:ï¿½ï¿½ï¿½é‚¢ï¿½Dï¿½F */
+		0x84, 0x00, 0x00,	/*  9:ï¿½Ã‚ï¿½ï¿½ï¿½ */
+		0x00, 0x84, 0x00,	/* 10:ï¿½Ã‚ï¿½ï¿½ï¿½ */
+		0x84, 0x84, 0x00,	/* 11:ï¿½Ã‚ï¿½ï¿½ï¿½ï¿½F */
+		0x00, 0x00, 0x84,	/* 12:ï¿½Ã‚ï¿½ï¿½ï¿½ */
+		0x84, 0x00, 0x84,	/* 13:ï¿½Ã‚ï¿½ï¿½ï¿½ */
+		0x00, 0x84, 0x84,	/* 14:ï¿½Ã‚ï¿½ï¿½ï¿½ï¿½F */
+		0x84, 0x84, 0x84	/* 15:ï¿½Ã‚ï¿½ï¿½Dï¿½F */
 	};
 	unsigned char table2[216 * 3];
 	int r, g, b;
@@ -48,8 +48,8 @@ void init_palette(void)
 void set_palette(int start, int end, unsigned char *rgb)
 {
 	int i, eflags;
-	eflags = io_load_eflags();	/* Š„‚è‚İ‹–‰Âƒtƒ‰ƒO‚Ì’l‚ğ‹L˜^‚·‚é */
-	io_cli(); 					/* ‹–‰Âƒtƒ‰ƒO‚ğ0‚É‚µ‚ÄŠ„‚è‚İ‹Ö~‚É‚·‚é */
+	eflags = io_load_eflags();	/* ï¿½ï¿½ï¿½èï¿½İ‹ï¿½ï¿½Âƒtï¿½ï¿½ï¿½Oï¿½Ì’lï¿½ï¿½ï¿½Lï¿½^ï¿½ï¿½ï¿½ï¿½ */
+	io_cli(); 					/* ï¿½ï¿½ï¿½Âƒtï¿½ï¿½ï¿½Oï¿½ï¿½0ï¿½É‚ï¿½ï¿½ÄŠï¿½ï¿½èï¿½İ‹Ö~ï¿½É‚ï¿½ï¿½ï¿½ */
 	io_out8(0x03c8, start);
 	for (i = start; i <= end; i++) {
 		io_out8(0x03c9, rgb[0] / 4);
@@ -57,7 +57,7 @@ void set_palette(int start, int end, unsigned char *rgb)
 		io_out8(0x03c9, rgb[2] / 4);
 		rgb += 3;
 	}
-	io_store_eflags(eflags);	/* Š„‚è‚İ‹–‰Âƒtƒ‰ƒO‚ğŒ³‚É–ß‚· */
+	io_store_eflags(eflags);	/* ï¿½ï¿½ï¿½èï¿½İ‹ï¿½ï¿½Âƒtï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½É–ß‚ï¿½ */
 	return;
 }
 
@@ -70,7 +70,6 @@ void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, i
 	}
 	return;
 }
-
 void init_screen8(char *vram, int x, int y)
 {
 	int *fat;
@@ -126,7 +125,7 @@ void putfont32(char *vram, int xsize, int x, int y, char c, char *font1, char *f
 	j=0;
 	p=vram+(y+j)*xsize+x;
 	j++;
-	//ÉÏ°ë²¿·Ö
+	//ï¿½Ï°ë²¿ï¿½ï¿½
 	for(i=0;i<16;i++)
 	{
 		for(k=0;k<8;k++)
@@ -148,7 +147,7 @@ void putfont32(char *vram, int xsize, int x, int y, char c, char *font1, char *f
 			j++;
 		}
 	}
-	//ÏÂ°ë²¿·Ö
+	//ï¿½Â°ë²¿ï¿½ï¿½
 	for(i=0;i<16;i++)
 	{
 		for(k=0;k<8;k++)
@@ -210,8 +209,8 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 				}
 				task->langbyte1 = 0;
 				font = nihongo + 256 * 16 + (k * 94 + t) * 32;
-				putfont8(vram, xsize, x - 8, y, c, font     );	/* ¶”¼•ª */
-				putfont8(vram, xsize, x    , y, c, font + 16);	/* ‰E”¼•ª */
+				putfont8(vram, xsize, x - 8, y, c, font     );	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+				putfont8(vram, xsize, x    , y, c, font + 16);	/* ï¿½Eï¿½ï¿½ï¿½ï¿½ */
 			}
 			x += 8;
 		}
@@ -229,8 +228,8 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 				t = *s - 0xa1;
 				task->langbyte1 = 0;
 				font = nihongo + 256 * 16 + (k * 94 + t) * 32;
-				putfont8(vram, xsize, x - 8, y, c, font     );	/* ¶”¼•ª */
-				putfont8(vram, xsize, x    , y, c, font + 16);	/* ‰E”¼•ª */
+				putfont8(vram, xsize, x - 8, y, c, font     );	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+				putfont8(vram, xsize, x    , y, c, font + 16);	/* ï¿½Eï¿½ï¿½ï¿½ï¿½ */
 			}
 			x += 8;
 		}
@@ -257,7 +256,7 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 }
 
 void init_mouse_cursor8(char *mouse, char bc)
-/* ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ğ€”õi16x16j */
+/* ï¿½}ï¿½Eï¿½Xï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½i16x16ï¿½j */
 {
 	static char cursor[16][16] = {
 		"**..............",
@@ -348,7 +347,7 @@ unsigned short rgb2pal(int r, int g, int b, int x, int y, int cb)
 	if (cb == 8) {
 	static int table[4] = { 3, 1, 0, 2 };
 	int i;
-	x &= 1; /* ÊÇÅ¼Êı»¹ÊÇÆæÊıÄØ£¿ */
+	x &= 1; /* ï¿½ï¿½Å¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø£ï¿½ */
 	y &= 1;
 	i = table[x + y * 2];
 	r = (r * 21) / 256;
@@ -361,4 +360,116 @@ unsigned short rgb2pal(int r, int g, int b, int x, int y, int cb)
 	} else {
 	return((unsigned short) (((r << 8) & 0xf800) | ((g << 3) & 0x07e0) | (b >> 3)));
 	}
+}
+
+
+void boxfilly(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
+{
+	int x, y,r,xz,yz;
+	xz=(x0+x1)/2;
+	yz=(y0+y1)/2;
+	r=(x1-x0)/2;
+	for (y = y0; y <= y1; y++) {
+		for (x = x0; x <= x1; x++)
+		{
+			if((x-xz)*(x-xz)+(y-yz)*(y-yz)<=r*r)
+            vram[y * xsize + x] = c;
+		}
+			
+	}
+	//sheet_refresh(x0,y0,x1,y1);
+	return;
+}
+void san(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
+{
+	int x,y;
+	for (y = y0; y <= y1; y++) {
+		for (x = x0; x <= x1; x++)
+		{
+			if(y>=(y1-y0)*(x-x0)/(x1-x0)+y0)
+            vram[y * xsize + x] = c;
+		}
+			
+	}
+	return;
+}
+void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1, int l)
+{
+	int x,y,flag=0;
+	if(x0<x1&&y0<y1)
+	{
+		for (y = y0; y <= y1; y++) {
+			for (x = x0; x <= x1; x++)
+			{
+				/*if(y>=y0&&x<=x1&&(y-y0)/(y1-5-y0)<=(x-x0-5)/(x1-x0-5)) flag=0;
+				else if(y<=y1&&x>=x0&&(y-y0-5)/(y1-y0-5)<=(x-x0)/(x1-x0-5)) flag=0;
+				else{
+					
+				}*/
+				int y11=y1-l,x00=x0+l,y00=y0+l,x11=x1-l;
+				if(y>=(y11-y0)*(x-x00)/(x1-x00)+y0&&y<=(y1-y00)*(x-x0)/(x11-x0)+y00)
+				{
+					vram[y * xsize + x] = c;
+				}
+				
+			}
+				
+		}
+	}
+	if(x0<x1&&y0>y1)
+	{
+		for(y=y1;y<=y0;y++){
+			for(x=x0;x<x1;x++)
+			{
+				int y00=y0-l,x11=x1-l,x00=x0+l,y11=y1+l;
+				if(y>=(y1-y00)*(x-x0)/(x11-x0)+y00&&y<=(y11-y0)*(x-x00)/(x1-x00)+y0)
+				{
+					vram[y * xsize + x] = c;
+				}
+			}
+		}
+	}
+	if(x0==x1)
+	{
+       if(y1>=y0)
+	   {   
+			for(y=y0;y<=y1;y++)
+			{
+				for(x=x0-l;x<=x0;x++)
+				vram[y * xsize + x] = c;
+			}
+	   }
+	   if(y1<y0)
+	   {
+		   for(y=y1;y<=y0;y++)
+		   {
+			   for(x=x0-l;x<=x0;x++)
+			   vram[y * xsize + x] = c;
+		   }
+	   }
+	}
+	if(y0==y1)
+	{
+       if(x1>=x0)
+	   { 
+		   for(y=y0-l;y<=y0+l;y++)
+		   {
+				for(x=x0;x<=x1;x++)
+				{
+					vram[y * xsize + x] = c;
+				}
+		   }
+	   }
+	   if(x1<x0)
+	   {
+		   for(y=y0-l;y<=y0+l;y++)
+		   {
+				for(x=x1;x<=x0;x++)
+				{
+					vram[y * xsize + x] = c;
+				}
+		   }
+	   }
+	}
+	return;
 }

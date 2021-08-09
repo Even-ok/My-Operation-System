@@ -1,7 +1,3 @@
-#######################
-# HELO OS Makefile�ļ�
-# B Y : S T O N
-#######################
 
 
 TOOLPATH = ../z_tools/
@@ -18,7 +14,6 @@ default :
 
 
 haribote.img : haribote/ipl20.bin haribote/haribote.sys Makefile \
-		a/a.hrb hello3/hello3.hrb hello4/hello4.hrb hello5/hello5.hrb about/about.hrb \
 		star1/star1.hrb stars/stars.hrb stars2/stars2.hrb \
 		lines/lines.hrb walk/walk.hrb noodle/noodle.hrb \
 		beepdown/beepdown.hrb color/color.hrb color2/color2.hrb \
@@ -36,14 +31,9 @@ haribote.img : haribote/ipl20.bin haribote/haribote.sys Makefile \
 		copy from:haribote/haribote.sys to:@: \
 		copy from:haribote/ipl20.nas to:@: \
 		copy from:make.bat to:@: \
-		copy from:a/a.hrb to:@: \
 		copy from:game/game.hrb to:@: \
 		copy from:appreader/appreader.hrb to:@: \
-		copy from:hello3/hello3.hrb to:@: \
-		copy from:hello4/hello4.hrb to:@: \
-		copy from:hello5/hello5.hrb to:@: \
 		copy from:hello6/hello6.hrb to:@: \
-		copy from:about/about.hrb to:@: \
 		copy from:consume/consume.hrb to:@: \
 		copy from:consumer/consumer.hrb to:@: \
 		copy from:produce/produce.hrb to:@: \
@@ -104,10 +94,6 @@ install :
 full :
 	$(MAKE) -C haribote
 	$(MAKE) -C apilib
-	$(MAKE) -C a
-	$(MAKE) -C hello3
-	$(MAKE) -C hello4
-	$(MAKE) -C hello5
 	$(MAKE) -C hello6
 	$(MAKE) -C game
 	$(MAKE) -C appreader
@@ -119,7 +105,6 @@ full :
 	$(MAKE) -C sadd
 	$(MAKE) -C userw
 	$(MAKE) -C userr
-	$(MAKE) -C about
 	$(MAKE) -C star1
 	$(MAKE) -C stars
 	$(MAKE) -C stars2
@@ -166,11 +151,7 @@ src_only :
 clean_full :
 	$(MAKE) -C haribote		clean
 	$(MAKE) -C apilib		clean
-	$(MAKE) -C a			clean
 	$(MAKE) -C appreader	clean
-	$(MAKE) -C hello3		clean
-	$(MAKE) -C hello4		clean
-	$(MAKE) -C hello5		clean
 	$(MAKE) -C hello6		clean
 	$(MAKE) -C game		clean
 	$(MAKE) -C consume		clean
@@ -181,7 +162,6 @@ clean_full :
 	$(MAKE) -C sadd			clean
 	$(MAKE) -C userw		clean
 	$(MAKE) -C userr		clean
-	$(MAKE) -C about		clean
 	$(MAKE) -C star1		clean
 	$(MAKE) -C stars		clean
 	$(MAKE) -C stars2		clean
@@ -208,10 +188,6 @@ clean_full :
 src_only_full :
 	$(MAKE) -C haribote		src_only
 	$(MAKE) -C apilib		src_only
-	$(MAKE) -C a			src_only
-	$(MAKE) -C hello3		src_only
-	$(MAKE) -C hello4		src_only
-	$(MAKE) -C hello5		src_only
 	$(MAKE) -C hello6		src_only
 	$(MAKE) -C game		src_only
 	$(MAKE) -C consume		src_only
@@ -222,7 +198,6 @@ src_only_full :
 	$(MAKE) -C sadd		src_only
 	$(MAKE) -C userw		src_only
 	$(MAKE) -C userr		src_only
-	$(MAKE) -C about		src_only
 	$(MAKE) -C appreader	src_only
 	$(MAKE) -C star1		src_only
 	$(MAKE) -C stars		src_only

@@ -17,7 +17,7 @@ unsigned int sizelist[100];
 int num = 0;
 
 void debug_print(char *str){
-	/*	�f�o�b�O�p�̏o�͂�����Ƃ���"//"������*/
+	/*	�f�o�b�O�p�̏o�͂�����Ƃ���?"//"������*/
 	// char s[50];
 	// sprintf(s, "[debug] ");
 	// cons_putstr(log, s);
@@ -47,7 +47,7 @@ void console_task(struct SHEET *sheet, int memtotal)
 	int i, *fat = (int *) memman_alloc_4k(memman, 4 * 2880);
 	struct CONSOLE cons;
 	struct FILEHANDLE fhandle[8];
-	char cmdline[100];
+	char cmdline[30];
 	int path_length = 0; // for calculating cmdline
 	unsigned char *nihongo = (char *) *((int *) 0x0fe8);
 
@@ -147,7 +147,7 @@ void console_task(struct SHEET *sheet, int memtotal)
 					/* �v�����v�g�\�� */
 					cons_putchar(&cons, '>', 1);
 				} else {
-					/* ��ʕ��� */
+					/* ��ʕ���? */
 					if (cons.cur_x < 272) {
 						/* �ꕶ���\�����Ă���A�J�[�\����1�i�߂� */
 						cmdline[cons.cur_x / 8- (path_length)  - 2] = i - 256;
@@ -272,7 +272,7 @@ int cons_putdir(struct CONSOLE *cons){
 	return pathname_length;
 }
 
-//获得当前目录路径
+//获得当前�?录路�?
 void get_pathname(char *pathname, struct MYDIRINFO *dinfo){
 	char s[100];
 	char tempname[MAX_CMDLINE];
@@ -314,7 +314,7 @@ void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal)
 	} else if (strncmp(cmdline, "langmode ", 9) == 0) {
 		cmd_langmode(cons, cmdline);
 	} 
-	//以上是原有系统自带命令
+	//以上�?原有系统�?带命�?
 	else if (strncmp(cmdline, "cat ", 4) == 0 && cons->sht != 0) {
 		cmd_cat(cons, fat, cmdline);
 	} else if (strncmp(cmdline, "cd ", 3) == 0){
@@ -350,7 +350,7 @@ void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal)
 		cmd_test(cons);
 	}
 	else if (strncmp(cmdline, "ls ", 3) == 0){
-		cmd_open(cons, cmdline);  //打开文件内容
+		cmd_open(cons, cmdline);  //打开文件内�??
 	}
 	else if (strcmp(cmdline, "reader")== 0) {
 		cmd_reader();
@@ -489,7 +489,7 @@ struct MYDIRINFO *parse_cdline(struct CONSOLE *cons, char *cdline){
 			get_dirname(dirname, cdline);
 			finfo = myfinfo_search(dirname, dinfo, MAX_FINFO_NUM);
 			if(finfo == 0){
-				/* �Y������f�B���N�g����������Ȃ����� */
+				/* �Y������f�B���N�g����������Ȃ�����? */
 				cd_error(cons, "Can't find this directory.\n");
 				debug_print("*********************************\n");
 				return 0; // parse���s
@@ -541,7 +541,7 @@ void cd_error(struct CONSOLE *cons, char *message){
 	return;
 }
 
-/* �R�}���h���C����ŊȒP�ȃt�@�C���ҏW���s����֐�
+/* �R�}���h���C����ŊȒP�ȃt�@�C���ҏW���s����֐�?
  * (myfopen/myfread/myfwrite/myfclose�֐��̃e�X�g�p) */
 /* �ҏW���[�h */
 #define MODE_DEF	0x00
@@ -572,15 +572,15 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 
 	/* command line parser */
 	p = 5;
-	while(cmdline[p] == ' ') p++; // �󔒂�ǂݎ̂Ă�
+	while(cmdline[p] == ' ') p++; // �󔒂�ǂݎ̂Ă�?
 
 	if(cmdline[p] == '-'){
 		/* option�t���̏ꍇ�Aoption���擾���� */
 		temp_p=0;
-		p++; // '-'��ǂݎ̂Ă�
+		p++; // '-'��ǂݎ̂Ă�?
 		while(cmdline[p] != ' ' && cmdline[p] != 0){
 			if(temp_p >= 10){
-				/* option�̒������傫������ꍇ, �����I�� */
+				/* option�̒������傫�������?, �����I�� */
 				sprintf(s, "option is too long.\n");
 				cons_putstr(cons, s);
 				cons_newline(cons);
@@ -612,7 +612,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 		}
 
 		if(strcmp(option, "cls") == 0){
-			/* �t�@�C�����N���A������Aeditline����͂��� */
+			/* �t�@�C�����N���A������Aeditline����͂���? */
 			debug_print("EDIT:clear mode\n");
 			mode = MODE_CLS;
 			myfwrite(setfdata, "");	// �������Ȃ��ꍇ������̂ŁA�����ł��N���A����
@@ -621,7 +621,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 			debug_print("EDIT:insert mode\n");
 			mode = MODE_INS;
 		}else if(strcmp(option, "add") == 0){
-			/* �t�@�C���̖�����editline��ǉ����� */
+			/* �t�@�C���̖�����editline��ǉ�����? */
 			debug_print("EDIT:add mode\n");
 			mode = MODE_ADD;
 		}else if(strcmp(option, "show") == 0){
@@ -692,7 +692,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 	editline[temp_p] = '\0';	// �I�[�L���̕t�^
 	/**** end of parser ****/
 
-	/* �擾����option�̉����āAeditline�̕ҏW���[�h��ς��� */
+	/* �擾����option�̉����āAeditline�̕ҏW���[�h��ς���? */
 	char temp[1024];	//�ҏW�p�̕���������1024����(�v����)
 	if(mode == MODE_DEF || mode == MODE_ADD){
 		/* default��add���[�h�Ɠ��� */
@@ -717,7 +717,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 		myfread(temp, setfdata);
 		for(i=0; i<length_editline; i++){
 			if(editline[i] != ' '){
-				/* �ҏW������ɉ��炩�̕��������͂���Ă���ꍇ */
+				/* �ҏW������ɉ��炩�̕��������͂���Ă����? */
 				temp[i] = editline[i];
 			}else if(temp[i] == '\0'){
 				/* �t�@�C���f�[�^��EOF��������󔒂ɒu�������� */
@@ -725,7 +725,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 				nullFlag = 1;
 			}
 		}
-		if(nullFlag == 1)temp[i] = '\0';	// ������̖����Ƀk��������ǉ�
+		if(nullFlag == 1)temp[i] = '\0';	// ������̖����Ƀk��������ǉ�?
 		sprintf(s, "INS MODE RESULT: %s\n", temp);
 		debug_print(s);
 		myfwrite(setfdata, temp);
@@ -784,7 +784,7 @@ void cmd_mkdir(struct CONSOLE *cons, char *cmdline){
 
 	dir_name = cmdline + 6;
 
-	/* �f�B���N�g�����̕��������𒴂���/���ɓ����f�B���N�g���������݂��Ă���ꍇ�͉������Ȃ� */
+	/* �f�B���N�g�����̕��������𒴂���/���ɓ����f�B���N�g���������݂��Ă���ꍇ�͉������Ȃ�? */
 	for(i=0; dir_name[i] != 0; i++);
 	if(i > 8){
 		sprintf(s, "directory name shoule be within 8 letters.\n");
@@ -803,7 +803,7 @@ void cmd_mkdir(struct CONSOLE *cons, char *cmdline){
 
 	/* �t�@�C���̍Ō���܂�i��i�߂� */
 	for (i = 0; i < MAX_FINFO_NUM; i++) {
-		/* ����File������ȏ㑶�݂��Ȃ��ꍇ, break���� */
+		/* ����File������ȏ㑶�݂��Ȃ���?, break���� */
 		if (dinfo->finfo[i].name[0] == 0x00) {
 			break;
 		}
@@ -862,7 +862,7 @@ void cmd_mkdir(struct CONSOLE *cons, char *cmdline){
  * make file in my filesystem
  */
 void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
-	/* (0x0010 + 0x0026)�̏ꏊ�ɂ������, FILEINFO�̃f�[�^�\���Ƃ���, ��������ɃR�s�[����. */
+	/* (0x0010 + 0x0026)�̏ꏊ�ɂ������?, FILEINFO�̃f�[�^�\���Ƃ���, ��������ɃR�s�[����. */
 	struct MYDIRINFO *dinfo = cons->current_dir;
 	int i, j;
 	char s[50];
@@ -896,8 +896,9 @@ void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
 			j++;
 		}
 	}
+	cons_putstr(cons, filename);
 
-	/* ���ɓ����f�B���N�g���������݂��Ă���ꍇ, �������Ȃ�*/
+	/* ���ɓ����f�B���N�g���������݂��Ă����?, �������Ȃ�*/
 	if((finfo = myfinfo_search(filename, dinfo, MAX_FINFO_NUM)) != 0){
 		sprintf(s, "this file name is already used, please use other name.\n");
 		cons_putstr(cons, s);
@@ -912,50 +913,52 @@ void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
 
 	/***** �V�����t�@�C�����쐬����(����text�t�@�C���������Ȃ�) *****/
 	for (i = 0; i < MAX_FINFO_NUM; i++) {
-		/* ����File������ȏ㑶�݂��Ȃ��ꍇ, break���� */
+		/* ����File������ȏ㑶�݂��Ȃ���?, break���� */
 		if (dinfo->finfo[i].name[0] == 0x00) {
 			break;
 		}
 	}
 
-	/* �t�@�C�������������� */
-	for(j=0; j<8; j++) dinfo->finfo[i].name[j] = filename[j];
-	for(j=0; j<3; j++) dinfo->finfo[i].ext[j] = filename[8+j];
-	dinfo->finfo[i].clustno = 0;
-	dinfo->finfo[i].date = 0;
-	dinfo->finfo[i].type = 0x20;	/* �t�@�C�������͓K����0x20�Ƃ���(���̂��Ȃ���0x20������)*/
-	dinfo->finfo[i].size = 0;
-
-	/* �t�@�C���f�[�^�̐��� */
-	struct MYFILEDATA test;	//�v����
-	test.head.stat = STAT_ALL;	// �V�K�t�@�C���쐬���̓X�e�[�^�X�r�b�g��S�ė��Ă�(�v����)
-	test.head.this_dir = dinfo->this_dir;//�v����
-	struct MYFILEDATA *fdata = get_newfdata(&test); // �V�K�f�[�^���擾�@//�v����
-	//strcpy(fdata->head.name, name);	// �t�@�C���f�[�^�ɂ����O���R�s�[("name"�ł��邱�Ƃɒ��ӁI)
-
-	/***** debug *****/
-	//sprintf(s, "fdata->head.name =\t\t%s[EOF]\n", fdata->head.name);
-	//debug_print(s);
-	//sprintf(s, "dinfo->finfo[i].name =\t%s[EOF]\n", dinfo->finfo[i].name);
-	//debug_print(s);
-	//struct MYFILEINFO *debug = myfinfo_search(fdata->head.name, dinfo, MAX_FINFO_NUM);
-	//sprintf(s, "test(should not be 0) = %d\n", debug);
-	//debug_print(s);
-	/*****************/
-	fdata->head.stat = 0x01;	// valid bit�𗧂Ă�
-	fdata->head.this_fdata = fdata; // �f�[�^�̈�̈�ԖڂɊm�ۂ���
-	fdata->head.this_dir = dinfo->this_dir;
-	dinfo->finfo[i].fdata = fdata;	// �f�t�H���g�͂O(�v�����I)
-
-	// debug code: Viewing status of created file.
-	sprintf(s, "created file name = %s[EOF]\n", filename);
+	sprintf(s, "finfo num = %d\n", i);
 	cons_putstr(cons, s);
+	// /* �t�@�C�������������� */
+	// for(j=0; j<8; j++) dinfo->finfo[i].name[j] = filename[j];
+	// for(j=0; j<3; j++) dinfo->finfo[i].ext[j] = filename[8+j];
+	// dinfo->finfo[i].clustno = 0;
+	// dinfo->finfo[i].date = 0;
+	// dinfo->finfo[i].type = 0x20;	/* �t�@�C�������͓K����0x20�Ƃ���(���̂��Ȃ���0x20������)*/
+	// dinfo->finfo[i].size = 0;
 
-	sprintf(s, "file name = %s\n", dinfo->finfo[i].name);
-	cons_putstr(cons, s);
-	sprintf(s, "file type=0x%02x\n", dinfo->finfo[i].type);
-	cons_putstr(cons, s);
-	cons_newline(cons);
+	// /* �t�@�C���f�[�^�̐��� */
+	// struct MYFILEDATA test;	//�v����
+	// test.head.stat = STAT_ALL;	// �V�K�t�@�C���쐬���̓X�e�[�^�X�r�b�g��S�ė��Ă�(�v����)
+	// test.head.this_dir = dinfo->this_dir;//�v����
+	// struct MYFILEDATA *fdata = get_newfdata(&test); // �V�K�f�[�^���擾�@//�v����
+	// //strcpy(fdata->head.name, name);	// �t�@�C���f�[�^�ɂ����O���R�s�[("name"�ł��邱�Ƃɒ��ӁI)
+
+	// /***** debug *****/
+	// //sprintf(s, "fdata->head.name =\t\t%s[EOF]\n", fdata->head.name);
+	// //debug_print(s);
+	// //sprintf(s, "dinfo->finfo[i].name =\t%s[EOF]\n", dinfo->finfo[i].name);
+	// //debug_print(s);
+	// //struct MYFILEINFO *debug = myfinfo_search(fdata->head.name, dinfo, MAX_FINFO_NUM);
+	// //sprintf(s, "test(should not be 0) = %d\n", debug);
+	// //debug_print(s);
+	// /*****************/
+	// fdata->head.stat = 0x01;	// valid bit�𗧂Ă�
+	// fdata->head.this_fdata = fdata; // �f�[�^�̈�̈�ԖڂɊm�ۂ���
+	// fdata->head.this_dir = dinfo->this_dir;
+	// dinfo->finfo[i].fdata = fdata;	// �f�t�H���g�͂O(�v�����I)
+
+	// // debug code: Viewing status of created file.
+	// sprintf(s, "created file name = %s[EOF]\n", filename);
+	// cons_putstr(cons, s);
+
+	// sprintf(s, "file name = %s\n", dinfo->finfo[i].name);
+	// cons_putstr(cons, s);
+	// sprintf(s, "file type=0x%02x\n", dinfo->finfo[i].type);
+	// cons_putstr(cons, s);
+	// cons_newline(cons);
 	return;
 }
 
@@ -1020,7 +1023,7 @@ void cmd_cat(struct CONSOLE *cons, int *fat, char *cmdline)
 		cons_putstr1(cons, p, finfo->size);
 		memman_free_4k(memman, (int) p, finfo->size);
 	} else {
-		/* �t�@�C����������Ȃ������ꍇ */
+		/* �t�@�C����������Ȃ�������? */
 		cons_putstr0(cons, "File not found.\n");
 	}
 	cons_newline(cons);
@@ -1217,10 +1220,10 @@ void cmd_fview(struct CONSOLE *cons, char *cmdline){
 }
 
 
-/* FD�Ɋi�[����Ă���S�Ẵt�@�C���𒲂�, �\��������֐� */
+/* FD�Ɋi�[����Ă���S�Ẵt�@�C���𒲂�, �\��������֐�? */
 void cmd_mkfs(struct CONSOLE * cons){
 	struct MYDIRINFO dinfo;
-	/* (0x0010 + 0x0026)�̏ꏊ�ɂ������, FILEINFO�̃f�[�^�\���Ƃ���, ��������ɃR�s�[����. */
+	/* (0x0010 + 0x0026)�̏ꏊ�ɂ������?, FILEINFO�̃f�[�^�\���Ƃ���, ��������ɃR�s�[����. */
 	struct FILEINFO *finfo = (struct FILEINFO *) (ADR_DISKIMG + 0x002600);
 	int i, j;
 	char s[30];
@@ -1232,7 +1235,7 @@ void cmd_mkfs(struct CONSOLE * cons){
 
 	/* �Ƃ肠����10�t�@�C�������R�s�[���Ă݂� */
 	for (i = 0; i < 10; i++) {
-		/* ����File������ȏ㑶�݂��Ȃ��ꍇ, break���� */
+		/* ����File������ȏ㑶�݂��Ȃ���?, break���� */
 		if (finfo[i].name[0] == 0x00) {
 			break;
 		}
@@ -1240,7 +1243,7 @@ void cmd_mkfs(struct CONSOLE * cons){
 		if (finfo[i].name[0] != 0xe5) {
 			/* 0x18 = 0x10 + 0x18
 			 * 0x10:�f�B���N�g��
-			 * 0x08:�t�@�C���ł͂Ȃ����(�f�B�X�N�̖��O�Ƃ�)
+			 * 0x08:�t�@�C���ł͂Ȃ����?(�f�B�X�N�̖��O�Ƃ�)
 			 * ����āAFile Type��"�t�@�C��"�ł������ꍇ */
 			if ((finfo[i].type & 0x18) == 0) {
 				sprintf(s, "filename.ext   %7d\n", finfo[i].size);
@@ -1343,12 +1346,12 @@ void cmd_open(struct CONSOLE *cons, char *cmdline)
 	char name[13];
 	int p = 0,x;
 	name[12] = 0;
-	for(x=0;x<12;x++) //初始化
+	for(x=0;x<12;x++) //初�?�化
 		name[x]=' ';
 
-	for (x = 3; x < 17; x++) {  //控制第8个符号必须得是.
+	for (x = 3; x < 17; x++) {  //控制�?8�?符号必须得是.
 		if (cmdline[x] != 0) {
-			if(cmdline[x]=='.'&&p<8)  //cmdline到了.，但是太短了，补空格
+			if(cmdline[x]=='.'&&p<8)  //cmdline到了.，但�?�?�?了，补空�?
 			{
 				for(;p<8;p++)
 					name[p]=' ';
@@ -1359,7 +1362,7 @@ void cmd_open(struct CONSOLE *cons, char *cmdline)
 			{
 				name[p] = cmdline[x];
 				if ('a' <= name[p] && name[p] <= 'z') {
-                /* 将文件名转为大写字符 */
+                /* 将文件名�?为大写字�? */
                 	name[p] -= 0x20;
             } 
 				p++;
@@ -1375,7 +1378,7 @@ void cmd_open(struct CONSOLE *cons, char *cmdline)
 	while (finfo->name[0] != 0) {
 		char s[13];
 		s[12] = 0;
-		for(x=0;x<12;x++) //初始化
+		for(x=0;x<12;x++) //初�?�化
 			s[x]=' ';
 		int k;
 		for (k = 0; k < 8; k++) {
@@ -1410,7 +1413,7 @@ void cmd_open(struct CONSOLE *cons, char *cmdline)
 			
 			// int t = 0;
 			// for (t = 0; t < sz; t++) {
-			// 	cons_putchar(cons,p[t],1);  //需要移动
+			// 	cons_putchar(cons,p[t],1);  //需要移�?
 			// }
 
 			break;
@@ -1427,12 +1430,12 @@ void cmd_open(struct CONSOLE *cons, char *cmdline)
  */
 void cmd_fddir(struct CONSOLE *cons)
 {
-	/* (0x0010 + 0x0026)�̏ꏊ�ɂ������, FILEINFO�̃f�[�^�\���Ƃ���, ��������ɃR�s�[����. */
+	/* (0x0010 + 0x0026)�̏ꏊ�ɂ������?, FILEINFO�̃f�[�^�\���Ƃ���, ��������ɃR�s�[����. */
 	struct FILEINFO *finfo = (struct FILEINFO *) (ADR_DISKIMG + 0x002600);
 	int i, j;
 	char s[30];
 	for (i = 0; i < MAX_FINFO_NUM; i++) {
-		/* ����File������ȏ㑶�݂��Ȃ��ꍇ, break���� */
+		/* ����File������ȏ㑶�݂��Ȃ���?, break���� */
 		if (finfo[i].name[0] == 0x00) {
 			break;
 		}
@@ -1441,7 +1444,7 @@ void cmd_fddir(struct CONSOLE *cons)
 		if (finfo[i].name[0] != 0xe5) {
 			/* 0x18 = 0x10 + 0x18
 			 * 0x10:�f�B���N�g��
-			 * 0x08:�t�@�C���ł͂Ȃ����(�f�B�X�N�̖��O�Ƃ�)
+			 * 0x08:�t�@�C���ł͂Ȃ����?(�f�B�X�N�̖��O�Ƃ�)
 			 * ����āAFile Type��"�t�@�C��"�ł������ꍇ */
 			if ((finfo[i].type & 0x18) == 0) {
 				sprintf(s, "filename.ext   %7d\n", finfo[i].size);
@@ -1489,13 +1492,13 @@ void cmd_stamp(struct CONSOLE *cons1, char *cmdline)
      char result[20], * cmd_str;
     int i, j, k, l, p, q;
     int a[4];
-    static int s[1000];  /*邮资*/
-    int x, y, r = 0, count = 0; //r用来做移动指针工作,x指向数字开头，y指向连续数字结尾
+    static int s[1000];  /*�?�?*/
+    int x, y, r = 0, count = 0; //r用来做移动指针工�?,x指向数字开头，y指向连续数字结尾
     for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	/* �X�y�[�X������܂œǂݔ�΂� */
     for (; cmd_str[r]!=0; )
     {
 
-        if ('0' <= cmd_str[r] && cmd_str[r] <= '9')//是数字
+        if ('0' <= cmd_str[r] && cmd_str[r] <= '9')//�?数字
         {
             p = r;
             q = r + 1;
@@ -1505,18 +1508,18 @@ void cmd_stamp(struct CONSOLE *cons1, char *cmdline)
                 a[count] = 10 * a[count] + (cmd_str[q] - '0');
                 q++;
             }
-            r = q;  //新起点
-            count++; //count应该为4
+            r = q;  //新起�?
+            count++; //count应�?�为4
 
         }
         else r++;
 
     }
-    //scanf("%d %d %d %d", &a, &b, &c, &d);  /*输入四种面值邮票*/
-    for(i=0; i<=5; i++)  /*循环变量i用于控制a分面值邮票的张数，最多5张*/
-        for(j=0; i+j<=5; j++)  /*循环变量j用于控制b分面值邮票的张数，a分邮票+b分邮票最多5张*/
-            for(k=0; k+i+j<=5; k++)  /*循环变量k用于控制c分面值邮票的张数，a分邮票+b分邮票+c分邮票最多5张*/
-                for(l=0; k+i+j+l<=5; l++)  /*循环变量l用于控制d分面值邮票的张数,a分邮票+b分邮票+c分邮票+d分邮票最多5张*/
+    //scanf("%d %d %d %d", &a, &b, &c, &d);  /*输入四�?�面值邮�?*/
+    for(i=0; i<=5; i++)  /*�?�?变量i用于控制a分面值邮票的张数，最�?5�?*/
+        for(j=0; i+j<=5; j++)  /*�?�?变量j用于控制b分面值邮票的张数，a分邮�?+b分邮票最�?5�?*/
+            for(k=0; k+i+j<=5; k++)  /*�?�?变量k用于控制c分面值邮票的张数，a分邮�?+b分邮�?+c分邮票最�?5�?*/
+                for(l=0; k+i+j+l<=5; l++)  /*�?�?变量l用于控制d分面值邮票的张数,a分邮�?+b分邮�?+c分邮�?+d分邮票最�?5�?*/
                     if( a[0]*i+a[1]*j+a[2]*k+a[3]*l )
                         s[a[0]*i+a[1]*j+a[2]*k+a[3]*l]++;
     for(i=1; i<=1000; i++)
@@ -1592,7 +1595,7 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 					//cons_putstr0(&cons, cmdline);
 					break;
 				} else {
-					/* ��ʕ��� */
+					/* ��ʕ���? */
 					if (cons.cur_x < 272) {
 						/* �ꕶ���\�����Ă���A�J�[�\����1�i�߂� */
 						cmdline[cons.cur_x / 8 - 2] = i - 256;
@@ -1678,7 +1681,7 @@ int cmd_app(struct CONSOLE *cons, int *fat, char *cmdline)
 		cons_newline(cons);
 		return 1;
 	}
-	/* �t�@�C����������Ȃ������ꍇ */
+	/* �t�@�C����������Ȃ�������? */
 	return 0;
 }
 
@@ -1711,8 +1714,8 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 	struct SHTCTL *shtctl = (struct SHTCTL *) *((int *) 0x0fe4);
 	struct SHEET *sht;
 	struct FIFO32 *sys_fifo = (struct FIFO32 *) *((int *) 0x0fec);
-	int *reg = &eax + 1; /* eax����ĵ�ַ*/
-	/*ǿ�и�дͨ��PUSHAD�����ֵ*/
+	int *reg = &eax + 1; /* eax����ĵ��?*/
+	/*ǿ�и�дͨ��PUSHAD������?*/
 		/* reg[0] : EDI,   reg[1] : ESI,   reg[2] : EBP,   reg[3] : ESP */
 		/* reg[4] : EBX,   reg[5] : EDX,   reg[6] : ECX,   reg[7] : EAX */
 	int i, j;
@@ -1753,7 +1756,7 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 			sheet_setbuf(sht, (char *) ebx + ds_base, esi, edi, eax);
 			make_window8((char *) ebx + ds_base, esi, edi, (char *) ecx + ds_base, 0);
 			sheet_slide(sht, ((shtctl->xsize - esi) / 2) & ~3, (shtctl->ysize - edi) / 2);
-			sheet_updown(sht, shtctl->top); /*������ͼ��߶�ָ��Ϊ��ǰ�������ͼ��ĸ߶ȣ�����Ƶ��ϲ�*/
+			sheet_updown(sht, shtctl->top); /*������ͼ��߶�ָ���?��ǰ�������ͼ��ĸ߶ȣ�����Ƶ��ϲ�?*/
 			reg[7] = (int) sht;
 			break;
 		case 6:
@@ -1828,8 +1831,8 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 				}
 				i = fifo32_get(&task->fifo);
 				io_sti();
-				if (i <= 1) { /*����ö�ʱ��*/
-					/*Ӧ�ó�������ʱ����Ҫ��ʾ��꣬������ǽ��´���ʾ�õ�ֵ��Ϊ1*/
+				if (i <= 1) { /*����ö�ʱ��?*/
+					/*Ӧ�ó�������ʱ����Ҫ��ʾ���?������ǽ��´���ʾ�õ�ֵ���?1*/
 					timer_init(cons->timer, &task->fifo, 1); /*�´���Ϊ1*/
 					timer_settime(cons->timer, 50);
 				}
@@ -2398,7 +2401,7 @@ void consume(struct CONSOLE *cons)
 	return ;
 }
 
-//peterson算法的进入区和退出区，这2个可以当成互斥锁来使用，但仅能用于2个进程之间
+//peterson算法的进入区和退出区，这2�?�?以当成互斥锁来使�?，但仅能用于2�?进程之间
 void entrance(int x)
 {
 	if(x==1)
