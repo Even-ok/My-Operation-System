@@ -26,7 +26,10 @@ haribote.img : haribote/ipl20.bin haribote/haribote.sys Makefile \
 		type/type.hrb iroha/iroha.hrb chklang/chklang.hrb \
 		notrec/notrec.hrb bball/bball.hrb invader/invader.hrb \
 		calc/calc.hrb tview/tview.hrb mmlplay/mmlplay.hrb gview/gview.hrb \
-		hello6/hello6.hrb
+		hello6/hello6.hrb appreader/appreader.hrb consume/consume.hrb \
+		produce/produce.hrb shareadd/shareadd.hrb calc/calc.hrb tview/tview.hrb \
+		mmlplay/mmlplay.hrb gview/gview.hrb \
+		producer/producer.hrb consumer/consumer.hrb sadd/sadd.hrb game/game.hrb
 
 	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
 		wbinimg src:haribote/ipl20.bin len:512 from:0 to:0 \
@@ -34,11 +37,19 @@ haribote.img : haribote/ipl20.bin haribote/haribote.sys Makefile \
 		copy from:haribote/ipl20.nas to:@: \
 		copy from:make.bat to:@: \
 		copy from:a/a.hrb to:@: \
+		copy from:game/game.hrb to:@: \
+		copy from:appreader/appreader.hrb to:@: \
 		copy from:hello3/hello3.hrb to:@: \
 		copy from:hello4/hello4.hrb to:@: \
 		copy from:hello5/hello5.hrb to:@: \
 		copy from:hello6/hello6.hrb to:@: \
 		copy from:about/about.hrb to:@: \
+		copy from:consume/consume.hrb to:@: \
+		copy from:consumer/consumer.hrb to:@: \
+		copy from:produce/produce.hrb to:@: \
+		copy from:producer/producer.hrb to:@: \
+		copy from:shareadd/shareadd.hrb to:@: \
+		copy from:sadd/sadd.hrb to:@: \
 		copy from:star1/star1.hrb to:@: \
 		copy from:stars/stars.hrb to:@: \
 		copy from:stars2/stars2.hrb to:@: \
@@ -54,8 +65,9 @@ haribote.img : haribote/ipl20.bin haribote/haribote.sys Makefile \
 		copy from:type/type.hrb to:@: \
 		copy from:iroha/iroha.hrb to:@: \
 		copy from:chklang/chklang.hrb to:@: \
+		copy from:userw/userw.hrb to:@: \
+		copy from:userr/userr.hrb to:@: \
 		copy from:help.txt to:@: \
-		copy from:heloos.bmp to:@: \
 		copy from:help-en.txt to:@: \
 		copy from:notrec/notrec.hrb to:@: \
 		copy from:bball/bball.hrb to:@: \
@@ -97,6 +109,16 @@ full :
 	$(MAKE) -C hello4
 	$(MAKE) -C hello5
 	$(MAKE) -C hello6
+	$(MAKE) -C game
+	$(MAKE) -C appreader
+	$(MAKE) -C consume
+	$(MAKE) -C consumer
+	$(MAKE) -C produce
+	$(MAKE) -C producer
+	$(MAKE) -C shareadd
+	$(MAKE) -C sadd
+	$(MAKE) -C userw
+	$(MAKE) -C userr
 	$(MAKE) -C about
 	$(MAKE) -C star1
 	$(MAKE) -C stars
@@ -145,10 +167,20 @@ clean_full :
 	$(MAKE) -C haribote		clean
 	$(MAKE) -C apilib		clean
 	$(MAKE) -C a			clean
+	$(MAKE) -C appreader	clean
 	$(MAKE) -C hello3		clean
 	$(MAKE) -C hello4		clean
 	$(MAKE) -C hello5		clean
 	$(MAKE) -C hello6		clean
+	$(MAKE) -C game		clean
+	$(MAKE) -C consume		clean
+	$(MAKE) -C consumer		clean
+	$(MAKE) -C produce		clean
+	$(MAKE) -C producer		clean
+	$(MAKE) -C shareadd		clean
+	$(MAKE) -C sadd			clean
+	$(MAKE) -C userw		clean
+	$(MAKE) -C userr		clean
 	$(MAKE) -C about		clean
 	$(MAKE) -C star1		clean
 	$(MAKE) -C stars		clean
@@ -181,7 +213,17 @@ src_only_full :
 	$(MAKE) -C hello4		src_only
 	$(MAKE) -C hello5		src_only
 	$(MAKE) -C hello6		src_only
+	$(MAKE) -C game		src_only
+	$(MAKE) -C consume		src_only
+	$(MAKE) -C produce		src_only
+	$(MAKE) -C consumer		src_only
+	$(MAKE) -C producer	src_only
+	$(MAKE) -C shareadd		src_only
+	$(MAKE) -C sadd		src_only
+	$(MAKE) -C userw		src_only
+	$(MAKE) -C userr		src_only
 	$(MAKE) -C about		src_only
+	$(MAKE) -C appreader	src_only
 	$(MAKE) -C star1		src_only
 	$(MAKE) -C stars		src_only
 	$(MAKE) -C stars2		src_only

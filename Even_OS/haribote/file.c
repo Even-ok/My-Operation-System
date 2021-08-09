@@ -252,7 +252,7 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 		debug_print(s);
 		/*************/
 
-		mem_addr = memman_alloc(memman, alloc_size);
+		mem_addr = memman_alloc(memman, alloc_size,0);
 
 		/* �m�ۂ����̈�̏����� */
 		temp_addr = (unsigned int *)mem_addr;
@@ -421,7 +421,7 @@ struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
 
 		// �m�ۂ��郁�����̃T�C�Y���v�Z�Ɗm��
 		alloc_size = BLOCK_SIZE;	// �m�ۂ���T�C�Y���v�Z
-		mem_addr = memman_alloc(memman, alloc_size);
+		mem_addr = memman_alloc(memman, alloc_size,0);
 
 		/* �m�ۂ����̈�̏����� */
 		temp_addr = (unsigned int *)mem_addr;

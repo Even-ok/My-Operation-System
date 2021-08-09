@@ -12,28 +12,31 @@
 struct CONSOLE *log;
 int console_id=0;
 struct MYFILEDATA *setfdata = 0;
+unsigned int addrlist[100];
+unsigned int sizelist[100];
+int num = 0;
 
 void debug_print(char *str){
 	/*	�f�o�b�O�p�̏o�͂�����Ƃ���"//"������*/
-	char s[50];
-	sprintf(s, "[debug] ");
-	cons_putstr(log, s);
-	int i;
-	for(i=0; str[i]!='0' && str[i]!='\0'; i++){
-		if(i == 150){
-			str[i] = '0';
-			break;
-		}
-	}
+	// char s[50];
+	// sprintf(s, "[debug] ");
+	// cons_putstr(log, s);
+	// int i;
+	// for(i=0; str[i]!='0' && str[i]!='\0'; i++){
+	// 	if(i == 150){
+	// 		str[i] = '0';
+	// 		break;
+	// 	}
+	// }
 
-	// 150�����ȏ�͏o�͂��Ȃ�
-	if(i<150){
-		cons_putstr(log, str);
-	}else{
-		sprintf(s, "[CAUTION:(str.length>150)]");
-		cons_putstr(log, s);
-		cons_putstr(log, str);
-	}
+	// // 150�����ȏ�͏o�͂��Ȃ�
+	// if(i<150){
+	// 	cons_putstr(log, str);
+	// }else{
+	// 	sprintf(s, "[CAUTION:(str.length>150)]");
+	// 	cons_putstr(log, s);
+	// 	cons_putstr(log, str);
+	// }
 	return;
 }
 
@@ -44,7 +47,7 @@ void console_task(struct SHEET *sheet, int memtotal)
 	int i, *fat = (int *) memman_alloc_4k(memman, 4 * 2880);
 	struct CONSOLE cons;
 	struct FILEHANDLE fhandle[8];
-	char cmdline[30];
+	char cmdline[100];
 	int path_length = 0; // for calculating cmdline
 	unsigned char *nihongo = (char *) *((int *) 0x0fe8);
 
@@ -78,7 +81,7 @@ void console_task(struct SHEET *sheet, int memtotal)
 	task->langmode = 3;//��ʾÿ�ζ�ѡ����
 
 	if(cons.id == 1){
-		cmd_mkfs(&cons);	/* �����R���\�[���ɑ΂��ċ����I��mkfs���g�� */
+		//cmd_mkfs(&cons);	/* �����R���\�[���ɑ΂��ċ����I��mkfs���g�� */
 	}else if(cons.id == 0){
 		cmd_setlog(&cons);	/* ���O�p�R���\�[���ɑ΂��ă��O�o�͗p�̐ݒ���{�� */
 	}
@@ -145,7 +148,7 @@ void console_task(struct SHEET *sheet, int memtotal)
 					cons_putchar(&cons, '>', 1);
 				} else {
 					/* ��ʕ��� */
-					if (cons.cur_x < 240) {
+					if (cons.cur_x < 272) {
 						/* �ꕶ���\�����Ă���A�J�[�\����1�i�߂� */
 						cmdline[cons.cur_x / 8- (path_length)  - 2] = i - 256;
 						cons_putchar(&cons, i - 256, 1);
@@ -175,7 +178,7 @@ void cons_putchar(struct CONSOLE *cons, int chr, char move)
 				putfonts8_asc_sht(cons->sht, cons->cur_x, cons->cur_y, COL8_FFFFFF, COL8_000000, " ", 1);
 			}
 			cons->cur_x += 8;
-			if (cons->cur_x == 8 + 240) {
+			if (cons->cur_x == 8 + 272) {
 				cons_newline(cons);
 			}
 			if (((cons->cur_x - 8) & 0x1f) == 0) {
@@ -191,7 +194,7 @@ void cons_putchar(struct CONSOLE *cons, int chr, char move)
 		}
 		if (move != 0) {
 			cons->cur_x += 8;
-			if (cons->cur_x == 8 + 240) {
+			if (cons->cur_x == 8 + 272) {
 				cons_newline(cons);
 			}
 		}
@@ -216,7 +219,7 @@ void cons_newline(struct CONSOLE *cons)
 				}
 			}
 			for (y = 28 + ymax - 16; y < 28 + ymax; y++) {
-				for (x = 8; x < 8 + 240; x++) {
+				for (x = 8; x < 8 + 272; x++) {
 					sheet->buf[x + y * sheet->bxsize] = COL8_000000;
 				}
 			}
@@ -348,6 +351,23 @@ void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal)
 	}
 	else if (strncmp(cmdline, "ls ", 3) == 0){
 		cmd_open(cons, cmdline);  //打开文件内容
+	}
+	else if (strcmp(cmdline, "reader")== 0) {
+		cmd_reader();
+	} else if (strcmp(cmdline, "writer")== 0) {
+		cmd_writer();
+	}else if (strncmp(cmdline, "alloc", 5)== 0) {
+		cmd_mymem(cmdline);
+	}
+	else if(strcmp(cmdline,"free")==0){
+		cmd_free();
+	}
+	else if (strcmp(cmdline, "1") == 0 && cons->sht != 0) {
+		produce(cons);
+	}else if (strcmp(cmdline, "2") == 0 && cons->sht != 0) {
+		consume(cons);
+	}else if (strcmp(cmdline, "add") == 0 && cons->sht != 0) {
+		shareadd(cons);
 	}
 	else if (cmdline[0] != 0) {
 		if (cmd_app(cons, fat, cmdline) == 0) {
@@ -1011,12 +1031,12 @@ void cmd_cls(struct CONSOLE *cons)
 {
 	int x, y;
 	struct SHEET *sheet = cons->sht;
-	for (y = 28; y < 28 + 128; y++) {
-		for (x = 8; x < 8 + 240; x++) {
+	for (y = 28; y < 28 + 528; y++) {
+		for (x = 8; x < 8 + 272; x++) {
 			sheet->buf[x + y * sheet->bxsize] = COL8_000000;
 		}
 	}
-	sheet_refresh(sheet, 8, 28, 8 + 240, 28 + 128);
+	sheet_refresh(sheet, 8, 28, 8 + 272, 28 + 528);
 	cons->cur_y = 28;
 	return;
 }
@@ -1573,7 +1593,7 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 					break;
 				} else {
 					/* ��ʕ��� */
-					if (cons.cur_x < 240) {
+					if (cons.cur_x < 272) {
 						/* �ꕶ���\�����Ă���A�J�[�\����1�i�߂� */
 						cmdline[cons.cur_x / 8 - 2] = i - 256;
 						cons_putchar(&cons, i - 256, 1);
@@ -1673,15 +1693,15 @@ int cmd_app(struct CONSOLE *cons, int *fat, char *cmdline)
 #define RTC_REG_A			0x0A
 #define RTC_REG_B			0x0b
 
-int get_rtc_register(char address)
-{
-	int value = 0;
-	io_cli();
-	io_out8(0x70, address);
-	value = io_in8(0x71);
-	io_sti();
-	return value;
-}
+// int get_rtc_register(char address)
+// {
+// 	int value = 0;
+// 	io_cli();
+// 	io_out8(0x70, address);
+// 	value = io_in8(0x71);
+// 	io_sti();
+// 	return value;
+// }
 
 int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax)
 {
@@ -1699,6 +1719,20 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 	struct FILEINFO *finfo;
 	struct FILEHANDLE *fh;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
+
+	char s[100];
+	int gdt_addr;
+	int ldt_addr_offset;
+	struct SEGMENT_DESCRIPTOR temp;
+	int ldt_addr;
+	int phy_addr;
+
+	int gdt;
+	int ldt_index;
+	int ldt_des;
+	int ds_index;
+	int ds_des;
+	int ds_addr;
 
 	switch (edx) {
 		case 1:
@@ -1743,7 +1777,7 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 			break;
 		case 9:
 			ecx = (ecx + 0x0f) & 0xfffffff0; /*��16�ֽ�Ϊ��λ��λȡ��*/
-			reg[7] = memman_alloc((struct MEMMAN *) (ebx + ds_base), ecx);
+			reg[7] = memman_alloc((struct MEMMAN *) (ebx + ds_base), ecx,0);
 			break;
 		case 10:
 			ecx = (ecx + 0x0f) & 0xfffffff0; /*��16�ֽ�Ϊ��λ��λȡ��*/
@@ -1922,18 +1956,95 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		case 27:
 			reg[7] = task->langmode;
 			break;
+		// case 28:
+		// 	// Make sure an update isn't in progress
+		// 	while (get_rtc_register(RTC_REG_A) & 0x80);
+		// 	i = get_rtc_register(eax);
+		// 	// Convert BCD to binary values if necessary
+		// 	j = get_rtc_register(RTC_REG_B);
+		// 	if (!(j & 0x04)) 
+		// 		i = (i & 0x0F) + ((i / 16) * 10);
+		// 	// Convert 12 hour clock to 24 hour clock if necessary
+		// 	if (eax == RTC_HOURS && !(j & 0x02) && (i & 0x80))
+		// 		i = ((i & 0x7F) + 12) % 24;
+		// 	reg[7] = i;
+
 		case 28:
-			// Make sure an update isn't in progress
-			while (get_rtc_register(RTC_REG_A) & 0x80);
-			i = get_rtc_register(eax);
-			// Convert BCD to binary values if necessary
-			j = get_rtc_register(RTC_REG_B);
-			if (!(j & 0x04)) 
-				i = (i & 0x0F) + ((i / 16) * 10);
-			// Convert 12 hour clock to 24 hour clock if necessary
-			if (eax == RTC_HOURS && !(j & 0x02) && (i & 0x80))
-				i = ((i & 0x7F) + 12) % 24;
-			reg[7] = i;
+	    {
+	    gdt_addr = ADR_GDT;
+	    ldt_addr_offset = task->tss.ldtr;
+	    temp =  *(struct SEGMENT_DESCRIPTOR *)(ADR_GDT + ldt_addr_offset);
+	    ldt_addr = temp.base_low +(temp.base_mid << 16) + (temp.base_high<<24);
+	    temp = *(struct SEGMENT_DESCRIPTOR *)(ldt_addr + 1*8);
+	    ds_base = temp.base_low +(temp.base_mid << 16) + (temp.base_high<<24);
+	    phy_addr = ds_base + eax;
+	    sprintf(s,"gdt_base: %x\nldt_base: %x\nds_base: %x\nlog_addr: %x\nphy_addr: %x\nvalue: %d\n",gdt_addr,ldt_addr,ds_base,eax,phy_addr,*(int *)(phy_addr));
+	    //int addr = task->ldt[1].base_low + (task->ldt[1].base_mid<<16) +(task->ldt[1].base_high<<24);
+	    //sprintf(s,"%x %x %x %x %d\n",addr,task->ds_base,eax,addr+eax,*(int *)(addr+eax));
+	    cons_putstr0(cons, s);
+		//int i = ADR_GDT +task->tss.ldtr;
+		//struct SEGMENT_DESCRIPTOR* des = *(ADR_GDT +task->tss.ldtr);
+		//i = des->base_low + des->base_mid <<8 + des->base_high<<12;
+	  	reg[7] = phy_addr;
+		  break;
+		  }
+		case 29:
+        gdt = *(int *)(ds_base+eax+2);
+        ldt_index = ecx >>3;
+        ldt_des = gdt + ldt_index*8;
+        temp =  *(struct SEGMENT_DESCRIPTOR *)(ldt_des);
+        ldt_addr = temp.base_low +(temp.base_mid << 16) + (temp.base_high<<24);
+        ds_index = ebx>>3;
+        ds_des = ldt_addr + ds_index*8;
+        temp = *(struct SEGMENT_DESCRIPTOR *)(ds_des);
+        ds_addr = temp.base_low +(temp.base_mid << 16) + (temp.base_high<<24);
+        phy_addr = ds_addr + ebp;
+        sprintf(s,"gdt_base: %x  ldt_index: %d\nldt_des: %x  ldt_addr: %x\nds_index: %d  ds_des: %x\nds_addr: %x  log_addr: %x\nphy_addr:%x  value: %d\n",gdt,ldt_index,ldt_des,ldt_addr,ds_index,ds_des,ds_addr,ebp,phy_addr,*(int *)phy_addr);
+        cons_putstr0(cons, s);
+		break;
+	
+		case 30:
+		cmd_reader();
+		break;
+		case 31:
+		cmd_writer();
+		break;
+		case 32:
+    	shareadd(cons);
+		break;
+		case 33:
+		consume(cons);
+		break;
+		case 34:
+		produce(cons);
+		break;
+		case 35:
+		entrance(eax);
+		break;
+		case 36:
+		exiting(eax);
+		break;
+		case 37:
+		reg[7]=var_create((char*)ds_base+ebx,ecx);
+		break;
+		case 38:
+		reg[7]=var_read((char*)ds_base+ebx,ecx);
+		break;
+		case 39:
+		reg[7]=var_wrt((char*)ds_base+ebx,ecx,eax);
+		break;
+		case 40:
+		reg[7]=var_free((char*)ds_base+ebx);
+		break;
+		case 41:
+		avoid_sleep();
+		break;
+		case 42:
+		Tlock();
+		break;
+		case 43:
+		unTlock();
+		break;
 	}
 	return 0;
 }
@@ -2007,4 +2118,313 @@ void hrb_api_linewin(struct SHEET *sht, int x0, int y0, int x1, int y1, int col)
 	}
 
 	return;
+}
+
+void wait(struct S *s,struct process *this_process,char * which_s){
+	char buf[100];
+	int eflags= io_load_eflags();
+	io_cli();
+	s->value--;
+	if(s->value<0){
+		//��ʾ˭�ڵȴ�
+		sprintf(buf, "%s is waiting %s!\n", this_process->name, which_s);
+	    cons_putstr0(this_process->task->cons, buf);
+
+		//�����ȴ��б�
+		if(s->list_last==NULL){//�б���
+			s->list_first=this_process;
+			s->list_last=this_process;
+			s->list_last->next=NULL;
+		}
+		else{//�б�����
+			s->list_last->next=this_process;
+			s->list_last=s->list_last->next;
+			s->list_last->next=NULL;
+		}
+		//����
+		task_sleep(this_process->task);
+	}
+	io_store_eflags(eflags);
+}
+
+void signal(struct S *s,char * which_s){
+	struct process *temp;
+	char buf[100];
+	int eflags= io_load_eflags();
+	io_cli();
+	s->value++;
+	if(s->value<=0){
+		//�б�
+		temp=s->list_first;
+
+		if(s->list_first==s->list_last){//ֻ��һ�������ڵȴ������Ѻ��ȴ��б���
+			s->list_first=s->list_last=NULL;
+		}
+		else
+			s->list_first=s->list_first->next;
+		//
+		task_run(temp->task,-1,-1);//����ԭ����Ĭ�����ȼ�
+
+		sprintf(buf, "%s already get %s.\n", temp->name, which_s);
+	    cons_putstr0(temp->task->cons, buf);
+
+	}
+	io_store_eflags(eflags);
+}
+
+void init_S(){
+	mutex.value=1;
+	mutex.list_first=NULL;
+	mutex.list_last=NULL;
+	wrt.value=1;
+	wrt.list_first=NULL;
+	wrt.list_last=NULL;
+	readcount=0;
+	share_bupt=0;
+}
+#define END 1000
+void cmd_reader(){
+	char readbuf[100];
+	int if_end=0;
+	struct process this_process;
+	this_process.next=NULL;
+	this_process.task=task_now();
+	while(1){
+		sprintf(this_process.name,"reader %d",readcount+1);
+		wait(&mutex,&this_process,"mutex");
+		readcount++;
+		if(readcount==1){
+			wait(&wrt,&this_process,"wrt");
+		}
+		signal(&mutex,"mutex");
+		//�������������ٽ���
+		sprintf(readbuf,"%s get share=%d|| %d\n",this_process.name,share_bupt,if_end+1);
+		cons_putstr0(this_process.task->cons, readbuf);
+
+		wait(&mutex,&this_process,"mutex");
+		readcount--;
+		if(readcount==0){
+			signal(&wrt,"wrt");
+		}
+		signal(&mutex,"mutex");
+
+		if_end++;
+		if(if_end==END)
+			break;
+	}
+}
+void cmd_writer(){
+	char writebuf[100];
+	int if_end=0;
+	struct process this_process;
+	this_process.next=NULL;
+	this_process.task=task_now();
+	sprintf(this_process.name,"writer");
+
+	while(1){
+		wait(&wrt,&this_process,"wrt");
+
+		share_bupt++;
+		sprintf(writebuf,"%s have written share=%d|| %d\n",this_process.name,share_bupt,if_end+1);
+		cons_putstr0(this_process.task->cons, writebuf);
+
+		signal(&wrt,"wrt");
+
+		if_end++;
+		if(if_end==END)
+			break;
+	}
+}
+
+unsigned int char2int(char *cSize){//��char����ת��Ϊint������
+	unsigned int iSize=0;
+	char c;
+	int i=0;
+	while((c=cSize[i])!='\0'){
+		iSize=iSize*10+c-'0';
+		i++;
+	}
+	return iSize;
+}
+void cmd_mymem(char *cmdline){//������alloc�ڴ棺alloc mode size
+	char cSize[10];
+	int mode;//�����ڴ���ģʽ����0����1����
+
+	unsigned int iSize;
+	int i;
+	unsigned int addr;
+
+	char memsizebuf[100];
+
+	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
+	struct TASK *task=task_now();
+	//
+	for(i=0;cmdline[i]!=' ';i++);
+
+	mode=cmdline[i+1]-'0';//ȡ��ģʽ
+
+	strcpy(cSize,&cmdline[i+3]);//ȡ����С
+	iSize=char2int(cSize);
+	//allocǰ��ʾ������С
+	sprintf(memsizebuf,"before alloc %d:\n",iSize);
+	cons_putstr0(task->cons,memsizebuf);
+	for (i = 0; i < memman->frees; i++) {
+		sprintf(memsizebuf,"NO.%d-size=%d  ",i,memman->free[i].size);
+		cons_putstr0(task->cons,memsizebuf);
+	}
+	//alloc
+	addr=memman_alloc((struct MEMMAN *) MEMMAN_ADDR,iSize,mode);
+	//��alloc�Ŀ鶼�ǵ������freeʹ��
+	addrlist[num]=addr;
+	sizelist[num]=iSize;
+	num++;
+	//alloc֮����ʾ������С
+	cons_putstr0(task->cons,"\nafter alloc:\n");
+	for (i = 0; i < memman->frees; i++) {
+		sprintf(memsizebuf,"NO.%d-size=%d  ",i,memman->free[i].size);
+		cons_putstr0(task->cons,memsizebuf);
+	}
+	cons_putstr0(task->cons,"\n");
+	//memman_free((struct MEMMAN *) MEMMAN_ADDR, addr,iSize);
+}
+
+void cmd_free(){//free֮ǰ��������alloc���ڴ�
+	int i;
+	for(i=0;i<num;i++){
+		memman_free((struct MEMMAN *) MEMMAN_ADDR, addrlist[i],sizelist[i]);
+	}
+}
+
+int share=0;
+int sharenum=0;//ʹ�ù��������Ľ�������
+void shareadd(struct CONSOLE *cons)
+{
+	int i,j,x,temp,e;
+	char s[60];
+	struct TASK *now_task;
+
+	if(sharenum==0)
+	   share=0;
+	sharenum+=1;
+	while(sharenum<2)
+	{
+		now_task=task_now();
+		now_task->flags=2;
+	}
+	for(;;)
+	{
+		temp=share;
+		e=io_load_eflags();
+		io_cli();
+		share+=1;
+		io_store_eflags(e);
+		x=share;
+		if((x-temp)>1)
+		{
+		sprintf(s,"share=%d,but share+1=%d\n",temp,x);
+		cons_putstr0(cons,s);
+		sharenum-=1;
+		break;
+		}
+	}
+	return ;
+}
+
+//�����ߺ������߳���������������peterson�㷨
+#define BUFFER_SIZE 100
+int producer=0,consumer=1;
+int flag[2]={0,0};//��ʾ�ĸ������������ٽ���
+int turn;//��ʾ�ĸ����̿��Խ����ٽ���
+int in=0,out=0,counter=0;
+int buffer[BUFFER_SIZE];//������
+int xnum=0;
+
+void produce(struct CONSOLE *cons)
+{
+	char *s;
+	int temp,outcome,e;
+	struct TASK *now_task;
+	now_task=task_now();
+	while(1){
+		while (counter == BUFFER_SIZE)
+		{
+			now_task=task_now();//����ѭ��������ֹ��������
+			now_task->flags=2;
+		}
+	    // xnum++;
+		   flag[producer]=1;
+		   turn=consumer;
+	   	 while(flag[consumer]==1&&turn==consumer)
+		   xnum++;
+		  //�ٽ���
+			 temp=in;
+			 outcome=rand();
+		   buffer[in]=outcome;
+		   in = (in + 1)%BUFFER_SIZE;
+			 counter++;
+		   flag[producer]=0;
+			 //ʣ����
+			 sprintf(s,"in buffer %d,produce %d\n",temp+1,outcome);
+			 cons_putstr0(cons,s);
+	}
+	return ;
+}
+
+void consume(struct CONSOLE *cons)
+{
+	char *s;
+	int temp,outcome,e;
+	struct TASK *now_task;
+	while(1){
+		while (counter==0)
+		{
+			now_task=task_now();
+			now_task->flags=2;
+		}
+		  flag[consumer]=1;
+		  turn=producer;
+		  while(flag[producer]==1&&turn==producer)
+		  xnum++;
+		  //�ٽ���
+			temp=out;
+			outcome=buffer[out];
+			out=(out+1)%BUFFER_SIZE;
+			counter--;
+			flag[consumer]=0;
+			//ʣ����
+			sprintf(s,"in buffer %d,consume %d\n",temp+1,outcome);
+			cons_putstr0(cons,s);
+	}
+	return ;
+}
+
+//peterson算法的进入区和退出区，这2个可以当成互斥锁来使用，但仅能用于2个进程之间
+void entrance(int x)
+{
+	if(x==1)
+	{
+		flag[consumer]=1;
+		turn=producer;
+		while(flag[producer]==1&&turn==producer)
+		xnum++;
+	}
+	if(x==0)
+	{
+		flag[producer]=1;
+		turn=consumer;
+		while(flag[consumer]==1&&turn==consumer)
+		xnum++;
+	}
+}
+
+void exiting(int x)
+{
+   if(x==1)
+	 {
+		flag[consumer]=0;
+	 }
+	 if(x==0)
+	 {
+		 flag[producer]=0;
+	 }
 }

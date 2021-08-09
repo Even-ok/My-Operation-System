@@ -159,10 +159,11 @@ struct MEMMAN {		/* �������Ǘ� */
 unsigned int memtest(unsigned int start, unsigned int end);
 void memman_init(struct MEMMAN *man);
 unsigned int memman_total(struct MEMMAN *man);
-unsigned int memman_alloc(struct MEMMAN *man, unsigned int size);
+unsigned int memman_alloc(struct MEMMAN *man, unsigned int size,int mode);
 int memman_free(struct MEMMAN *man, unsigned int addr, unsigned int size);
 unsigned int memman_alloc_4k(struct MEMMAN *man, unsigned int size);
 int memman_free_4k(struct MEMMAN *man, unsigned int addr, unsigned int size);
+int memman_free_fdata(struct MEMMAN *memman, unsigned int fdata_addr);
 
 /* sheet.c */
 #define MAX_SHEETS		256
@@ -278,6 +279,7 @@ void debug_print(char *str);
 void console_task(struct SHEET *sheet, int memtotal);
 void cons_putchar(struct CONSOLE *cons, int chr, char move);
 void cons_newline(struct CONSOLE *cons);
+void cons_putstr(struct CONSOLE *cons, char *s);
 void cons_putstr0(struct CONSOLE *cons, char *s);
 void cons_putstr1(struct CONSOLE *cons, char *s, int l);
 void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal);
@@ -312,6 +314,12 @@ void cmd_logcls(struct CONSOLE *cons);
 void cmd_test(struct CONSOLE *cons);
 void cmd_mkfs(struct CONSOLE *cons);
 void cmd_fddir(struct CONSOLE *cons);
+
+void shareadd(struct CONSOLE *cons);
+void produce(struct CONSOLE *cons);
+void consume(struct CONSOLE *cons);
+void entrance(int x);
+void exiting(int x);
 
 /* file.c */
 
@@ -460,3 +468,41 @@ unsigned int get_day_of_month();
 unsigned int get_day_of_week();
 unsigned int get_mon_hex();
 unsigned int get_year();
+
+struct process{
+	char name[100];
+	struct TASK *task;
+	struct process *next;
+};
+struct S{//�ź���
+	struct process *list_last;//ָ����ǰ�б�����һ���ڵ㣨����null�����б���Ϊnull��
+	struct process *list_first;//ָ���б���һ���ڵ㣨�б���ʱΪnull��
+	int value;
+};
+extern struct S mutex;
+extern struct S wrt;
+extern int readcount;
+extern int share_bupt;
+//��ʼ���ź���
+void init_S();
+//svar.c
+//用户态的竞争条件
+#define VAR_MAX_NUM 100 //规定操作系统最多只能设置100个共享变量
+struct SVAR{//共享变量的名字，标志位和内容；
+	char *name;
+	int flag;//为0表示该变量存在，为1表示该变量不存在。
+	int length;//表示共享变量的内容长度
+	int *content;
+};
+struct SVARCTL{
+	struct SVAR var[VAR_MAX_NUM];
+};
+void init_Svar(struct MEMMAN *memman);
+int var_create(char *name,int length);
+int var_read(char *name,int n);
+int var_wrt(char *name,int n,int value);
+int var_free(char *name);
+void avoid_sleep();
+int TestAndSet(int *t);
+void Tlock();
+void unTlock();

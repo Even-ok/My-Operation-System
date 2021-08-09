@@ -63,27 +63,46 @@ unsigned int memman_total(struct MEMMAN *man)
 	return t;
 }
 
-unsigned int memman_alloc(struct MEMMAN *man, unsigned int size)
+unsigned int memman_alloc(struct MEMMAN *man, unsigned int size,int mode)
 /* �m�� */
 {
 	unsigned int i, a;
-	for (i = 0; i < man->frees; i++) {
-		if (man->free[i].size >= size) {
-			/* �\���ȍL���̂����𔭌� */
-			a = man->free[i].addr;
-			man->free[i].addr += size;
-			man->free[i].size -= size;
-			if (man->free[i].size == 0) {
-				/* free[i]���Ȃ��Ȃ����̂őO�ւ߂� */
-				man->frees--;
-				for (; i < man->frees; i++) {
-					man->free[i] = man->free[i + 1]; /* �\���̂̑�� */
-				}
-			}
-			return a;
+
+	int maxsize=0;
+	int maxlocation=-1;
+	int minlast=0;
+	int minlocation=-1;
+
+	minlast=man->free[0].size-size;
+	for (i = 0; i < man->frees; i++) {//�������п顪����¼��������������������ʿ�
+		if(man->free[i].size>=maxsize&&man->free[i].size>size){
+			maxlocation=i;
+			maxsize=man->free[i].size;
+		}
+		if(minlast>(man->free[i].size-size)&&man->free[i].size>size){
+			minlocation=i;
+			minlast=(man->free[i].size-size);
 		}
 	}
-	return 0; /* �������Ȃ� */
+	//ѡ��ģʽ
+	if(mode==0)
+		i=maxlocation;
+	else if(mode==1)
+		i=minlocation;
+	//���û�п��õĿ飬iΪ-1
+	if(i>=0){
+		a = man->free[i].addr;
+		man->free[i].addr += size;
+		man->free[i].size -= size;
+		if (man->free[i].size == 0) {
+			man->frees--;
+			for (; i < man->frees; i++) {
+				man->free[i] = man->free[i + 1];
+			}
+		}
+		return a;
+	}
+	return 0;
 }
 
 int memman_free(struct MEMMAN *man, unsigned int addr, unsigned int size)
@@ -153,7 +172,7 @@ unsigned int memman_alloc_4k(struct MEMMAN *man, unsigned int size)
 {
 	unsigned int a;
 	size = (size + 0xfff) & 0xfffff000;
-	a = memman_alloc(man, size);
+	a = memman_alloc(man, size,0);
 	return a;
 }
 

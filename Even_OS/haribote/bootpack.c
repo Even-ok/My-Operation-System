@@ -12,6 +12,17 @@
 #include <string.h>
 
 #define KEYCMD_LED      0xed
+#define START_MEMORY	0x00600000
+#define END_MEMORY		0xbfffffff
+#define CONSOLE_W       287
+#define CONSOLE_H       562
+#define CONSOLE_TEXT_W  280
+#define CONSOLE_TEXT_H  556
+
+struct S mutex;
+struct S wrt;
+int readcount;
+int share_bupt;
 
 void keywin_off(struct SHEET *key_win);
 void keywin_on(struct SHEET *key_win);
@@ -92,8 +103,8 @@ void HariMain(void)
     sheet_setbuf(sht_back, buf_back, binfo->scrnx, binfo->scrny, -1); /* �����F�Ȃ� */
     init_screen8(buf_back, binfo->scrnx, binfo->scrny);
 
-    /* sht_cons */
-    key_win = open_console(shtctl, memtotal);
+	/* log window */
+	key_win = open_console(shtctl, memtotal);
 
     /* sht_mouse */
     sht_mouse = sheet_alloc(shtctl);
@@ -359,7 +370,7 @@ void HariMain(void)
                 close_constask(taskctl->tasks0 + (i - 1024));
             } else if (2024 <= i && i <= 2279) {    /* �R���\�[����������� */
                 sht2 = shtctl->sheets0 + (i - 2024);
-                memman_free_4k(memman, (int) sht2->buf, 256 * 165);
+                memman_free_4k(memman, (int) sht2->buf, CONSOLE_W * CONSOLE_H);
                 sheet_free(sht2);
     		}
             //��ʾ����
@@ -416,13 +427,30 @@ struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal)
 {
     struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
     struct SHEET *sht = sheet_alloc(shtctl);
-    unsigned char *buf = (unsigned char *) memman_alloc_4k(memman, 300 * 200);
-    sheet_setbuf(sht, buf, 300, 200, -1); /* �����F�Ȃ� */
-    make_window8(buf, 300, 200, "Helo OS console", 0);
-    make_textbox8(sht, 8, 28, 240, 128, COL8_000000);
+    // unsigned char *buf = (unsigned char *) memman_alloc_4k(memman, 300 * 200);
+    // sheet_setbuf(sht, buf, 300, 200, -1); /* �����F�Ȃ� */
+    // make_window8(buf, 300, 200, "console", 0);
+    // make_textbox8(sht, 8, 28, 240, 128, COL8_000000);
+    unsigned char *buf = (unsigned char *) memman_alloc_4k(memman, 4*CONSOLE_W * CONSOLE_H);
+    sheet_setbuf(sht, buf, CONSOLE_W, CONSOLE_H, -1); /* �����F�Ȃ� */
+    make_window8(buf, CONSOLE_W, CONSOLE_H,  "console", 0);
+    make_textbox8(sht, 8, 28,  CONSOLE_W-16 , CONSOLE_H-37, COL8_000000);
     sht->task = open_constask(sht, memtotal);
     sht->flags |= 0x20; /* �J�[�\������ */
     return sht;
+}
+
+struct SHEET *open_log(struct SHTCTL *shtctl, unsigned int memtotal)
+{
+	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
+	struct SHEET *sht = sheet_alloc(shtctl);
+	unsigned char *buf = (unsigned char *) memman_alloc_4k(memman, 4*CONSOLE_W * CONSOLE_H);
+	sheet_setbuf(sht, buf, CONSOLE_W, CONSOLE_H, -1);
+	make_window8(buf, CONSOLE_W, CONSOLE_H, "log", 0);
+	make_textbox8(sht, 8, 28, CONSOLE_W-16 , CONSOLE_H-37, COL8_000000);
+	sht->task = open_constask(sht, memtotal);
+	sht->flags |= 0x20;
+	return sht;
 }
 
 void close_constask(struct TASK *task)
@@ -439,7 +467,7 @@ void close_console(struct SHEET *sht)
 {
     struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
     struct TASK *task = sht->task;
-    memman_free_4k(memman, (int) sht->buf, 256 * 165);
+    memman_free_4k(memman, (int) sht->buf, CONSOLE_W * CONSOLE_H);
     sheet_free(sht);
     close_constask(task);
     return;
