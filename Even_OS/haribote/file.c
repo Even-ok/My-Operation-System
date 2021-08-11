@@ -1,15 +1,12 @@
-/* --------------------------------
-	B Y : S T O N
-	HELO OS ÏµÍ³×¨ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½
-	HELO OS ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
-	    ver. 1.0
-         DATE : 2019-1-19  
------------------------------------ */
-/* copyright(C) 2019 PZK . */
+/* ƒtƒ@ƒCƒ‹ŠÖŒW */
 
 #include "bootpack.h"
+#include <stdio.h>
+#include <string.h>
 
-
+/**
+ * ƒfƒBƒXƒNƒCƒ[ƒW“à‚ÌFAT‚Ìˆ³k‚ğ‚Æ‚­
+ */
 void file_readfat(int *fat, unsigned char *img)
 {
 	int i, j = 0;
@@ -21,6 +18,9 @@ void file_readfat(int *fat, unsigned char *img)
 	return;
 }
 
+/**
+ * ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+ */
 void file_loadfile(int clustno, int size, char *buf, int *fat, char *img)
 {
 	int i;
@@ -41,6 +41,9 @@ void file_loadfile(int clustno, int size, char *buf, int *fat, char *img)
 	return;
 }
 
+/**
+ * search file in fileinfo using given name
+ */
 struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 {
 	int i, j;
@@ -50,15 +53,15 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 	}
 	j = 0;
 	for (i = 0; name[i] != 0; i++) {
-		if (j >= 11) { return 0; /* ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ */ }
+		if (j >= 11) { return 0; /* Œ©‚Â‚©‚ç‚È‚©‚Á‚½ */ }
 		if (name[i] == '.' && j <= 8) {
 			j = 8;
 		} else {
 			s[j] = name[i];
 			if ('a' <= s[j] && s[j] <= 'z') {
-				/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í‘å•¶ï¿½ï¿½ï¿½É’ï¿½ï¿½ï¿½ */
+				/* ¬•¶š‚Í‘å•¶š‚É’¼‚· */
 				s[j] -= 0x20;
-			} 
+			}
 			j++;
 		}
 	}
@@ -72,32 +75,12 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 					goto next;
 				}
 			}
-			return finfo + i; /* ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
+			return finfo + i; /* ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚Á‚½ */
 		}
-next:
+		next:
 		i++;
 	}
-	return 0; /* ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
-}
-
-char *file_loadfile2(int clustno, int *psize, int *fat)
-{
-	int size = *psize, size2;
-	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
-	char *buf, *buf2;
-	buf = (char *) memman_alloc_4k(memman, size);
-	file_loadfile(clustno, size, buf, fat, (char *) (ADR_DISKIMG + 0x003e00));
-	if (size >= 17) {
-		size2 = tek_getsize(buf);
-		if (size2 > 0) {	/* tekï¿½ï¿½ï¿½kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ */
-			buf2 = (char *) memman_alloc_4k(memman, size2);
-			tek_decomp(buf, buf2, size2);
-			memman_free_4k(memman, (int) buf, size);
-			buf = buf2;
-			*psize = size2;
-		}
-	}
-	return buf;
+	return 0; /* Œ©‚Â‚©‚ç‚È‚©‚Á‚½ */
 }
 
 /**
@@ -117,14 +100,14 @@ struct MYFILEINFO *myfinfo_search(char *name, struct MYDIRINFO *dinfo, int max)
 	for (i = 0; name[i] != 0; i++) {
 		if (j >= 11) {
 			debug_print("file was not found in myfinfo_search(): int j is too high.\n");
-			return 0; /* ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
+			return 0; /* Œ©‚Â‚©‚ç‚È‚©‚Á‚½ */
 		}
 		if (name[i] == '.' && j <= 8) {
 			j = 8;
 		} else {
 			s[j] = name[i];
 			if ('a' <= s[j] && s[j] <= 'z') {
-				/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í‘å•¶ï¿½ï¿½ï¿½É’ï¿½ï¿½ï¿½ */
+				/* ¬•¶š‚Í‘å•¶š‚É’¼‚· */
 				s[j] -= 'a'-'A';
 			}
 			j++;
@@ -132,13 +115,13 @@ struct MYFILEINFO *myfinfo_search(char *name, struct MYDIRINFO *dinfo, int max)
 	}
 
 	for (i = 0; i < max; ) {
-		// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Aï¿½ï¿½ï¿½ï¿½Èï¿½ï¿½Éƒtï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Ì‚Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+		// ƒtƒ@ƒCƒ‹–¼‚ª–³‚¢ê‡A‚±‚êˆÈãæ‚Éƒtƒ@ƒCƒ‹‚ª‚È‚¢‚Ì‚Åˆ—‚ğI—¹‚³‚¹‚éB
 		if (dinfo->finfo[i].name[0] == 0x00) {
 			break;
 		}
 
-		/* ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡, finfoï¿½ï¿½filetypeï¿½Ìï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
-		/* finfoï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ìê‡(ï¿½ï¿½ï¿½Í‚Qï¿½ï¿½Ş‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½) */
+		/* ƒtƒ@ƒCƒ‹–¼‚ª‚ ‚éê‡, finfo‚Ìfiletype‚Ì¯•Ê‚ğ‚·‚é */
+		/* finfo‚ªƒtƒ@ƒCƒ‹‚Ìê‡(¡‚Í‚Qí—Ş‚µ‚©‚È‚¢) */
 		if (dinfo->finfo[i].type == 0x20) {
 			for (j = 0; j < 11; j++) {
 				if (dinfo->finfo[i].name[j] != s[j]) {
@@ -146,30 +129,53 @@ struct MYFILEINFO *myfinfo_search(char *name, struct MYDIRINFO *dinfo, int max)
 				}
 			}
 			//debug_print("file was found!\n");
-			return dinfo->finfo + i; /* ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
+			return dinfo->finfo + i; /* ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚Á‚½ */
 
-			/* finfoï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½Ìê‡ */
+			/* finfo‚ªƒfƒBƒŒƒNƒgƒŠ‚Ìê‡ */
 		}else if(dinfo->finfo[i].type == 0x10){
-			// ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ÍŠgï¿½ï¿½ï¿½qï¿½ï¿½ï¿½È‚ï¿½ï¿½Ì‚Åƒtï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½rï¿½ï¿½ï¿½ï¿½
+			// ƒfƒBƒŒƒNƒgƒŠ‚ÍŠg’£q‚ª‚È‚¢‚Ì‚Åƒtƒ@ƒCƒ‹–¼‚¾‚¯”äŠr‚·‚é
 			for (j = 0; j < 8; j++) {
 				if (dinfo->finfo[i].name[j] != s[j]) {
 					goto next;
 				}
 			}
 			//debug_print("directory was found!\n");
-			return dinfo->finfo + i; /* ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
+			return dinfo->finfo + i; /* ƒfƒBƒŒƒNƒgƒŠ‚ªŒ©‚Â‚©‚Á‚½ */
 		}
 		next:
 		i++;
 	}
 
 	debug_print("file/directory was not found in myfinfo_search()\n");
-	return 0; /* ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
+	return 0; /* Œ©‚Â‚©‚ç‚È‚©‚Á‚½ */
+}
+
+/**
+ * load file
+ */
+char *file_loadfile2(int clustno, int *psize, int *fat)
+{
+	int size = *psize, size2;
+	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
+	char *buf, *buf2;
+	buf = (char *) memman_alloc_4k(memman, size);
+	file_loadfile(clustno, size, buf, fat, (char *) (ADR_DISKIMG + 0x003e00));
+	if (size >= 17) {
+		size2 = tek_getsize(buf);
+		if (size2 > 0) {	/* tekˆ³k‚ª‚©‚©‚Á‚Ä‚¢‚½ */
+			buf2 = (char *) memman_alloc_4k(memman, size2);
+			tek_decomp(buf, buf2, size2);
+			memman_free_4k(memman, (int) buf, size);
+			buf = buf2;
+			*psize = size2;
+		}
+	}
+	return buf;
 }
 
 
 /**
- * ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Ç—ï¿½ï¿½Ìˆæ‚©ï¿½ï¿½Aï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½Ô‚ï¿½Tï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½Aï¿½ï¿½ï¿½ÌêŠï¿½ï¿½Ô‚ï¿½
+ * ƒtƒ@ƒCƒ‹î•ñŠÇ——Ìˆæ‚©‚çAg‚í‚ê‚Ä‚¢‚È‚¢ƒfƒBƒŒƒNƒgƒŠ‹óŠÔ‚ğ’T‚µA‰Šú‰»‚µ‚½‚Ì‚¿A‚»‚ÌêŠ‚ğ•Ô‚·
  */
 struct MYDIRINFO *get_newdinfo(){
 	char s[50];
@@ -184,7 +190,7 @@ struct MYDIRINFO *get_newdinfo(){
 	debug_print(s);
 	//*/
 
-	// ï¿½Lï¿½ï¿½ï¿½ï¿½dinfoï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// —LŒø‚Èdinfo‚ğŒŸõ/•\¦‚·‚é
 	for(i=0, temp_dinfo = dinfo; temp_dinfo->this_dir != 0x00000000 ; i++, temp_dinfo++){
 		dir_num++;
 		this_dinfo = temp_dinfo->this_dir;
@@ -204,7 +210,7 @@ struct MYDIRINFO *get_newdinfo(){
 	debug_print(s);
 	//*/
 
-	/* ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ */
+	/* V‚µ‚¢ƒfƒBƒŒƒNƒgƒŠ‚Ì‰Šú‰» */
 	new_dinfo = (dinfo + dir_num + 1);
 	sprintf(new_dinfo->name, "");
 	new_dinfo->parent_dir = 0;
@@ -213,12 +219,12 @@ struct MYDIRINFO *get_newdinfo(){
 	return new_dinfo;
 }
 
-/* ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ç—ï¿½ï¿½Ìˆæ‚©ï¿½ï¿½Rï¿½sï¿½[ï¿½ï¿½ï¿½ÄAï¿½Rï¿½sï¿½[ï¿½ï¿½Ì”Ô’nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * return struct MYFILEDATA: ï¿½Rï¿½sï¿½[ï¿½ï¿½Ì”Ô’nï¿½ÉŠiï¿½[ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^
- * return 0: ï¿½ï¿½ï¿½s
+/* ƒtƒ@ƒCƒ‹‚ğƒf[ƒ^ŠÇ——Ìˆæ‚©‚çƒRƒs[‚µ‚ÄAƒRƒs[æ‚Ì”Ô’n‚ğ‹³‚¦‚é
+ * return struct MYFILEDATA: ƒRƒs[æ‚Ì”Ô’n‚ÉŠi”[‚³‚ê‚Ä‚¢‚éƒtƒ@ƒCƒ‹ƒf[ƒ^
+ * return 0: ¸”s
  */
 struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
-	// ï¿½Æ‚è‚ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½gï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½É‘Î‚ï¿½ï¿½Ä‚Ì‚İï¿½ï¿½sï¿½ï¿½ï¿½é‚±ï¿½Æ‚É‚ï¿½ï¿½ï¿½B
+	// ‚Æ‚è‚ ‚¦‚¸ƒ‹[ƒgƒfƒBƒŒƒNƒgƒŠ‚É‚ ‚éƒtƒ@ƒCƒ‹‚É‘Î‚µ‚Ä‚Ì‚İÀs‚·‚é‚±‚Æ‚É‚·‚éB
 	struct MYFILEINFO *finfo = myfinfo_search(filename, dinfo, 224);
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 	unsigned int mem_addr;
@@ -227,12 +233,12 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 	int block_count, alloc_size;
 	char s[BODY_SIZE + 128];
 	if(finfo == 0 || (finfo->type & FTYPE_DIR) != 0){
-		/* ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ROOTï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½É‘ï¿½ï¿½İ‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡
-		 * ï¿½Ü‚ï¿½ï¿½ÍAï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ */
+		/* ŠY“–‚·‚éƒtƒ@ƒCƒ‹‚ªROOTƒfƒBƒŒƒNƒgƒŠ‚É‘¶İ‚µ‚È‚©‚Á‚½ê‡
+		 * ‚Ü‚½‚ÍAŠY“–‚·‚éƒtƒ@ƒCƒ‹‚ªƒfƒBƒŒƒNƒgƒŠ‚Å‚ ‚Á‚½ê‡ */
 		debug_print("In function myfopen(): file was not found.\n");
 		return 0;
 	}else{
-		/* openï¿½Ì‚Æ‚ï¿½ï¿½É‚ï¿½STAT_OPENEDï¿½ÍŠmï¿½Fï¿½ï¿½ï¿½È‚ï¿½ (ï¿½vï¿½ï¿½ï¿½ï¿½)*/
+		/* open‚Ì‚Æ‚«‚É‚ÍSTAT_OPENED‚ÍŠm”F‚µ‚È‚¢ (—vŒŸ“¢)*/
 		add_status_myfdata(finfo->fdata, STAT_OPENED);
 		sprintf(s, "fdata = 0x%08x\n[debug] head.this_fdata = 0x%08x\n[debug] head.this_dir = 0x%08x\n[debug] head.stat = 0x%02x\n",
 				finfo->fdata,
@@ -243,18 +249,18 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 		sprintf(s, "body = %s[EOF]\n", finfo->fdata->body);
 		debug_print(s);
 
-		// ï¿½mï¿½Û‚ï¿½ï¿½éƒï¿½ï¿½ï¿½ï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½ï¿½ï¿½vï¿½Z
-		block_count = get_blocknum_myfdata(finfo->fdata);	// ï¿½dï¿½lï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½æ“¾
-		alloc_size = block_count * BLOCK_SIZE;		// ï¿½Sï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½ï¿½
+		// Šm•Û‚·‚éƒƒ‚ƒŠ‚ÌƒTƒCƒY‚ğŒvZ
+		block_count = get_blocknum_myfdata(finfo->fdata);	// d—l‚µ‚Ä‚¢‚éƒuƒƒbƒN”‚ğæ“¾
+		alloc_size = block_count * BLOCK_SIZE;		// ‘SƒuƒƒbƒN”‚Ì•ª‚¾‚¯ƒƒ‚ƒŠ‚ğŠm•Û
 
 		/*** debug ***/
 		sprintf(s, "alloc_size = 0x%08x\n", alloc_size);
 		debug_print(s);
 		/*************/
 
-		mem_addr = memman_alloc(memman, alloc_size,0);
+		mem_addr = memman_alloc(memman, alloc_size);
 
-		/* ï¿½mï¿½Û‚ï¿½ï¿½ï¿½ï¿½Ìˆï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ */
+		/* Šm•Û‚µ‚½—Ìˆæ‚Ì‰Šú‰» */
 		temp_addr = (unsigned int *)mem_addr;
 		sprintf(s ,"INIT temp_addr = 0x%08x\n", temp_addr);
 		for(i = 0; i<alloc_size; i++){
@@ -269,15 +275,15 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 
 		struct MYFILEDATA *opened_fdata = (struct MYFILEDATA *) mem_addr;
 
-		/* ï¿½mï¿½Û‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô’nï¿½Ìoï¿½ï¿½ */
-		sprintf(s, "opened fdata addr = 0x%08x\n", opened_fdata);	// ï¿½Åï¿½ï¿½ï¿½mem_addrï¿½Æ“ï¿½ï¿½ï¿½ï¿½l
+		/* Šm•Û‚µ‚½ƒƒ‚ƒŠ”Ô’n‚Ìo—Í */
+		sprintf(s, "opened fdata addr = 0x%08x\n", opened_fdata);	// Å‰‚Ímem_addr‚Æ“¯‚¶’l
 		debug_print(s);
 
-		/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìˆï¿½ÌƒRï¿½sï¿½[ */	// read -> write ï¿½Åï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½H -> headï¿½Ìï¿½ñ‚ª•Û‘ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
+		/* ƒƒ‚ƒŠ—Ìˆæ‚ÌƒRƒs[ */	// read -> write ‚ÅÀ‘•‚Å‚«‚éH -> head‚Ìî•ñ‚ª•Û‘¶‚³‚ê‚È‚¢
 		myfcopy(opened_fdata, finfo->fdata);
-		add_status_myfdata(opened_fdata, STAT_BUF);	//ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½rï¿½bï¿½gï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½
+		add_status_myfdata(opened_fdata, STAT_BUF);	//ƒXƒe[ƒ^ƒXƒrƒbƒg‚ğ’Ç‰Á‚·‚é
 
-		///* debug: ï¿½Rï¿½sï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç—ï¿½ï¿½Ìˆï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÅFï¿½Xï¿½Èï¿½Æ‚ï¿½ï¿½sï¿½ï¿½)
+		///* debug: ƒRƒs[‚µ‚½ƒƒ‚ƒŠŠÇ——Ìˆæ(‚±‚±‚ÅFX‚Èì‹Æ‚ğs‚¤)
 		sprintf(s, "allocated fdata addr = 0x%08x\n", mem_addr);
 		debug_print(s);
 		//sprintf(s, "allocated fdata length = 0x%08x + 0FFF[byte]\n", alloc_size);
@@ -288,36 +294,36 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 	return 0;
 }
 
-/* ï¿½fï¿½[ï¿½^ï¿½Ç—ï¿½ï¿½Ìˆï¿½ÌŠYï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Astatus bitï¿½ï¿½openedï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+/* ƒf[ƒ^ŠÇ——Ìˆæ‚ÌŠY“–ƒtƒ@ƒCƒ‹‚ªƒI[ƒvƒ“‚³‚ê‚Ä‚¢‚½‚çAƒƒ‚ƒŠ‚ğ‰ğ•ú‚µAstatus bit‚Ìopened‚ğ‘‚«Š·‚¦‚éB
  * return 0: if success
  * return -1: if failed
  * */
 int myfclose(struct MYFILEDATA *opened_fdata){
-	// ï¿½fï¿½[ï¿½^ï¿½Ìˆï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìƒfï¿½[ï¿½^ï¿½ï¿½fdataï¿½ÉŠiï¿½[ï¿½ï¿½ï¿½ï¿½
+	// ƒf[ƒ^—Ìˆæ‚É‚ ‚éÀ•¨‚Ìƒf[ƒ^‚ğfdata‚ÉŠi”[‚·‚é
 	struct MYFILEDATA *fdata =(struct MYFILEDATA *)opened_fdata->head.this_fdata;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 
 	if((fdata->head.stat & STAT_OPENED) == 0){
-		/* ï¿½Iï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ìê‡ */
+		/* ƒI[ƒvƒ“‚³‚ê‚Ä‚¢‚È‚¢ƒtƒ@ƒCƒ‹‚Ìê‡ */
 		debug_print("In function myfclose(): this file data is already closed.\n");
-		return -1;	// closeï¿½ï¿½ï¿½s
+		return -1;	// close¸”s
 	}else{
-		/* ï¿½Iï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ìê‡ï¿½Aï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ÌƒXï¿½eï¿½[ï¿½^ï¿½Xï¿½Ïï¿½ï¿½ï¿½ÏXï¿½ï¿½ï¿½ï¿½ï¿½ï¿½A
-		 * ï¿½mï¿½Û‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+		/* ƒI[ƒvƒ“‚³‚ê‚Ä‚¢‚éƒtƒ@ƒCƒ‹‚Ìê‡AÀƒf[ƒ^‚ÌƒXƒe[ƒ^ƒX•Ï”‚ğ•ÏX‚µ‚½ŒãA
+		 * Šm•Û‚µ‚Ä‚¢‚½ƒƒ‚ƒŠ‚ğ‰ğ•ú‚·‚é */
 
-		/* ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½Ïï¿½ï¿½Ì•ÏX(open bitï¿½ï¿½Ü‚ï¿½) */
+		/* ƒXƒe[ƒ^ƒX•Ï”‚Ì•ÏX(open bit‚ğÜ‚é) */
 		fdata->head.stat &= (STAT_ALL - STAT_OPENED);
 
-		/* ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½oï¿½bï¿½tï¿½@ï¿½Ìˆï¿½Ìƒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+		/* g—p‚µ‚Ä‚¢‚½ƒoƒbƒtƒ@—Ìˆæ‚Ìƒƒ‚ƒŠ‰ğ•ú */
 		memman_free_fdata(memman, (unsigned int)opened_fdata);
 
-		return 0;	// closeï¿½ï¿½ï¿½ï¿½
+		return 0;	// close¬Œ÷
 	}
 
-	return -1;	// closeï¿½ï¿½ï¿½s
+	return -1;	// close¸”s
 }
 
-/* ï¿½fï¿½[ï¿½^ï¿½Ç—ï¿½ï¿½Ìˆï¿½ÌŠYï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½[ï¿½uï¿½Â”\ï¿½È‚ï¿½ÎAfdata->bodyï¿½Ì“ï¿½ï¿½eï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½ï¿½
+/* ƒf[ƒ^ŠÇ——Ìˆæ‚ÌŠY“–ƒtƒ@ƒCƒ‹‚ªƒZ[ƒu‰Â”\‚È‚ç‚ÎAfdata->body‚Ì“à—e‚ğ•Û‘¶‚·‚é
  * return 0: success
  * return -1: failed
  */
@@ -325,9 +331,9 @@ int myfsave(struct MYFILEDATA *opened_fdata){
 	struct MYFILEDATA *fdata;
 	struct MYDIRINFO *dinfo;
 	struct MYFILEINFO *finfo;
-	char s[1000];	// 1000ï¿½ï¿½ï¿½ï¿½ï¿½Èï¿½Ìƒfï¿½[ï¿½^ï¿½Ìê‡ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½ï¿½H
+	char s[1000];	// 1000•¶šˆÈã‚Ìƒf[ƒ^‚Ìê‡‚Ç‚¤‚·‚éH
 
-	/* ï¿½ï¿½ï¿½ï¿½ï¿½Ìæ“¾ */
+	/* Œ³î•ñ‚Ìæ“¾ */
 	fdata = opened_fdata->head.this_fdata;
 	dinfo = fdata->head.this_dir;
 	finfo = myfinfo_search(fdata->head.name, dinfo, MAX_FINFO_NUM);
@@ -340,23 +346,23 @@ int myfsave(struct MYFILEDATA *opened_fdata){
 
 
 	if((fdata->head.stat & STAT_OPENED) == 0){
-		/* ï¿½Iï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½É‘Î‚ï¿½ï¿½Ä•Û‘ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ê‡ */
+		/* ƒI[ƒvƒ“‚³‚ê‚Ä‚¢‚È‚¢ƒtƒ@ƒCƒ‹‚É‘Î‚µ‚Ä•Û‘¶‚µ‚æ‚¤‚Æ‚µ‚½ê‡ */
 		sprintf(s, "In function myfsave():Can't save because this file data is not opened.\n");
 		debug_print(s);
-		return -1;	// closeï¿½ï¿½ï¿½s
+		return -1;	// close¸”s
 	}else{
-		myfread(s, opened_fdata);	// ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
-		myfwrite(fdata, s);			// ï¿½Ç‚İï¿½ï¿½ñ‚¾ƒtï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		myfread(s, opened_fdata);	// ƒoƒbƒtƒ@‚©‚çƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğ“Ç‚İ‚Ş
+		myfwrite(fdata, s);			// “Ç‚İ‚ñ‚¾ƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğ‘‚«‚Ş
 		finfo->size = get_size_myfdata(fdata);
-		return 0;	// closeï¿½ï¿½ï¿½ï¿½
+		return 0;	// close¬Œ÷
 	}
 
-	return -1;	// closeï¿½ï¿½ï¿½s
+	return -1;	// close¸”s
 }
 
-/* ï¿½fï¿½[ï¿½^ï¿½Ç—ï¿½ï¿½Ìˆï¿½Ìgï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½Ô‚ï¿½Tï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½Aï¿½ï¿½ï¿½ÌêŠï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * return ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½MYFILEDATAï¿½Ì”Ô’nï¿½Aï¿½hï¿½ï¿½ï¿½X
- * [CAUTION!]ï¿½ï¿½ï¿½ÌŠÖï¿½ï¿½ï¿½ï¿½Å‚Íƒtï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½mï¿½Ìƒï¿½ï¿½ï¿½ï¿½Nï¿½Í“\ï¿½ï¿½È‚ï¿½
+/* ƒf[ƒ^ŠÇ——Ìˆæ‚Ìg‚í‚ê‚Ä‚¢‚È‚¢‹óŠÔ‚ğ’T‚µA‰Šú‰»‚µ‚½‚Ì‚¿A‚»‚ÌêŠ‚ğ‹³‚¦‚é
+ * return ”­Œ©‚µ‚½MYFILEDATA‚Ì”Ô’nƒAƒhƒŒƒX
+ * [CAUTION!]‚±‚ÌŠÖ”“à‚Å‚Íƒtƒ@ƒCƒ‹ƒf[ƒ^“¯m‚ÌƒŠƒ“ƒN‚Í“\‚ç‚È‚¢
  * Ex. fdata->head.next_fdata = new_fdata;
  */
 struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
@@ -377,15 +383,15 @@ struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
 	//*/
 
 	if(fdata->head.stat == STAT_ALL){
-		/* ï¿½Vï¿½Kï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ì¬(mkfileï¿½Rï¿½}ï¿½ï¿½ï¿½h)ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ */
+		/* V‹Kƒtƒ@ƒCƒ‹ì¬(mkfileƒRƒ}ƒ“ƒh)‚Ìˆ— */
 		//debug_print("get_newfdata() was called by mkfile command.\n");
 		goto MKFILE;
 
 	}else if(ROOT_DATA_ADDR <= (unsigned int)fdata && (unsigned int)fdata < LAST_DATA_ADDR ){
 		MKFILE:
 
-		/* OPENED bitï¿½ï¿½ï¿½Â‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ = ï¿½fï¿½[ï¿½^ï¿½Ç—ï¿½ï¿½Ìˆï¿½Ì‚ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Vï¿½Kï¿½fï¿½[ï¿½^ï¿½Ìæ“¾ */
-		/* ï¿½fï¿½[ï¿½^ï¿½Ç—ï¿½ï¿½Ìˆï¿½ï¿½ï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½É‘Î‚ï¿½ï¿½ÄAï¿½Ä‚Ñoï¿½ï¿½ï¿½ê‚½ï¿½ê‡ */
+		/* OPENED bit‚ª•Â‚¶‚Ä‚¢‚é = ƒf[ƒ^ŠÇ——Ìˆæ‚Ì‚¯‚éƒtƒ@ƒCƒ‹V‹Kƒf[ƒ^‚Ìæ“¾ */
+		/* ƒf[ƒ^ŠÇ——Ìˆæ“à‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^‚É‘Î‚µ‚ÄAŒÄ‚Ño‚³‚ê‚½ê‡ */
 		/*
 		debug_print("Getting new file data in data manage domain.\n");
 		sprintf(s, "root_fdata = 0x%08x\n", root_fdata);
@@ -394,36 +400,36 @@ struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
 
 		temp_fdata = root_fdata;
 		while((temp_fdata->head.stat & STAT_VALID) != 0){
-			/* ï¿½fï¿½[ï¿½^ï¿½Ç—ï¿½ï¿½Ìˆï¿½ï¿½ï¿½ï¿½`ï¿½Iï¿½É’Tï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ó‚¢‚Ä‚ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ìˆï¿½ï¿½Tï¿½ï¿½ */
-			/* temp_fdataï¿½ï¿½valid bitï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ */
+			/* ƒf[ƒ^ŠÇ——Ìˆæ‚ğüŒ`“I‚É’Tõ‚µA‹ó‚¢‚Ä‚¢‚éƒf[ƒ^—Ìˆæ‚ğ’T‚· */
+			/* temp_fdata‚Ìvalid bit‚ª—§‚Á‚Ä‚¢‚éŠÔ */
 			//sprintf(s, "fdata[%d] addr = 0x%08x\n", i, temp_fdata);
 			//debug_print(s);
-			temp_fdata += 1; // ï¿½×‚Ì”Ô’nï¿½ÉˆÚ“ï¿½(ï¿½ï¿½ï¿½`ï¿½Tï¿½ï¿½ï¿½È‚Ì‚ÅAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Í‚ß‚ï¿½ï¿½á‚­ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½])
+			temp_fdata += 1; // —×‚Ì”Ô’n‚ÉˆÚ“®(üŒ`’Tõ‚È‚Ì‚ÅAŒŸõ‘¬“x‚Í‚ß‚¿‚á‚­‚¿‚á’x‚¢[—vŒŸ“¢])
 			i++;
 		}
-		/* valid bitï¿½ï¿½0ï¿½ï¿½file dataï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
+		/* valid bit‚ª0‚Ìfile data‚ªŒ©‚Â‚©‚Á‚½ */
 		new_fdata = temp_fdata;
 		//sprintf(s, "found invalid fdata[%d] addr = 0x%08x\n", i, new_fdata);
 		//debug_print(s);
 
-		/* ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ */
+		/* ƒtƒ@ƒCƒ‹ƒf[ƒ^‚Ì‰Šú‰» */
 		for(i=0; i< BODY_SIZE; i++)new_fdata->body[i] = '\0';
-		new_fdata->head.stat = STAT_VALID;	// ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½ï¿½validï¿½Ì‚İ—ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½
-		new_fdata->head.this_fdata = new_fdata;	// ï¿½ï¿½ï¿½ï¿½ï¿½Ì–{ï¿½ï¿½ï¿½Ì”Ô’nï¿½ï¿½ï¿½Lï¿½ï¿½(openï¿½ï¿½ï¿½É•Kï¿½v)
+		new_fdata->head.stat = STAT_VALID;	// ‰ŠúƒXƒe[ƒ^ƒX‚Ívalid‚Ì‚İ—§‚Á‚Ä‚¢‚éó‘Ô
+		new_fdata->head.this_fdata = new_fdata;	// ©•ª‚Ì–{—ˆ‚Ì”Ô’n‚ğ‹L‰¯(open‚É•K—v)
 		new_fdata->head.this_dir = fdata->head.this_dir;
-		new_fdata->head.next_fdata = 0;		// ï¿½Ô•ï¿½ï¿½Æ‚ï¿½ï¿½Ägï¿½ï¿½
+		new_fdata->head.next_fdata = 0;		// ”Ô•º‚Æ‚µ‚Äg‚¤
 	}else{
 
-		/* OPENED bitï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ = ï¿½oï¿½bï¿½tï¿½@ï¿½Ìˆï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½Vï¿½Kï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½æ“¾ */
-		/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç—ï¿½ï¿½Ìˆï¿½É‚ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ìê‡ï¿½A
-		 * ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìˆï¿½ï¿½ï¿½mï¿½Û‚ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ÉVï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½ */
+		/* OPENED bit‚ª—§‚Á‚Ä‚¢‚é = ƒoƒbƒtƒ@—Ìˆæ‚É‚¨‚¯‚éV‹Kƒtƒ@ƒCƒ‹ƒf[ƒ^æ“¾ */
+		/* ƒƒ‚ƒŠŠÇ——Ìˆæ‚É‚ ‚éƒtƒ@ƒCƒ‹‚Ìê‡A
+		 * V‚µ‚­ƒƒ‚ƒŠ—Ìˆæ‚ğŠm•Û‚µA‚»‚±‚ÉV‚µ‚¢ƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğì¬‚·‚é */
 		//debug_print("Getting new file data in buffer domain.\n");
 
-		// ï¿½mï¿½Û‚ï¿½ï¿½éƒï¿½ï¿½ï¿½ï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½ï¿½ï¿½vï¿½Zï¿½ÆŠmï¿½ï¿½
-		alloc_size = BLOCK_SIZE;	// ï¿½mï¿½Û‚ï¿½ï¿½ï¿½Tï¿½Cï¿½Yï¿½ï¿½ï¿½vï¿½Z
-		mem_addr = memman_alloc(memman, alloc_size,0);
+		// Šm•Û‚·‚éƒƒ‚ƒŠ‚ÌƒTƒCƒY‚ğŒvZ‚ÆŠm•Û
+		alloc_size = BLOCK_SIZE;	// Šm•Û‚·‚éƒTƒCƒY‚ğŒvZ
+		mem_addr = memman_alloc(memman, alloc_size);
 
-		/* ï¿½mï¿½Û‚ï¿½ï¿½ï¿½ï¿½Ìˆï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ */
+		/* Šm•Û‚µ‚½—Ìˆæ‚Ì‰Šú‰» */
 		temp_addr = (unsigned int *)mem_addr;
 		for(i = 0; i<alloc_size; i++){
 			if(*temp_addr != 0){
@@ -437,23 +443,23 @@ struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
 
 		new_fdata = (struct MYFILEDATA *) mem_addr;
 
-		/* debug: ï¿½Rï¿½sï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç—ï¿½ï¿½Ìˆï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÅFï¿½Xï¿½Èï¿½Æ‚ï¿½ï¿½sï¿½ï¿½) */
-		/* ï¿½mï¿½Û‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô’nï¿½Ìoï¿½ï¿½ */
-		//sprintf(s, "new fdata addr = 0x%08x\n", new_fdata);	// ï¿½Åï¿½ï¿½ï¿½mem_addrï¿½Æ“ï¿½ï¿½ï¿½ï¿½l
+		/* debug: ƒRƒs[‚µ‚½ƒƒ‚ƒŠŠÇ——Ìˆæ(‚±‚±‚ÅFX‚Èì‹Æ‚ğs‚¤) */
+		/* Šm•Û‚µ‚½ƒƒ‚ƒŠ”Ô’n‚Ìo—Í */
+		//sprintf(s, "new fdata addr = 0x%08x\n", new_fdata);	// Å‰‚Ímem_addr‚Æ“¯‚¶’l
 		//debug_print(s);
 		//*/
 
-		/* ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ */
+		/* ƒtƒ@ƒCƒ‹ƒf[ƒ^‚Ì‰Šú‰» */
 		for(i=0; i< BODY_SIZE; i++)new_fdata->body[i] = '\0';
-		new_fdata->head.stat = STAT_VALID | STAT_OPENED | STAT_BUF; // ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½ï¿½valid, opened, bufï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½
-		new_fdata->head.this_fdata = new_fdata;	// ï¿½ï¿½ï¿½ï¿½ï¿½Ì–{ï¿½ï¿½ï¿½Ì”Ô’nï¿½ï¿½ï¿½Lï¿½ï¿½(openï¿½ï¿½ï¿½É•Kï¿½v)
+		new_fdata->head.stat = STAT_VALID | STAT_OPENED | STAT_BUF; // ‰ŠúƒXƒe[ƒ^ƒX‚Ívalid, opened, buf‚ª—§‚Á‚Ä‚¢‚éó‘Ô
+		new_fdata->head.this_fdata = new_fdata;	// ©•ª‚Ì–{—ˆ‚Ì”Ô’n‚ğ‹L‰¯(open‚É•K—v)
 		new_fdata->head.this_dir = fdata->head.this_dir;
-		new_fdata->head.next_fdata = 0;		// ï¿½Ô•ï¿½ï¿½Æ‚ï¿½ï¿½Ägï¿½ï¿½
+		new_fdata->head.next_fdata = 0;		// ”Ô•º‚Æ‚µ‚Äg‚¤
 	}
 
 	//sprintf(s, "/********************************/\n");
 	//debug_print(s);
-	return new_fdata;	/* ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½Ô‚ï¿½ */
+	return new_fdata;	/* æ“¾‚µ‚½ƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğ•Ô‚· */
 }
 
 /**
@@ -473,7 +479,7 @@ int myfwrite(struct MYFILEDATA *fdata, char *str){
 	struct MYFILEDATA *new_fdata;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 
-	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+	/* ‰Šú‰»ˆ— */
 	i = j = 0;
 	block_num = 1;
 	prev_block_num = get_blocknum_myfdata(fdata);
@@ -486,48 +492,48 @@ int myfwrite(struct MYFILEDATA *fdata, char *str){
 	//*/
 
 	while(str[i] != '\0'){
-		fdata->body[j] = str[i];	// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Éˆê•¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		fdata->body[j] = str[i];	// ƒtƒ@ƒCƒ‹ƒf[ƒ^‚Éˆê•¶š‘‚«‚Ş
 		i++;
 		j++;
 
 		if(i == (BODY_SIZE-1) * block_num){	// Ex. (108 * 1)-1 = 107
-			/* ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Tï¿½Cï¿½Yï¿½Ìï¿½ï¿½ï¿½É“ï¿½ï¿½Bï¿½ï¿½ï¿½ï¿½ï¿½ê‡ */
-			fdata->body[j] = '\0';	// fdata->body[107]ï¿½ÌÅŒï¿½Éƒkï¿½ï¿½ï¿½ï¿½ï¿½ï¿½('\0')ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½ï¿½B
+			/* ƒuƒƒbƒNƒTƒCƒY‚ÌãŒÀ‚É“’B‚µ‚½ê‡ */
+			fdata->body[j] = '\0';	// fdata->body[107]‚ÌÅŒã‚Éƒkƒ‹•¶š('\0')‚ğ“ü—Í‚·‚éB
 			debug_fdata = fdata;
 			if(fdata->head.next_fdata == 0){
-				/* ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Æ‚ï¿½ï¿½ÍVï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+				/* ƒuƒƒbƒN”‚ª‘«‚è‚È‚¢‚Æ‚«‚ÍV‚µ‚¢ƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğì‚èAŠg’£‚·‚é */
 				new_fdata = get_newfdata(fdata);
-				fdata->head.next_fdata = new_fdata;	// ï¿½ï¿½ï¿½Ìƒfï¿½[ï¿½^ï¿½Ì”Ô’nï¿½ï¿½ï¿½iï¿½[
-				fdata->head.stat |= STAT_CONT;		// ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½rï¿½bï¿½gï¿½ï¿½CONTï¿½ğ—§‚Ä‚ï¿½
+				fdata->head.next_fdata = new_fdata;	// Ÿ‚Ìƒf[ƒ^‚Ì”Ô’n‚ğŠi”[
+				fdata->head.stat |= STAT_CONT;		// ƒXƒe[ƒ^ƒXƒrƒbƒg‚ÌCONT‚ğ—§‚Ä‚é
 			}
-			fdata = fdata->head.next_fdata;	// ï¿½ï¿½ï¿½Ìƒfï¿½[ï¿½^ï¿½Éiï¿½ï¿½
+			fdata = fdata->head.next_fdata;	// Ÿ‚Ìƒf[ƒ^‚Éi‚Ş
 			block_num++;
 			sprintf(s, "block moved: 0x%08x -> 0x%08x\n", debug_fdata, fdata);
 			debug_print(s);
 			j=0;
 		}
 	}
-	fdata->body[j] = str[i];	// fdata->bodyï¿½ÌÅŒï¿½Éƒkï¿½ï¿½ï¿½ï¿½ï¿½ï¿½('\0')ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½ï¿½B
+	fdata->body[j] = str[i];	// fdata->body‚ÌÅŒã‚Éƒkƒ‹•¶š('\0')‚ğ“ü—Í‚·‚éB
 
 	if(block_num < prev_block_num){
-		/* ï¿½ï¿½ï¿½Ìƒuï¿½ï¿½ï¿½bï¿½Nï¿½Tï¿½Cï¿½Yï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ‚¾ƒuï¿½ï¿½ï¿½bï¿½Nï¿½Tï¿½Cï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½A
-		 * ï¿½gï¿½ï¿½ï¿½È‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ or ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B */
+		/* Œ³‚ÌƒuƒƒbƒNƒTƒCƒY‚æ‚èA‘‚«‚±‚ñ‚¾ƒuƒƒbƒNƒTƒCƒY‚ª¬‚³‚¢ê‡A
+		 * g‚í‚ê‚È‚­‚È‚Á‚½ƒuƒƒbƒN‚ğ‰Šú‰» or ‰ğ•ú‚·‚éB */
 		debug_print("***IN BLOCK DELETE FUNCTION***\n");
 
-		temp_fdata = fdata->head.next_fdata;	//ï¿½ï¿½ï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½Û‘ï¿½ï¿½B
-		/* ï¿½ï¿½ï¿½[ï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½Cï¿½ï¿½ */
-		fdata->head.stat &= (STAT_ALL - STAT_CONT);	//STAT_CONTï¿½rï¿½bï¿½gï¿½ï¿½Ü‚ï¿½
-		fdata->head.next_fdata = 0;	//ï¿½ï¿½ï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ô’nï¿½ï¿½ï¿½ã‘ï¿½ï¿½
+		temp_fdata = fdata->head.next_fdata;	//Ÿ‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğ•Û‘¶B
+		/* ––’[‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğC³ */
+		fdata->head.stat &= (STAT_ALL - STAT_CONT);	//STAT_CONTƒrƒbƒg‚ğÜ‚é
+		fdata->head.next_fdata = 0;	//Ÿ‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^”Ô’n‚ğã‘‚«
 
-		if((fdata->head.stat & STAT_BUF) != 0){	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í—vï¿½ï¿½ï¿½ï¿½ï¿½I->ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½Ïï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î‚ï¿½ï¿½ï¿½ï¿½ÆŠÈ’Pï¿½É‚Å‚ï¿½ï¿½ï¿½Í‚ï¿½
-			/* ï¿½oï¿½bï¿½tï¿½@ï¿½Ìˆï¿½É‚ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ìê‡ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ìƒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+		if((fdata->head.stat & STAT_BUF) != 0){	//ğŒ®‚Í—vŒŸ“¢I->ƒXƒe[ƒ^ƒX•Ï”‚ğì‚ê‚Î‚à‚Á‚ÆŠÈ’P‚É‚Å‚«‚é‚Í‚¸
+			/* ƒoƒbƒtƒ@—Ìˆæ‚É‚ ‚éƒtƒ@ƒCƒ‹ƒf[ƒ^‚Ìê‡A‘±‚­ƒtƒ@ƒCƒ‹ƒf[ƒ^‚Ìƒƒ‚ƒŠ‚ğ‰ğ•ú */
 			debug_print("[Free fdata mode]\n");
 			memman_free_fdata(memman, (unsigned int)temp_fdata);
 		}else{
-			/* ï¿½fï¿½[ï¿½^ï¿½Ìˆï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ìê‡ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+			/* ƒf[ƒ^—Ìˆæ‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^‚Ìê‡A‘±‚­ƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğ‰Šú‰» */
 			debug_print("[Init fdata mode]\n");
 			while(temp_fdata->head.next_fdata != 0){
-				temp_fdata->head.stat = 0;	// ï¿½Sï¿½Ä‚ÌƒXï¿½eï¿½[ï¿½^ï¿½Xï¿½rï¿½bï¿½gï¿½ï¿½Ü‚ï¿½
+				temp_fdata->head.stat = 0;	// ‘S‚Ä‚ÌƒXƒe[ƒ^ƒXƒrƒbƒg‚ğÜ‚é
 				temp_fdata = temp_fdata->head.next_fdata;
 			}
 		}
@@ -553,9 +559,9 @@ int myfread(char *str, struct MYFILEDATA *fdata){
 	int i=0;
 	sprintf(s, "myfread() has been called.\n");
 	debug_print(s);
-	sprintf(str, "");	// strï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+	sprintf(str, "");	// str‚Ì‰Šú‰»
 
-	do{ /* ï¿½ï¿½ï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½ï¿½ï¿½,ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½Ç‚İï¿½ï¿½İ‘ï¿½ï¿½ï¿½ï¿½ï¿½ */
+	do{ /* Ÿ‚Ìƒtƒ@ƒCƒ‹ƒf[ƒ^‚ª‘¶İ‚·‚éŠÔ,ƒtƒ@ƒCƒ‹ƒf[ƒ^‚ğ“Ç‚İ‚İ‘±‚¯‚é */
 		prev_fdata = fdata;
 		sprintf(s, "fdata->body[%d] = %s[EOF]\n", i, fdata->body);
 		debug_print(s);
@@ -591,14 +597,14 @@ int myfcopy(struct MYFILEDATA *fdata1, struct MYFILEDATA *fdata2){
 		if(fdata2->head.next_fdata == 0){
 			break;
 		}else{
-			/* ï¿½oï¿½bï¿½tï¿½@ï¿½Å‚ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½È‚ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½Oï¿½ï¿½(ï¿½vï¿½ï¿½ï¿½ï¿½) */
+			/* ƒoƒbƒtƒ@‚Å‚µ‚©g‚í‚ê‚È‚¢‚Æ‚¢‚¤‘O’ñ(—vŒŸ“¢) */
 			fdata2 = fdata2->head.next_fdata;
 
 			fdata1->head.next_fdata = fdata1 + 1;
 			fdata1++;
 
 			//if(fdata1->head.next_fdata == 0){
-			//	/* ï¿½Rï¿½sï¿½[ï¿½ï¿½ï¿½ï¿½é‘¤ï¿½Ìƒuï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½}ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ */
+			//	/* ƒRƒs[‚³‚ê‚é‘¤‚ÌƒuƒƒbƒN”‚ªŒÀŠE‚ğŒ}‚¦‚½ê‡ */
 			//	fdata1->head.next_fdata = get_newfdata(fdata1);
 			//}
 		}
@@ -620,19 +626,19 @@ unsigned int get_size_myfdata(struct MYFILEDATA *fdata){
 	unsigned int filesize;
 	int rest_size = 0;
 
-	/* ï¿½Aï¿½È‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Ìï¿½ï¿½ğ”‚ï¿½ï¿½ï¿½ */
+	/* ˜A‚È‚Á‚Ä‚¢‚éƒuƒƒbƒN‚Ì”‚ğ”‚¦‚é */
 	while((fdata->head.stat & STAT_CONT) != 0){
-		/* ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½É‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ */
+		/* ƒtƒ@ƒCƒ‹ƒf[ƒ^‚É‘±‚«‚ª‚ ‚éê‡ */
 		if(fdata->body[BODY_SIZE-2] != '\0'){
-			/* ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ÌÅŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½Ô–Ú‚É•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½(1ï¿½Ô–Ú‚Íƒkï¿½ï¿½ï¿½ï¿½ï¿½ï¿½), ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Í–ï¿½ï¿½tï¿½Æ”ï¿½ï¿½f */
+			/* ƒuƒƒbƒN‚ÌÅŒã”ö‚©‚ç2”Ô–Ú‚É•¶š‚ª‚ ‚é‚Ì‚Å(1”Ô–Ú‚Íƒkƒ‹•¶š), ƒuƒƒbƒN‚Í–”t‚Æ”»’f */
 			fdata = fdata->head.next_fdata;
 			block_count++;
 		}else{
-			/* ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ÌÅŒï¿½ï¿½ï¿½É•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Ì‚ï¿½, ï¿½ï¿½ï¿½Ìƒuï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½EOFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ”ï¿½ï¿½f */
-			break; // ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½ï¿½ï¿½È‚ï¿½(ï¿½oï¿½bï¿½tï¿½@ï¿½vï¿½Zï¿½p)
+			/* ƒuƒƒbƒN‚ÌÅŒã”ö‚É•¶š‚ª‚È‚¢‚Ì‚Å, ‚±‚ÌƒuƒƒbƒN‚ÉEOF‚ª‚ ‚é‚Æ”»’f */
+			break; // ‹óƒtƒ@ƒCƒ‹‚¾‚Á‚½‚çƒJƒEƒ“ƒg‚µ‚È‚¢(ƒoƒbƒtƒ@ŒvZ—p)
 		}
 	}
-	rest_size = get_size_str(fdata->body); // ï¿½ÅŒï¿½Ìƒuï¿½ï¿½ï¿½bï¿½Nï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½Tï¿½Cï¿½Yï¿½ï¿½ï¿½æ“¾
+	rest_size = get_size_str(fdata->body); // ÅŒã‚ÌƒuƒƒbƒN‚Ì•¶š—ñƒTƒCƒY‚ğæ“¾
 
 	sprintf(s, "fdata->body = %s\n", fdata->body);
 	debug_print(s);
@@ -640,7 +646,7 @@ unsigned int get_size_myfdata(struct MYFILEDATA *fdata){
 	debug_print(s);
 
 	filesize = (BODY_SIZE * block_count) + rest_size;
-	return filesize;	// (ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Tï¿½Cï¿½Yï¿½~ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½) + ï¿½]ï¿½ï¿½ [byte]
+	return filesize;	// (ƒuƒƒbƒNƒTƒCƒY~ƒuƒƒbƒN”) + —]‚è [byte]
 }
 
 /**
@@ -652,7 +658,7 @@ unsigned int get_size_str(char *str){
 	int p;
 	p=0;
 	while(str[p] != '\0') p++;
-	return p;	// ï¿½Pï¿½Ê‚Íƒoï¿½Cï¿½g
+	return p;	// ’PˆÊ‚ÍƒoƒCƒg
 }
 
 /**
@@ -664,17 +670,17 @@ unsigned int get_blocknum_myfdata(struct MYFILEDATA *fdata){
 	unsigned int block_num, data_size;
 	char s[50];	// for debugging
 	data_size = get_size_myfdata(fdata);
-	block_num = (data_size / BODY_SIZE) + 1;	// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Ìï¿½ï¿½ï¿½ï¿½vï¿½Z
+	block_num = (data_size / BODY_SIZE) + 1;	// ƒuƒƒbƒN‚Ì”‚ğŒvZ
 	sprintf(s, "used block number = %d\n", block_num);
 	debug_print(s);
 	return block_num;
 }
 
 /**
- * ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ÉƒXï¿½eï¿½[ï¿½^ï¿½Xï¿½rï¿½bï¿½gï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½B
- * ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½rï¿½bï¿½gï¿½ï¿½ï¿½ï¿½ï¿½É—ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Íï¿½ï¿½sï¿½ï¿½ï¿½ï¿½B
- * @param fdata: ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½fï¿½[ï¿½^
- * @param stat: ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½rï¿½bï¿½g
+ * ƒtƒ@ƒCƒ‹ƒf[ƒ^‚ÉƒXƒe[ƒ^ƒXƒrƒbƒg‚ğ’Ç‰Á‚·‚éB
+ * ’Ç‰Á‚·‚éƒXƒe[ƒ^ƒXƒrƒbƒg‚ªŠù‚É—§‚Á‚Ä‚¢‚½ê‡‚Í¸”s‚·‚éB
+ * @param fdata: ’Ç‰Á‚³‚ê‚éƒtƒ@ƒCƒ‹ƒf[ƒ^
+ * @param stat: ’Ç‰Á‚µ‚½‚¢ƒXƒe[ƒ^ƒXƒrƒbƒg
  * return 1 if it succeeded.
  * return 0 if it failed.
  */
@@ -686,7 +692,7 @@ unsigned int add_status_myfdata(struct MYFILEDATA *fdata, unsigned char stat){
 	do{
 		prev_temp_fdata = temp_fdata;
 		if((temp_fdata->head.stat & stat) == stat){
-			/* ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½rï¿½bï¿½gï¿½ï¿½ï¿½ï¿½ï¿½É—ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ê‡, ï¿½ï¿½ï¿½s*/
+			/* ’Ç‰Á‚·‚éƒXƒe[ƒ^ƒXƒrƒbƒg‚ªŠù‚É—§‚Á‚Ä‚¢‚½ê‡, ¸”s*/
 			debug_print("***adding status bit is already valid.***\n");
 			return 0;
 		}

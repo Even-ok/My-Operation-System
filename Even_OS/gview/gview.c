@@ -1,6 +1,6 @@
 #include "apilib.h"
 
-struct DLL_STRPICENV {
+struct DLL_STRPICENV {	/* 64KB */
 	int work[64 * 1024 / 4];
 };
 
@@ -26,15 +26,17 @@ void HariMain(void)
 	char s[32], *p;
 	int win, i, j, fsize, xsize, info[8];
 	struct RGB picbuf[1024 * 768], *q;
+
+	/* 僐儅儞僪儔僀儞夝愅 */
 	api_cmdline(s, 30);
-	for (p = s; *p > ' '; p++) { }
-	for (; *p == ' '; p++) { }
+	for (p = s; *p > ' '; p++) { }	/* 僗儁乕僗偑棃傞傑偱撉傒旘偽偡 */
+	for (; *p == ' '; p++) { }	/* 僗儁乕僗傪撉傒旘偽偡 */
 
 	/* 僼傽僀儖撉傒崬傒 */
-	i = api_fopen(p); if (i == 0) { error("\n 没找到文件！！\n file not found.\n\n"); }
+	i = api_fopen(p); if (i == 0) { error("file not found.\n"); }
 	fsize = api_fsize(i, 0);
 	if (fsize > 512 * 1024) {
-		error("\n 文件太大了！！\n file too large.\n");
+		error("file too large.\n");
 	}
 	api_fread(filebuf, fsize, i);
 	api_fclose(i);
@@ -44,7 +46,7 @@ void HariMain(void)
 		/* BMP偱偼側偐偭偨 */
 		if (info_JPEG(&env, info, fsize, filebuf) == 0) {
 			/* JPEG偱傕側偐偭偨 */
-			api_putstr0("\n 文件类型未知！！\n file type unknown.\n\n");
+			api_putstr0("file type unknown.\n");
 			api_end();
 		}
 	}
@@ -57,19 +59,27 @@ void HariMain(void)
 	if (info[2] > 1024 || info[3] > 768) {
 		error("picture too large.\n");
 	}
+
+	/* 僂傿儞僪僂偺弨旛 */
 	xsize = info[2] + 16;
 	if (xsize < 136) {
 		xsize = 136;
 	}
-	win = api_openwin(winbuf, xsize, info[3] + 37, -1, "图片查看器");
+	win = api_openwin(winbuf, xsize, info[3] + 37, -1, "gview");
+
+	/* 僼傽僀儖撪梕傪夋憸僨乕僞偵曄姺 */
 	if (info[0] == 1) {
 		i = decode0_BMP (&env, fsize, filebuf, 4, (char *) picbuf, 0);
 	} else {
 		i = decode0_JPEG(&env, fsize, filebuf, 4, (char *) picbuf, 0);
 	}
+	/* b_type = 4 偼丄 struct RGB 宍幃傪堄枴偡傞 */
+	/* skip偼0偵偟偰偍偗偽傛偄 */
 	if (i != 0) {
 		error("decode error.\n");
 	}
+
+	/* 昞帵 */
 	for (i = 0; i < info[3]; i++) {
 		p = winbuf + (i + 29) * xsize + (xsize - info[2]) / 2;
 		q = picbuf + i * info[2];
@@ -78,6 +88,8 @@ void HariMain(void)
 		}
 	}
 	api_refreshwin(win, (xsize - info[2]) / 2, 29, (xsize - info[2]) / 2 + info[2], 29 + info[3]);
+
+	/* 廔椆懸偪 */
 	for (;;) {
 		i = api_getkey(1);
 		if (i == 'Q' || i == 'q') {
@@ -90,13 +102,13 @@ unsigned char rgb2pal(int r, int g, int b, int x, int y)
 {
 	static int table[4] = { 3, 1, 0, 2 };
 	int i;
-	x &= 1;
+	x &= 1; /* 嬼悢偐婏悢偐 */
 	y &= 1;
-	i = table[x + y * 2];
-	r = (r * 21) / 256;
+	i = table[x + y * 2];	/* 拞娫怓傪嶌傞偨傔偺掕悢 */
+	r = (r * 21) / 256;	/* 偙傟偱 0乣20 偵側傞 */
 	g = (g * 21) / 256;
 	b = (b * 21) / 256;
-	r = (r + i) / 4;
+	r = (r + i) / 4;	/* 偙傟偱 0乣5 偵側傞 */
 	g = (g + i) / 4;
 	b = (b + i) / 4;
 	return 16 + r + g * 6 + b * 36;

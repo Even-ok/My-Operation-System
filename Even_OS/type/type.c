@@ -6,18 +6,20 @@ void HariMain(void)
 	char c, cmdline[30], *p;
 
 	api_cmdline(cmdline, 30);
-	for (p = cmdline; *p > ' '; p++) { }
-	for (; *p == ' '; p++) { }
+	for (p = cmdline; *p > ' '; p++) { }	/* ƒXƒy[ƒX‚ª—ˆ‚é‚Ü‚Å“Ç‚İ”ò‚Î‚· */
+	for (; *p == ' '; p++) { }	/* ƒXƒy[ƒX‚ğ“Ç‚İ”ò‚Î‚· */
 	fh = api_fopen(p);
 	if (fh != 0) {
 		for (;;) {
+			/* ƒtƒ@ƒCƒ‹‚ğ“Ç‚ñ‚Å‚¢‚«, I—¹‹L†(0)‚ªoŒ»‚µ‚½‚çI—¹ */
 			if (api_fread(&c, 1, fh) == 0) {
 				break;
 			}
+
 			api_putchar(c);
 		}
 	} else {
-		api_putstr0("\n Î´ÕÒµ½ÎÄ¼ş\n File not found.\n");
+		api_putstr0("File not found.\n");
 	}
 	api_end();
 }

@@ -11,10 +11,6 @@ void HariMain(void)
 		0xc6, 0xfc, 0xcb, 0xdc, 0xb8, 0xec, 0x45, 0x55, 0x43, 0xa5, 0xe2, 0xa1,
 		0xbc, 0xa5, 0xc9, 0x0a, 0x00
 	};
-	static char s3[20] = {
-		0xce, 0xd2, 0x20, 0xca, 0xc7, 0xa1, 0xa2, 0xa1, 0xa3, 0x0a, 0x00
-	};
-	int i;char j;
 	if (langmode == 0) {
 		api_putstr0("English ASCII mode\n");
 	}
@@ -23,20 +19,6 @@ void HariMain(void)
 	}
 	if (langmode == 2) {
 		api_putstr0(s2);
-	}
-	if (langmode == 3) {
-		api_putstr0("Chinese 中文！   我   !\n");
-		api_putstr0(" 你好 欢迎\n");
-		api_putstr0("彭泽凯000000符合");
-		api_putstr0(s3);
-		for(i=0xa1;i<0xcc;i++)
-		{
-			s3[0]=0xa1;
-			j=i;
-			s3[1]=j;
-			s3[2]=0x00;
-			api_putstr0(s3);
-		}
 	}
 	api_end();
 }

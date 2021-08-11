@@ -1,11 +1,3 @@
-/* ---------------------------------
-
-	HELO OS 系统专用源程序
-	tek文件压缩操作
-
------------------------------------ */
-/* copyright(C) 2019 PZK . */
-
 #include "bootpack.h"
 #include <setjmp.h>
 #include <string.h>

@@ -1,12 +1,12 @@
      1 00000000                                 ; naskfunc
      2 00000000                                 ; TAB=4
      3 00000000                                 
-     4 00000000                                 [FORMAT "WCOFF"]				; ÉIÉuÉWÉFÉNÉgÉtÉ@ÉCÉãÇçÏÇÈÉÇÅ[Éh	
-     5 00000000                                 [INSTRSET "i486p"]				; 486ÇÃñΩóﬂÇ‹Ç≈égÇ¢ÇΩÇ¢Ç∆Ç¢Ç§ãLèq
-     6 00000000                                 [BITS 32]						; 32ÉrÉbÉgÉÇÅ[ÉhópÇÃã@äBåÍÇçÏÇÁÇπÇÈ
-     7 00000000                                 [FILE "naskfunc.nas"]			; É\Å[ÉXÉtÉ@ÉCÉãñºèÓïÒ
+     4 00000000                                 [FORMAT "WCOFF"]				; ÔøΩIÔøΩuÔøΩWÔøΩFÔøΩNÔøΩgÔøΩtÔøΩ@ÔøΩCÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÈÉÇÔøΩ[ÔøΩh	
+     5 00000000                                 [INSTRSET "i486p"]				; 486ÔøΩÃñÔøΩÔøΩﬂÇ‹Ç≈égÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ∆ÇÔøΩÔøΩÔøΩÔøΩLÔøΩq
+     6 00000000                                 [BITS 32]						; 32ÔøΩrÔøΩbÔøΩgÔøΩÔøΩÔøΩ[ÔøΩhÔøΩpÔøΩÃã@ÔøΩBÔøΩÔøΩÔøΩÔøΩÔøΩÁÇπÔøΩÔøΩ
+     7 00000000                                 [FILE "naskfunc.nas"]			; ÔøΩ\ÔøΩ[ÔøΩXÔøΩtÔøΩ@ÔøΩCÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
      8 00000000                                 
-     9 00000000                                 		GLOBAL	_io_hlt, _io_cli, _io_sti, _io_stihlt
+     9 00000000                                 		GLOBAL	_io_hlt,_write_mem8, _io_cli, _io_sti, _io_stihlt
     10 00000000                                 		GLOBAL	_io_in8,  _io_in16,  _io_in32
     11 00000000                                 		GLOBAL	_io_out8, _io_out16, _io_out32
     12 00000000                                 		GLOBAL	_io_load_eflags, _io_store_eflags
@@ -19,273 +19,486 @@
     19 00000000                                 		GLOBAL	_memtest_sub
     20 00000000                                 		GLOBAL	_farjmp, _farcall
     21 00000000                                 		GLOBAL	_asm_hrb_api, _start_app
-    22 00000000                                 		EXTERN	_inthandler20, _inthandler21
-    23 00000000                                 		EXTERN	_inthandler2c, _inthandler0d
-    24 00000000                                 		EXTERN	_inthandler0c
-    25 00000000                                 		EXTERN	_hrb_api
-    26 00000000                                 
-    27                                          [SECTION .text]
-    28 00000000                                 
-    29 00000000                                 _io_hlt:	; void io_hlt(void);
-    30 00000000 F4                              		HLT
-    31 00000001 C3                              		RET
-    32 00000002                                 
-    33 00000002                                 _io_cli:	; void io_cli(void);
-    34 00000002 FA                              		CLI
-    35 00000003 C3                              		RET
-    36 00000004                                 
-    37 00000004                                 _io_sti:	; void io_sti(void);
-    38 00000004 FB                              		STI
-    39 00000005 C3                              		RET
-    40 00000006                                 
-    41 00000006                                 _io_stihlt:	; void io_stihlt(void);
-    42 00000006 FB                              		STI
-    43 00000007 F4                              		HLT
-    44 00000008 C3                              		RET
-    45 00000009                                 
-    46 00000009                                 _io_in8:	; int io_in8(int port);
-    47 00000009 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    48 0000000D B8 00000000                     		MOV		EAX,0
-    49 00000012 EC                              		IN		AL,DX
-    50 00000013 C3                              		RET
-    51 00000014                                 
-    52 00000014                                 _io_in16:	; int io_in16(int port);
-    53 00000014 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    54 00000018 B8 00000000                     		MOV		EAX,0
-    55 0000001D 66 ED                           		IN		AX,DX
-    56 0000001F C3                              		RET
-    57 00000020                                 
-    58 00000020                                 _io_in32:	; int io_in32(int port);
-    59 00000020 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    60 00000024 ED                              		IN		EAX,DX
-    61 00000025 C3                              		RET
-    62 00000026                                 
-    63 00000026                                 _io_out8:	; void io_out8(int port, int data);
-    64 00000026 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    65 0000002A 8A 44 24 08                     		MOV		AL,[ESP+8]		; data
-    66 0000002E EE                              		OUT		DX,AL
-    67 0000002F C3                              		RET
-    68 00000030                                 
-    69 00000030                                 _io_out16:	; void io_out16(int port, int data);
-    70 00000030 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    71 00000034 8B 44 24 08                     		MOV		EAX,[ESP+8]		; data
-    72 00000038 66 EF                           		OUT		DX,AX
-    73 0000003A C3                              		RET
-    74 0000003B                                 
-    75 0000003B                                 _io_out32:	; void io_out32(int port, int data);
-    76 0000003B 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    77 0000003F 8B 44 24 08                     		MOV		EAX,[ESP+8]		; data
-    78 00000043 EF                              		OUT		DX,EAX
-    79 00000044 C3                              		RET
-    80 00000045                                 
-    81 00000045                                 _io_load_eflags:	; int io_load_eflags(void);
-    82 00000045 9C                              		PUSHFD		; PUSH EFLAGS Ç∆Ç¢Ç§à”ñ°
-    83 00000046 58                              		POP		EAX
-    84 00000047 C3                              		RET
-    85 00000048                                 
-    86 00000048                                 _io_store_eflags:	; void io_store_eflags(int eflags);
-    87 00000048 8B 44 24 04                     		MOV		EAX,[ESP+4]
-    88 0000004C 50                              		PUSH	EAX
-    89 0000004D 9D                              		POPFD		; POP EFLAGS Ç∆Ç¢Ç§à”ñ°
-    90 0000004E C3                              		RET
-    91 0000004F                                 
-    92 0000004F                                 _load_gdtr:		; void load_gdtr(int limit, int addr);
-    93 0000004F 66 8B 44 24 04                  		MOV		AX,[ESP+4]		; limit
-    94 00000054 66 89 44 24 06                  		MOV		[ESP+6],AX
-    95 00000059 0F 01 54 24 06                  		LGDT	[ESP+6]
-    96 0000005E C3                              		RET
-    97 0000005F                                 
-    98 0000005F                                 _load_idtr:		; void load_idtr(int limit, int addr);
-    99 0000005F 66 8B 44 24 04                  		MOV		AX,[ESP+4]		; limit
-   100 00000064 66 89 44 24 06                  		MOV		[ESP+6],AX
-   101 00000069 0F 01 5C 24 06                  		LIDT	[ESP+6]
-   102 0000006E C3                              		RET
-   103 0000006F                                 
-   104 0000006F                                 _load_cr0:		; int load_cr0(void);
-   105 0000006F 0F 20 C0                        		MOV		EAX,CR0
-   106 00000072 C3                              		RET
-   107 00000073                                 
-   108 00000073                                 _store_cr0:		; void store_cr0(int cr0);
-   109 00000073 8B 44 24 04                     		MOV		EAX,[ESP+4]
-   110 00000077 0F 22 C0                        		MOV		CR0,EAX
-   111 0000007A C3                              		RET
-   112 0000007B                                 
-   113 0000007B                                 _load_tr:		; void load_tr(int tr);
-   114 0000007B 0F 00 5C 24 04                  		LTR		[ESP+4]			; tr
-   115 00000080 C3                              		RET
-   116 00000081                                 
-   117 00000081                                 _asm_inthandler20:
-   118 00000081 06                              		PUSH	ES
-   119 00000082 1E                              		PUSH	DS
-   120 00000083 60                              		PUSHAD
-   121 00000084 89 E0                           		MOV		EAX,ESP
-   122 00000086 50                              		PUSH	EAX
-   123 00000087 66 8C D0                        		MOV		AX,SS
-   124 0000008A 8E D8                           		MOV		DS,AX
-   125 0000008C 8E C0                           		MOV		ES,AX
-   126 0000008E E8 [00000000]                   		CALL	_inthandler20
-   127 00000093 58                              		POP		EAX
-   128 00000094 61                              		POPAD
-   129 00000095 1F                              		POP		DS
-   130 00000096 07                              		POP		ES
-   131 00000097 CF                              		IRETD
-   132 00000098                                 
-   133 00000098                                 _asm_inthandler21:
-   134 00000098 06                              		PUSH	ES
-   135 00000099 1E                              		PUSH	DS
-   136 0000009A 60                              		PUSHAD
-   137 0000009B 89 E0                           		MOV		EAX,ESP
-   138 0000009D 50                              		PUSH	EAX
-   139 0000009E 66 8C D0                        		MOV		AX,SS
-   140 000000A1 8E D8                           		MOV		DS,AX
-   141 000000A3 8E C0                           		MOV		ES,AX
-   142 000000A5 E8 [00000000]                   		CALL	_inthandler21
-   143 000000AA 58                              		POP		EAX
-   144 000000AB 61                              		POPAD
-   145 000000AC 1F                              		POP		DS
-   146 000000AD 07                              		POP		ES
-   147 000000AE CF                              		IRETD
-   148 000000AF                                 
-   149 000000AF                                 _asm_inthandler2c:
-   150 000000AF 06                              		PUSH	ES
-   151 000000B0 1E                              		PUSH	DS
-   152 000000B1 60                              		PUSHAD
-   153 000000B2 89 E0                           		MOV		EAX,ESP
-   154 000000B4 50                              		PUSH	EAX
-   155 000000B5 66 8C D0                        		MOV		AX,SS
-   156 000000B8 8E D8                           		MOV		DS,AX
-   157 000000BA 8E C0                           		MOV		ES,AX
-   158 000000BC E8 [00000000]                   		CALL	_inthandler2c
-   159 000000C1 58                              		POP		EAX
-   160 000000C2 61                              		POPAD
-   161 000000C3 1F                              		POP		DS
-   162 000000C4 07                              		POP		ES
-   163 000000C5 CF                              		IRETD
-   164 000000C6                                 
-   165 000000C6                                 _asm_inthandler0c:
-   166 000000C6 FB                              		STI
-   167 000000C7 06                              		PUSH	ES
-   168 000000C8 1E                              		PUSH	DS
-   169 000000C9 60                              		PUSHAD
-   170 000000CA 89 E0                           		MOV		EAX,ESP
-   171 000000CC 50                              		PUSH	EAX
-   172 000000CD 66 8C D0                        		MOV		AX,SS
-   173 000000D0 8E D8                           		MOV		DS,AX
-   174 000000D2 8E C0                           		MOV		ES,AX
-   175 000000D4 E8 [00000000]                   		CALL	_inthandler0c
-   176 000000D9 83 F8 00                        		CMP		EAX,0
-   177 000000DC 0F 85 00000091                  		JNE		_asm_end_app
-   178 000000E2 58                              		POP		EAX
-   179 000000E3 61                              		POPAD
-   180 000000E4 1F                              		POP		DS
-   181 000000E5 07                              		POP		ES
-   182 000000E6 83 C4 04                        		ADD		ESP,4			; INT 0x0c Ç≈Ç‡ÅAÇ±ÇÍÇ™ïKóv
-   183 000000E9 CF                              		IRETD
-   184 000000EA                                 
-   185 000000EA                                 _asm_inthandler0d:
-   186 000000EA FB                              		STI
-   187 000000EB 06                              		PUSH	ES
-   188 000000EC 1E                              		PUSH	DS
-   189 000000ED 60                              		PUSHAD
-   190 000000EE 89 E0                           		MOV		EAX,ESP
-   191 000000F0 50                              		PUSH	EAX
-   192 000000F1 66 8C D0                        		MOV		AX,SS
-   193 000000F4 8E D8                           		MOV		DS,AX
-   194 000000F6 8E C0                           		MOV		ES,AX
-   195 000000F8 E8 [00000000]                   		CALL	_inthandler0d
-   196 000000FD 83 F8 00                        		CMP		EAX,0			; Ç±Ç±ÇæÇØà·Ç§
-   197 00000100 75 71                           		JNE		_asm_end_app	; Ç±Ç±ÇæÇØà·Ç§
-   198 00000102 58                              		POP		EAX
-   199 00000103 61                              		POPAD
-   200 00000104 1F                              		POP		DS
-   201 00000105 07                              		POP		ES
-   202 00000106 83 C4 04                        		ADD		ESP,4			; INT 0x0d Ç≈ÇÕÅAÇ±ÇÍÇ™ïKóv
-   203 00000109 CF                              		IRETD
-   204 0000010A                                 
-   205 0000010A                                 _memtest_sub:	; unsigned int memtest_sub(unsigned int start, unsigned int end)
-   206 0000010A 57                              		PUSH	EDI						; ÅiEBX, ESI, EDI Ç‡égÇ¢ÇΩÇ¢ÇÃÇ≈Åj
-   207 0000010B 56                              		PUSH	ESI
-   208 0000010C 53                              		PUSH	EBX
-   209 0000010D BE AA55AA55                     		MOV		ESI,0xaa55aa55			; pat0 = 0xaa55aa55;
-   210 00000112 BF 55AA55AA                     		MOV		EDI,0x55aa55aa			; pat1 = 0x55aa55aa;
-   211 00000117 8B 44 24 10                     		MOV		EAX,[ESP+12+4]			; i = start;
-   212 0000011B                                 mts_loop:
-   213 0000011B 89 C3                           		MOV		EBX,EAX
-   214 0000011D 81 C3 00000FFC                  		ADD		EBX,0xffc				; p = i + 0xffc;
-   215 00000123 8B 13                           		MOV		EDX,[EBX]				; old = *p;
-   216 00000125 89 33                           		MOV		[EBX],ESI				; *p = pat0;
-   217 00000127 83 33 FF                        		XOR		DWORD [EBX],0xffffffff	; *p ^= 0xffffffff;
-   218 0000012A 3B 3B                           		CMP		EDI,[EBX]				; if (*p != pat1) goto fin;
-   219 0000012C 75 18                           		JNE		mts_fin
-   220 0000012E 83 33 FF                        		XOR		DWORD [EBX],0xffffffff	; *p ^= 0xffffffff;
-   221 00000131 3B 33                           		CMP		ESI,[EBX]				; if (*p != pat0) goto fin;
-   222 00000133 75 11                           		JNE		mts_fin
-   223 00000135 89 13                           		MOV		[EBX],EDX				; *p = old;
-   224 00000137 05 00001000                     		ADD		EAX,0x1000				; i += 0x1000;
-   225 0000013C 3B 44 24 14                     		CMP		EAX,[ESP+12+8]			; if (i <= end) goto mts_loop;
-   226 00000140 76 D9                           		JBE		mts_loop
-   227 00000142 5B                              		POP		EBX
-   228 00000143 5E                              		POP		ESI
-   229 00000144 5F                              		POP		EDI
-   230 00000145 C3                              		RET
-   231 00000146                                 mts_fin:
-   232 00000146 89 13                           		MOV		[EBX],EDX				; *p = old;
-   233 00000148 5B                              		POP		EBX
-   234 00000149 5E                              		POP		ESI
-   235 0000014A 5F                              		POP		EDI
-   236 0000014B C3                              		RET
-   237 0000014C                                 
-   238 0000014C                                 _farjmp:		; void farjmp(int eip, int cs);
-   239 0000014C FF 6C 24 04                     		JMP		FAR	[ESP+4]				; eip, cs
-   240 00000150 C3                              		RET
-   241 00000151                                 
-   242 00000151                                 _farcall:		; void farcall(int eip, int cs);
-   243 00000151 FF 5C 24 04                     		CALL	FAR	[ESP+4]				; eip, cs
-   244 00000155 C3                              		RET
-   245 00000156                                 
-   246 00000156                                 _asm_hrb_api:
-   247 00000156 FB                              		STI
-   248 00000157 1E                              		PUSH	DS
-   249 00000158 06                              		PUSH	ES
-   250 00000159 60                              		PUSHAD		; ï€ë∂ÇÃÇΩÇﬂÇÃPUSH
-   251 0000015A 60                              		PUSHAD		; hrb_apiÇ…ÇÌÇΩÇ∑ÇΩÇﬂÇÃPUSH
-   252 0000015B 66 8C D0                        		MOV		AX,SS
-   253 0000015E 8E D8                           		MOV		DS,AX		; OSópÇÃÉZÉOÉÅÉìÉgÇDSÇ∆ESÇ…Ç‡ì¸ÇÍÇÈ
-   254 00000160 8E C0                           		MOV		ES,AX
-   255 00000162 E8 [00000000]                   		CALL	_hrb_api
-   256 00000167 83 F8 00                        		CMP		EAX,0		; EAXÇ™0Ç≈Ç»ÇØÇÍÇŒÉAÉvÉäèIóπèàóù
-   257 0000016A 75 07                           		JNE		_asm_end_app
-   258 0000016C 83 C4 20                        		ADD		ESP,32
-   259 0000016F 61                              		POPAD
-   260 00000170 07                              		POP		ES
-   261 00000171 1F                              		POP		DS
-   262 00000172 CF                              		IRETD
-   263 00000173                                 _asm_end_app:
-   264 00000173                                 ;	EAXÇÕtss.esp0ÇÃî‘ín
-   265 00000173 8B 20                           		MOV		ESP,[EAX]
-   266 00000175 C7 40 04 00000000               		MOV		DWORD [EAX+4],0
-   267 0000017C 61                              		POPAD
-   268 0000017D C3                              		RET					; cmd_appÇ÷ãAÇÈ
-   269 0000017E                                 
-   270 0000017E                                 _start_app:		; void start_app(int eip, int cs, int esp, int ds, int *tss_esp0);
-   271 0000017E 60                              		PUSHAD		; 32ÉrÉbÉgÉåÉWÉXÉ^ÇëSïîï€ë∂ÇµÇƒÇ®Ç≠
-   272 0000017F 8B 44 24 24                     		MOV		EAX,[ESP+36]	; ÉAÉvÉäópÇÃEIP
-   273 00000183 8B 4C 24 28                     		MOV		ECX,[ESP+40]	; ÉAÉvÉäópÇÃCS
-   274 00000187 8B 54 24 2C                     		MOV		EDX,[ESP+44]	; ÉAÉvÉäópÇÃESP
-   275 0000018B 8B 5C 24 30                     		MOV		EBX,[ESP+48]	; ÉAÉvÉäópÇÃDS/SS
-   276 0000018F 8B 6C 24 34                     		MOV		EBP,[ESP+52]	; tss.esp0ÇÃî‘ín
-   277 00000193 89 65 00                        		MOV		[EBP  ],ESP		; OSópÇÃESPÇï€ë∂
-   278 00000196 8C 55 04                        		MOV		[EBP+4],SS		; OSópÇÃSSÇï€ë∂
-   279 00000199 8E C3                           		MOV		ES,BX
-   280 0000019B 8E DB                           		MOV		DS,BX
-   281 0000019D 8E E3                           		MOV		FS,BX
-   282 0000019F 8E EB                           		MOV		GS,BX
-   283 000001A1                                 ;	à»â∫ÇÕRETFÇ≈ÉAÉvÉäÇ…çsÇ©ÇπÇÈÇΩÇﬂÇÃÉXÉ^ÉbÉNí≤êÆ
-   284 000001A1 83 C9 03                        		OR		ECX,3			; ÉAÉvÉäópÇÃÉZÉOÉÅÉìÉgî‘çÜÇ…3ÇORÇ∑ÇÈ
-   285 000001A4 83 CB 03                        		OR		EBX,3			; ÉAÉvÉäópÇÃÉZÉOÉÅÉìÉgî‘çÜÇ…3ÇORÇ∑ÇÈ
-   286 000001A7 53                              		PUSH	EBX				; ÉAÉvÉäÇÃSS
-   287 000001A8 52                              		PUSH	EDX				; ÉAÉvÉäÇÃESP
-   288 000001A9 51                              		PUSH	ECX				; ÉAÉvÉäÇÃCS
-   289 000001AA 50                              		PUSH	EAX				; ÉAÉvÉäÇÃEIP
-   290 000001AB CB                              		RETF
-   291 000001AC                                 ;	ÉAÉvÉäÇ™èIóπÇµÇƒÇ‡Ç±Ç±Ç…ÇÕóàÇ»Ç¢
+    22 00000000                                 		GLOBAL	_shutdown, _reboot
+    23 00000000                                 		EXTERN	_inthandler20, _inthandler21,_inthandler2c
+    24 00000000                                 		EXTERN	_inthandler2c, _inthandler0d
+    25 00000000                                 		EXTERN	_inthandler0c
+    26 00000000                                 		EXTERN	_hrb_api
+    27 00000000                                 
+    28                                          [SECTION .text]
+    29 00000000                                 
+    30 00000000                                 _io_hlt:	; void io_hlt(void);
+    31 00000000 F4                              		HLT
+    32 00000001 C3                              		RET
+    33 00000002                                 
+    34 00000002                                 _write_mem8:	; void write_mem8(int addr, int data);
+    35 00000002 8B 4C 24 04                     		MOV		ECX,[ESP+4]		; [ESP+4]ÔøΩÔøΩ≈µÔøΩ÷∑ ÔøΩÔøΩÔøΩÔøΩecx
+    36 00000006 8A 44 24 08                     		MOV		AL,[ESP+8]		; [ESP+8]ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩal
+    37 0000000A 88 01                           		MOV		[ECX],AL
+    38 0000000C C3                              		RET
+    39 0000000D                                 
+    40 0000000D                                 _io_cli:	; void io_cli(void);
+    41 0000000D FA                              		CLI
+    42 0000000E C3                              		RET
+    43 0000000F                                 
+    44 0000000F                                 _io_sti:	; void io_sti(void);
+    45 0000000F FB                              		STI
+    46 00000010 C3                              		RET
+    47 00000011                                 
+    48 00000011                                 _io_stihlt:	; void io_stihlt(void);
+    49 00000011 FB                              		STI
+    50 00000012 F4                              		HLT
+    51 00000013 C3                              		RET
+    52 00000014                                 
+    53 00000014                                 _io_in8:	; int io_in8(int port);
+    54 00000014 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    55 00000018 B8 00000000                     		MOV		EAX,0
+    56 0000001D EC                              		IN		AL,DX
+    57 0000001E C3                              		RET
+    58 0000001F                                 
+    59 0000001F                                 _io_in16:	; int io_in16(int port);
+    60 0000001F 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    61 00000023 B8 00000000                     		MOV		EAX,0
+    62 00000028 66 ED                           		IN		AX,DX
+    63 0000002A C3                              		RET
+    64 0000002B                                 
+    65 0000002B                                 _io_in32:	; int io_in32(int port);
+    66 0000002B 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    67 0000002F ED                              		IN		EAX,DX
+    68 00000030 C3                              		RET
+    69 00000031                                 
+    70 00000031                                 _io_out8:	; void io_out8(int port, int data);
+    71 00000031 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    72 00000035 8A 44 24 08                     		MOV		AL,[ESP+8]		; data
+    73 00000039 EE                              		OUT		DX,AL
+    74 0000003A C3                              		RET
+    75 0000003B                                 
+    76 0000003B                                 _io_out16:	; void io_out16(int port, int data);
+    77 0000003B 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    78 0000003F 8B 44 24 08                     		MOV		EAX,[ESP+8]		; data
+    79 00000043 66 EF                           		OUT		DX,AX
+    80 00000045 C3                              		RET
+    81 00000046                                 
+    82 00000046                                 _io_out32:	; void io_out32(int port, int data);
+    83 00000046 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    84 0000004A 8B 44 24 08                     		MOV		EAX,[ESP+8]		; data
+    85 0000004E EF                              		OUT		DX,EAX
+    86 0000004F C3                              		RET
+    87 00000050                                 
+    88 00000050                                 _io_load_eflags:	; int io_load_eflags(void);
+    89 00000050 9C                              		PUSHFD		; PUSH EFLAGS ÔøΩ∆ÇÔøΩÔøΩÔøΩÔøΩ”ñÔøΩ
+    90 00000051 58                              		POP		EAX
+    91 00000052 C3                              		RET
+    92 00000053                                 
+    93 00000053                                 _io_store_eflags:	; void io_store_eflags(int eflags);
+    94 00000053 8B 44 24 04                     		MOV		EAX,[ESP+4]
+    95 00000057 50                              		PUSH	EAX
+    96 00000058 9D                              		POPFD		; POP EFLAGS ÔøΩ∆ÇÔøΩÔøΩÔøΩÔøΩ”ñÔøΩ
+    97 00000059 C3                              		RET
+    98 0000005A                                 
+    99 0000005A                                 _load_gdtr:		; void load_gdtr(int limit, int addr);
+   100 0000005A 66 8B 44 24 04                  		MOV		AX,[ESP+4]		; limit
+   101 0000005F 66 89 44 24 06                  		MOV		[ESP+6],AX
+   102 00000064 0F 01 54 24 06                  		LGDT	[ESP+6]
+   103 00000069 C3                              		RET
+   104 0000006A                                 
+   105 0000006A                                 _load_idtr:		; void load_idtr(int limit, int addr);
+   106 0000006A 66 8B 44 24 04                  		MOV		AX,[ESP+4]		; limit
+   107 0000006F 66 89 44 24 06                  		MOV		[ESP+6],AX
+   108 00000074 0F 01 5C 24 06                  		LIDT	[ESP+6]
+   109 00000079 C3                              		RET
+   110 0000007A                                 
+   111 0000007A                                 _load_cr0:		; int load_cr0(void);
+   112 0000007A 0F 20 C0                        		MOV		EAX,CR0
+   113 0000007D C3                              		RET
+   114 0000007E                                 
+   115 0000007E                                 _store_cr0:		; void store_cr0(int cr0);
+   116 0000007E 8B 44 24 04                     		MOV		EAX,[ESP+4]
+   117 00000082 0F 22 C0                        		MOV		CR0,EAX
+   118 00000085 C3                              		RET
+   119 00000086                                 
+   120 00000086                                 _load_tr:		; void load_tr(int tr);
+   121 00000086 0F 00 5C 24 04                  		LTR		[ESP+4]			; tr
+   122 0000008B C3                              		RET
+   123 0000008C                                 
+   124 0000008C                                 
+   125 0000008C                                 _asm_inthandler20:
+   126 0000008C 06                              		PUSH	ES
+   127 0000008D 1E                              		PUSH	DS
+   128 0000008E 60                              		PUSHAD
+   129 0000008F 89 E0                           		MOV		EAX,ESP
+   130 00000091 50                              		PUSH	EAX
+   131 00000092 66 8C D0                        		MOV		AX,SS
+   132 00000095 8E D8                           		MOV		DS,AX
+   133 00000097 8E C0                           		MOV		ES,AX
+   134 00000099 E8 [00000000]                   		CALL	_inthandler20
+   135 0000009E 58                              		POP		EAX
+   136 0000009F 61                              		POPAD
+   137 000000A0 1F                              		POP		DS
+   138 000000A1 07                              		POP		ES
+   139 000000A2 CF                              		IRETD
+   140 000000A3                                 
+   141 000000A3                                 _asm_inthandler21:
+   142 000000A3 06                              		PUSH	ES
+   143 000000A4 1E                              		PUSH	DS
+   144 000000A5 60                              		PUSHAD
+   145 000000A6 89 E0                           		MOV		EAX,ESP
+   146 000000A8 50                              		PUSH	EAX
+   147 000000A9 66 8C D0                        		MOV		AX,SS
+   148 000000AC 8E D8                           		MOV		DS,AX
+   149 000000AE 8E C0                           		MOV		ES,AX
+   150 000000B0 E8 [00000000]                   		CALL	_inthandler21
+   151 000000B5 58                              		POP		EAX
+   152 000000B6 61                              		POPAD
+   153 000000B7 1F                              		POP		DS
+   154 000000B8 07                              		POP		ES
+   155 000000B9 CF                              		IRETD
+   156 000000BA                                 
+   157 000000BA                                 _asm_inthandler2c:
+   158 000000BA 06                              		PUSH	ES
+   159 000000BB 1E                              		PUSH	DS
+   160 000000BC 60                              		PUSHAD
+   161 000000BD 89 E0                           		MOV		EAX,ESP
+   162 000000BF 50                              		PUSH	EAX
+   163 000000C0 66 8C D0                        		MOV		AX,SS
+   164 000000C3 8E D8                           		MOV		DS,AX
+   165 000000C5 8E C0                           		MOV		ES,AX
+   166 000000C7 E8 [00000000]                   		CALL	_inthandler2c
+   167 000000CC 58                              		POP		EAX
+   168 000000CD 61                              		POPAD
+   169 000000CE 1F                              		POP		DS
+   170 000000CF 07                              		POP		ES
+   171 000000D0 CF                              		IRETD
+   172 000000D1                                 
+   173 000000D1                                 _asm_inthandler0c:
+   174 000000D1 FB                              		STI
+   175 000000D2 06                              		PUSH	ES
+   176 000000D3 1E                              		PUSH	DS
+   177 000000D4 60                              		PUSHAD
+   178 000000D5 89 E0                           		MOV		EAX,ESP
+   179 000000D7 50                              		PUSH	EAX
+   180 000000D8 66 8C D0                        		MOV		AX,SS
+   181 000000DB 8E D8                           		MOV		DS,AX
+   182 000000DD 8E C0                           		MOV		ES,AX
+   183 000000DF E8 [00000000]                   		CALL	_inthandler0c
+   184 000000E4 83 F8 00                        		CMP		EAX,0
+   185 000000E7 0F 85 00000095                  		JNE		_asm_end_app
+   186 000000ED 58                              		POP		EAX
+   187 000000EE 61                              		POPAD
+   188 000000EF 1F                              		POP		DS
+   189 000000F0 07                              		POP		ES
+   190 000000F1 83 C4 04                        		ADD		ESP,4			; INT 0x0c ÔøΩ≈ÇÔøΩÔøΩAÔøΩÔøΩÔøΩÍÇ™ÔøΩKÔøΩv
+   191 000000F4 CF                              		IRETD
+   192 000000F5                                 
+   193 000000F5                                 _asm_inthandler0d:
+   194 000000F5 FB                              		STI
+   195 000000F6 06                              		PUSH	ES
+   196 000000F7 1E                              		PUSH	DS
+   197 000000F8 60                              		PUSHAD
+   198 000000F9 89 E0                           		MOV		EAX,ESP
+   199 000000FB 50                              		PUSH	EAX
+   200 000000FC 66 8C D0                        		MOV		AX,SS
+   201 000000FF 8E D8                           		MOV		DS,AX
+   202 00000101 8E C0                           		MOV		ES,AX
+   203 00000103 E8 [00000000]                   		CALL	_inthandler0d
+   204 00000108 83 F8 00                        		CMP		EAX,0			; ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ·Ç§
+   205 0000010B 75 75                           		JNE		_asm_end_app	; ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ·Ç§
+   206 0000010D 58                              		POP		EAX
+   207 0000010E 61                              		POPAD
+   208 0000010F 1F                              		POP		DS
+   209 00000110 07                              		POP		ES
+   210 00000111 83 C4 04                        		ADD		ESP,4			; INT 0x0d ÔøΩ≈ÇÕÅAÔøΩÔøΩÔøΩÍÇ™ÔøΩKÔøΩv
+   211 00000114 CF                              		IRETD
+   212 00000115                                 
+   213 00000115                                 _memtest_sub:	; unsigned int memtest_sub(unsigned int start, unsigned int end)
+   214 00000115 57                              		PUSH	EDI						; ÔøΩiEBX, ESI, EDI ÔøΩÔøΩÔøΩgÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÃÇ≈Åj
+   215 00000116 56                              		PUSH	ESI
+   216 00000117 53                              		PUSH	EBX
+   217 00000118 BE AA55AA55                     		MOV		ESI,0xaa55aa55			; pat0 = 0xaa55aa55;
+   218 0000011D BF 55AA55AA                     		MOV		EDI,0x55aa55aa			; pat1 = 0x55aa55aa;
+   219 00000122 8B 44 24 10                     		MOV		EAX,[ESP+12+4]			; i = start;
+   220 00000126                                 mts_loop:
+   221 00000126 89 C3                           		MOV		EBX,EAX
+   222 00000128 81 C3 00000FFC                  		ADD		EBX,0xffc				; p = i + 0xffc;
+   223 0000012E 8B 13                           		MOV		EDX,[EBX]				; old = *p;
+   224 00000130 89 33                           		MOV		[EBX],ESI				; *p = pat0;
+   225 00000132 83 33 FF                        		XOR		DWORD [EBX],0xffffffff	; *p ^= 0xffffffff;
+   226 00000135 3B 3B                           		CMP		EDI,[EBX]				; if (*p != pat1) goto fin;
+   227 00000137 75 18                           		JNE		mts_fin
+   228 00000139 83 33 FF                        		XOR		DWORD [EBX],0xffffffff	; *p ^= 0xffffffff;
+   229 0000013C 3B 33                           		CMP		ESI,[EBX]				; if (*p != pat0) goto fin;
+   230 0000013E 75 11                           		JNE		mts_fin
+   231 00000140 89 13                           		MOV		[EBX],EDX				; *p = old;
+   232 00000142 05 00001000                     		ADD		EAX,0x1000				; i += 0x1000;
+   233 00000147 3B 44 24 14                     		CMP		EAX,[ESP+12+8]			; if (i <= end) goto mts_loop;
+   234 0000014B 76 D9                           		JBE		mts_loop
+   235 0000014D 5B                              		POP		EBX
+   236 0000014E 5E                              		POP		ESI
+   237 0000014F 5F                              		POP		EDI
+   238 00000150 C3                              		RET
+   239 00000151                                 mts_fin:
+   240 00000151 89 13                           		MOV		[EBX],EDX				; *p = old;
+   241 00000153 5B                              		POP		EBX
+   242 00000154 5E                              		POP		ESI
+   243 00000155 5F                              		POP		EDI
+   244 00000156 C3                              		RET
+   245 00000157                                 
+   246 00000157                                 _farjmp:		; void farjmp(int eip, int cs);
+   247 00000157 FF 6C 24 04                     		JMP		FAR	[ESP+4]				; eip, cs
+   248 0000015B C3                              		RET
+   249 0000015C                                 
+   250 0000015C                                 _farcall:		; void farcall(int eip, int cs);
+   251 0000015C FF 5C 24 04                     		CALL	FAR	[ESP+4]				; eip, cs
+   252 00000160 C3                              		RET
+   253 00000161                                 
+   254 00000161                                 _asm_hrb_api:
+   255 00000161 FB                              		STI
+   256 00000162 1E                              		PUSH	DS
+   257 00000163 06                              		PUSH	ES
+   258 00000164 60                              		PUSHAD		; ÔøΩ€ëÔøΩÔøΩÃÇÔøΩÔøΩﬂÇÔøΩPUSH
+   259 00000165 60                              		PUSHAD		; hrb_apiÔøΩ…ÇÌÇΩÔøΩÔøΩÔøΩÔøΩÔøΩﬂÇÔøΩPUSH
+   260 00000166 66 8C D0                        		MOV		AX,SS
+   261 00000169 8E D8                           		MOV		DS,AX		; OSÔøΩpÔøΩÃÉZÔøΩOÔøΩÔøΩÔøΩÔøΩÔøΩgÔøΩÔøΩDSÔøΩÔøΩESÔøΩ…ÇÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+   262 0000016B 8E C0                           		MOV		ES,AX
+   263 0000016D E8 [00000000]                   		CALL	_hrb_api
+   264 00000172 83 F8 00                        		CMP		EAX,0		; EAXÔøΩÔøΩ0ÔøΩ≈Ç»ÇÔøΩÔøΩÔøΩŒÉAÔøΩvÔøΩÔøΩÔøΩIÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+   265 00000175 75 0B                           		JNE		_asm_end_app
+   266 00000177 83 C4 20                        		ADD		ESP,32
+   267 0000017A 61                              		POPAD
+   268 0000017B 07                              		POP		ES
+   269 0000017C 1F                              		POP		DS
+   270 0000017D CF                              		IRETD
+   271 0000017E                                 
+   272 0000017E                                 end_app:
+   273 0000017E                                 ;	EAXŒ™tss.esp0ÔøΩƒµÔøΩ÷∑
+   274 0000017E 8B 20                           		MOV		ESP,[EAX]
+   275 00000180 61                              		POPAD
+   276 00000181 C3                              		RET					; ÔøΩÔøΩÔøΩÔøΩcmd_app		
+   277 00000182                                 
+   278 00000182                                 _asm_end_app:
+   279 00000182                                 ;	EAXÔøΩÔøΩtss.esp0ÔøΩÃî‘ín
+   280 00000182 8B 20                           		MOV		ESP,[EAX]
+   281 00000184 C7 40 04 00000000               		MOV		DWORD [EAX+4],0
+   282 0000018B 61                              		POPAD
+   283 0000018C C3                              		RET					; cmd_appÔøΩ÷ãAÔøΩÔøΩ
+   284 0000018D                                 
+   285 0000018D                                 _start_app:		; void start_app(int eip, int cs, int esp, int ds, int *tss_esp0);
+   286 0000018D 60                              		PUSHAD		; 32ÔøΩrÔøΩbÔøΩgÔøΩÔøΩÔøΩWÔøΩXÔøΩ^ÔøΩÔøΩSÔøΩÔøΩÔøΩ€ëÔøΩÔøΩÔøΩÔøΩƒÇÔøΩÔøΩÔøΩ
+   287 0000018E 8B 44 24 24                     		MOV		EAX,[ESP+36]	; ÔøΩAÔøΩvÔøΩÔøΩÔøΩpÔøΩÔøΩEIP
+   288 00000192 8B 4C 24 28                     		MOV		ECX,[ESP+40]	; ÔøΩAÔøΩvÔøΩÔøΩÔøΩpÔøΩÔøΩCS
+   289 00000196 8B 54 24 2C                     		MOV		EDX,[ESP+44]	; ÔøΩAÔøΩvÔøΩÔøΩÔøΩpÔøΩÔøΩESP
+   290 0000019A 8B 5C 24 30                     		MOV		EBX,[ESP+48]	; ÔøΩAÔøΩvÔøΩÔøΩÔøΩpÔøΩÔøΩDS/SS
+   291 0000019E 8B 6C 24 34                     		MOV		EBP,[ESP+52]	; tss.esp0ÔøΩÃî‘ín
+   292 000001A2 89 65 00                        		MOV		[EBP  ],ESP		; OSÔøΩpÔøΩÔøΩESPÔøΩÔøΩ€ëÔøΩ
+   293 000001A5 8C 55 04                        		MOV		[EBP+4],SS		; OSÔøΩpÔøΩÔøΩSSÔøΩÔøΩ€ëÔøΩ
+   294 000001A8 8E C3                           		MOV		ES,BX
+   295 000001AA 8E DB                           		MOV		DS,BX
+   296 000001AC 8E E3                           		MOV		FS,BX
+   297 000001AE 8E EB                           		MOV		GS,BX
+   298 000001B0                                 ;	ÔøΩ»âÔøΩÔøΩÔøΩRETFÔøΩ≈ÉAÔøΩvÔøΩÔøΩÔøΩ…çsÔøΩÔøΩÔøΩÔøΩÔøΩÈÇΩÔøΩﬂÇÃÉXÔøΩ^ÔøΩbÔøΩNÔøΩÔøΩÔøΩÔøΩ
+   299 000001B0 83 C9 03                        		OR		ECX,3			; ÔøΩAÔøΩvÔøΩÔøΩÔøΩpÔøΩÃÉZÔøΩOÔøΩÔøΩÔøΩÔøΩÔøΩgÔøΩ‘çÔøΩÔøΩÔøΩ3ÔøΩÔøΩORÔøΩÔøΩÔøΩÔøΩ
+   300 000001B3 83 CB 03                        		OR		EBX,3			; ÔøΩAÔøΩvÔøΩÔøΩÔøΩpÔøΩÃÉZÔøΩOÔøΩÔøΩÔøΩÔøΩÔøΩgÔøΩ‘çÔøΩÔøΩÔøΩ3ÔøΩÔøΩORÔøΩÔøΩÔøΩÔøΩ
+   301 000001B6 53                              		PUSH	EBX				; ÔøΩAÔøΩvÔøΩÔøΩÔøΩÔøΩSS
+   302 000001B7 52                              		PUSH	EDX				; ÔøΩAÔøΩvÔøΩÔøΩÔøΩÔøΩESP
+   303 000001B8 51                              		PUSH	ECX				; ÔøΩAÔøΩvÔøΩÔøΩÔøΩÔøΩCS
+   304 000001B9 50                              		PUSH	EAX				; ÔøΩAÔøΩvÔøΩÔøΩÔøΩÔøΩEIP
+   305 000001BA CB                              		RETF
+   306 000001BB                                 ;	ÔøΩAÔøΩvÔøΩÔøΩÔøΩÔøΩÔøΩIÔøΩÔøΩÔøΩÔøΩÔøΩƒÇÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ…ÇÕóÔøΩÔøΩ»ÇÔøΩ
+   307 000001BB                                 
+   308 000001BB                                 [BITS	32]
+   309 000001BB                                 backtoreal:
+   310 000001BB 9C                              	PUSHFD
+   311 000001BC 60                              	PUSHAD
+   312 000001BD E9 0000006E                     	JMP		start2
+   313 000001C2 00 00                           	db 0x00, 0x00
+   314 000001C4                                 protect16:;26ÔøΩ÷ΩÔøΩ
+   315 000001C4                                 ;		mov     ax, 8
+   316 000001C4                                 ;        mov     ds, ax
+   317 000001C4                                 ;        mov     es, ax
+   318 000001C4                                 ;        ;mov     fs, ax
+   319 000001C4                                 ;        ;mov     gs, ax
+   320 000001C4                                 ;        mov     ss, ax
+   321 000001C4                                 ;
+   322 000001C4                                 ;        mov     eax, cr0
+   323 000001C4                                 ;        and     ax, 11111110b
+   324 000001C4                                 ;        mov     cr0, eax
+   325 000001C4 B8 08 00 8E D8 8E C0 8E D0      db 0xb8, 0x08, 0x00, 0x8e, 0xd8, 0x8e, 0xc0, 0x8e, 0xd0
+   326 000001CD 0F 20 C0 66 25 FE FF FF 7F      db 0x0f, 0x20, 0xc0, 0x66, 0x25, 0xfe, 0xff, 0xff, 0x7f
+   327 000001D6 0F 22 C0                        db 0x0f, 0x22, 0xc0
+   328 000001D9 EA                              db 0xea
+   329 000001DA 0650 0000                       dw 0x0650,0x0000
+   330 000001DE 00 00                           ALIGNB 16
+   331  = 0000001C                              protect16_len EQU	$ - protect16
+   332 000001E0                                 
+   333 000001E0                                 ;ÔøΩÔøΩÔøΩÔøΩƒ¥ÔøΩÔøΩÔøΩŒ™16ŒªÔøΩÔøΩÔøΩÔøΩƒ£ ΩÔøΩÔøΩÔøΩÔøΩ µƒ£ ΩÔøΩÔøΩÔøΩ‹¥ÔøΩÔøΩÔøΩ
+   334 000001E0                                 ;ÔøΩÔøΩÔøΩÔøΩƒ£ ΩÔøΩÔøΩÔøΩÎ¥´ÔøΩÕµÔøΩÔøΩ⁄¥ÔøΩ0x0630ÔøΩÔøΩÔøΩÔøΩŒ™ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ0x20 B
+   335 000001E0                                 
+   336 000001E0                                 realmode:;27ÔøΩ÷ΩÔøΩ
+   337 000001E0                                 ;        mov     ax, cs
+   338 000001E0                                 ;		 mov     ds, ax
+   339 000001E0                                 ;		 mov     es, ax
+   340 000001E0                                 ;	     mov     ss, ax
+   341 000001E0                                 ;
+   342 000001E0                                 ;	     mov     sp, 0800h
+   343 000001E0                                 ;
+   344 000001E0                                 ;		in      al, 92h
+   345 000001E0                                 ;		and     al, 11111101b
+   346 000001E0                                 ;		out     92h, al
+   347 000001E0                                 ;		nop
+   348 000001E0                                 ;		nop
+   349 000001E0                                 ;		nop
+   350 000001E0                                 ;		sti
+   351 000001E0                                 ;		nop
+   352 000001E0                                 ;		“ªÔøΩ¬¥ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ æƒ£ ΩŒ™ÕºÔøΩÔøΩƒ£ ΩÔøΩÔøΩÔøΩÎ£¨ÔøΩÔøΩgoback÷Æ«∞ÔøΩÔøΩÔøΩÔøΩ BIOSÔøΩ–∂œµÔøΩÔøΩÔøΩ πÔøΩ‹°ÔøΩ
+   353 000001E0                                 ;		–°ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷µÔøΩ πÔøΩÔøΩBIOSÔøΩ–∂œ≥ÔøΩÔøΩÔøΩÔøΩ
+   354 000001E0                                 ;		mov     ax, 0003h
+   355 000001E0                                 ;		int     10h
+   356 000001E0 8C C8                           db 0x8c, 0xc8
+   357 000001E2 8E D8                           db 0x8e, 0xd8
+   358 000001E4 8E C0                           db 0x8e, 0xc0
+   359 000001E6 8E D0                           db 0x8e, 0xd0
+   360 000001E8 BC 00 08                        db 0xbc, 0x00, 0x08
+   361 000001EB E4 92                           db 0xe4, 0x92
+   362 000001ED 24 FD                           db 0x24, 0xfd
+   363 000001EF E6 92                           db 0xe6, 0x92
+   364 000001F1 90 90 90                        db 0x90, 0x90, 0x90
+   365 000001F4 FB 90                           db 0xfb, 0x90
+   366 000001F6 B8 03 00                        db 0xb8, 0x03, 0x00
+   367 000001F9 CD 10                           db 0xcd, 0x10
+   368 000001FB EA                              db 0xea
+   369 000001FC 0670 0000                       dw 0x0670, 0x0000
+   370 00000200                                 ALIGNB 16
+   371  = 00000020                              realmode_len	EQU		$ - realmode
+   372 00000200                                 ; ÔøΩÔøΩÔøΩœ¥ÔøΩÔøΩÔøΩÔøΩŒ™ µƒ£ ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷∑ÔøΩÔøΩÔøΩ æƒ£ Ω
+   373 00000200                                 ;  µƒ£ ΩÔøΩÔøΩÔøΩ‹¥ÔøΩÔøΩÎ¥´ÔøΩÕµÔøΩ0x0650ÔøΩÔøΩ,ÔøΩÔøΩÔøΩÔøΩ32ÔøΩ÷ΩÔøΩ
+   374 00000200                                 ;db 0xf4
+   375 00000200                                 
+   376 00000200                                 GDTIDT:;38ÔøΩ÷ΩÔøΩ
+   377 00000200 0000 0000 0000 0000             dw 0x0000, 0x0000, 0x0000, 0x0000
+   378 00000208 FFFF 0000 9200 0000             dw 0xffff, 0x0000, 0x9200, 0x0000
+   379 00000210 FFFF 0000 9800 0000             dw 0xffff, 0x0000, 0x9800, 0x0000
+   380 00000218 0000                            dw 0x0000
+   381 0000021A 0017                            dw 0x0017
+   382 0000021C 0600 0000                       dw 0x0600, 0x0000
+   383 00000220 03FF                            dw 0x03ff
+   384 00000222 0000 0000                       dw 0x0000, 0x0000
+   385 00000226 00 00 00 00 00 00 00 00 00 00   ALIGNB 16
+   386  = 00000030                              GDTIDT_lenth EQU	$ - GDTIDT
+   387 00000230                                 ;ÔøΩÔøΩÔøΩÔøΩŒ™GDTÔøΩÔøΩITDÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+   388 00000230                                 ;ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ›¥ÔøΩÔøΩÕµÔøΩ0x0600ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ0x30 BÔøΩƒø’º‰°£
+   389 00000230                                 start2:
+   390 00000230 BB [00000200]                   	MOV		EBX, GDTIDT
+   391 00000235 BA 00000600                     	MOV		EDX, 0x600
+   392 0000023A 66 B9 0030                      	MOV		CX, GDTIDT_lenth
+   393 0000023E                                 .loop1:
+   394 0000023E 2E 8A 03                        	MOV		AL, [CS:EBX]
+   395 00000241 88 02                           	MOV		[EDX], AL
+   396 00000243 43                              	INC		EBX
+   397 00000244 42                              	INC		EDX
+   398 00000245 E2 F7                           	loop	.loop1
+   399 00000247                                 
+   400 00000247 BB [000001C4]                   	MOV		EBX, protect16
+   401 0000024C BA 00000630                     	MOV		EDX, 0x630
+   402 00000251 66 B9 01C4                      	MOV		CX, protect16
+   403 00000255                                 .loop2:
+   404 00000255 2E 8A 03                        	MOV		AL, [CS:EBX]
+   405 00000258 88 02                           	MOV		[EDX], AL
+   406 0000025A 43                              	INC		EBX
+   407 0000025B 42                              	INC		EDX
+   408 0000025C E2 F7                           	loop	.loop2	
+   409 0000025E                                 
+   410 0000025E BB [000001E0]                   	MOV		EBX, realmode
+   411 00000263 BA 00000650                     	MOV		EDX, 0x650
+   412 00000268 66 B9 0020                      	MOV		CX, realmode_len
+   413 0000026C                                 .loop3:
+   414 0000026C 2E 8A 03                        	MOV		AL, [CS:EBX]
+   415 0000026F 88 02                           	MOV		[EDX], AL
+   416 00000271 43                              	INC		EBX
+   417 00000272 42                              	INC		EDX
+   418 00000273 E2 F7                           	loop	.loop3	
+   419 00000275                                 
+   420 00000275 61                              	POPAD
+   421 00000276 9D                              	POPFD
+   422 00000277 C3                              	RET
+   423 00000278                                 	
+   424 00000278                                 _shutdown:
+   425 00000278 EB 16                           	JMP		shutdown_start
+   426 0000027A 00 00                           	db 0x00, 0x00
+   427 0000027C                                 shutdown_con:
+   428 0000027C                                 ;	MOV		AX, 5307H 		;Function 5307h: APM Set system power state
+   429 0000027C                                 ;	MOV 	BX, 01H 		;Device ID: 0001h (=All devices)
+   430 0000027C                                 ;	MOV 	CX, 0003H 		;Power State: 0003h (=Off)
+   431 0000027C                                 ;	INT 	15H		 		;Call interrupt: 15h
+   432 0000027C B8 07 53                        db 0xb8, 0x07, 0x53
+   433 0000027F BB 01 00                        db 0xbb, 0x01, 0x00
+   434 00000282 B9 03 00                        db 0xb9, 0x03, 0x00
+   435 00000285 CD 15                           db 0xcd, 0x15
+   436 00000287 00 00 00 00 00 00 00 00 00      ALIGNB 16
+   437  = 00000014                              shutdown_con_len	EQU		$ - shutdown_con
+   438 00000290                                 ; ÔøΩÔøΩÔøΩœ¥ÔøΩÔøΩÔøΩŒπÿªÔøΩÔøΩÔøΩÔøΩÔøΩ
+   439 00000290                                 ;  µƒ£ ΩÔøΩÔøΩÔøΩ‹¥ÔøΩÔøΩÎ¥´ÔøΩÕµÔøΩ0x0670ÔøΩÔøΩÔøΩÔøΩ
+   440 00000290                                 
+   441 00000290                                 shutdown_start:
+   442 00000290 E8 FFFFFF26                     	CALL 	backtoreal
+   443 00000295                                 
+   444 00000295 BB [0000027C]                   	MOV		EBX, shutdown_con
+   445 0000029A BA 00000670                     	MOV		EDX, 0x670
+   446 0000029F 66 B9 0014                      	MOV		CX, shutdown_con_len
+   447 000002A3                                 .loop4:
+   448 000002A3 2E 8A 03                        	MOV		AL, [CS:EBX]
+   449 000002A6 88 02                           	MOV		[EDX], AL
+   450 000002A8 43                              	INC		EBX
+   451 000002A9 42                              	INC		EDX
+   452 000002AA E2 F7                           	loop	.loop4
+   453 000002AC                                 
+   454 000002AC 0F 01 15 0000061A               	LGDT	[0x061A]
+   455 000002B3 0F 01 1D 00000620               	LIDT	[0x0620]
+   456 000002BA EA 00000630 0010                	JMP		2*8:0x0630
+   457 000002C1                                 
+   458 000002C1                                 _reboot:
+   459 000002C1 EB 1D                           	JMP 	reboot_start
+   460 000002C3 00 00                           	db 0x00, 0x00
+   461 000002C5                                 reboot_con:
+   462 000002C5                                 	;mov ax, 0xffff
+   463 000002C5                                 	;push ax
+   464 000002C5                                 	;mov ax, 0x0000
+   465 000002C5                                 	;push ax
+   466 000002C5                                 	;retf
+   467 000002C5                                 ;db 0xb8, 0xff, 0xff
+   468 000002C5                                 ;db 0x50
+   469 000002C5                                 ;db 0xb8, 0x00, 0x00
+   470 000002C5                                 ;db 0x50
+   471 000002C5                                 ;db 0xcb
+   472 000002C5                                 
+   473 000002C5                                 ;	MOV 	BX, 0x0040
+   474 000002C5                                 ;	MOV 	DS, BX
+   475 000002C5                                 ;	MOV 	BX, 0x1234
+   476 000002C5                                 ;	MOV 	[0x0072], BX
+   477 000002C5                                 ;	JMP 	0xffff:0x0000
+   478 000002C5 BB 40 00                        db 0xbb, 0x40, 0x00
+   479 000002C8 8E DB                           db 0x8e, 0xdb
+   480 000002CA BB 34 12                        db 0xbb, 0x34, 0x12
+   481 000002CD 89 1E 72 00                     db 0x89, 0x1e, 0x72, 0x00
+   482 000002D1 EA 00 00 FF FF                  db 0xea, 0x00, 0x00, 0xff, 0xff
+   483 000002D6 00 00 00 00 00 00 00 00 00 00   ALIGNB 16
+   484  = 0000001B                              reboot_con_len	EQU		$ - reboot_con
+   485 000002E0                                 ;ÔøΩÔøΩÔøΩœ¥ÔøΩÔøΩÔøΩŒ™ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+   486 000002E0                                 ; µƒ£ ΩÔøΩ¬¥ÔøΩÔøΩÎ¥´ÔøΩÕµÔøΩ0x0670ÔøΩÔøΩ
+   487 000002E0                                 reboot_start:
+   488 000002E0 E8 FFFFFED6                     	call 	backtoreal
+   489 000002E5                                 
+   490 000002E5 BB [000002C5]                   	MOV		EBX, reboot_con
+   491 000002EA BA 00000670                     	MOV		EDX, 0x670
+   492 000002EF 66 B9 001B                      	MOV		CX, reboot_con_len
+   493 000002F3                                 .loop5:
+   494 000002F3 2E 8A 03                        	MOV		AL, [CS:EBX]
+   495 000002F6 88 02                           	MOV		[EDX], AL
+   496 000002F8 43                              	INC		EBX
+   497 000002F9 42                              	INC		EDX
+   498 000002FA E2 F7                           	loop	.loop5
+   499 000002FC                                 
+   500 000002FC 0F 01 15 0000061A               	LGDT	[0x061A]
+   501 00000303 0F 01 1D 00000620               	LIDT	[0x0620]
+   502 0000030A EA 00000630 0010                	JMP		2*8:0x0630
+   503 00000311                                 
+   504 00000311                                 

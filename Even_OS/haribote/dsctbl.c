@@ -1,10 +1,4 @@
-/* ---------------------------------
-
-	HELO OS 系统专用源程序
-
------------------------------------ */
-/* copyright(C) 2019 PZK . */
-
+/* GDT傗IDT側偳偺丄 descriptor table 娭學 */
 
 #include "bootpack.h"
 

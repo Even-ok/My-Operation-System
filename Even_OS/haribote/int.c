@@ -1,14 +1,10 @@
-/* ---------------------------------
-
-	HELO OS 系统专用源程序
-
------------------------------------ */
-/* copyright(C) 2019 PZK . */
+/* 妱傝崬傒娭學 */
 
 #include "bootpack.h"
 #include <stdio.h>
 
 void init_pic(void)
+/* PIC偺弶婜壔 */
 {
 	io_out8(PIC0_IMR,  0xff  ); /* 慡偰偺妱傝崬傒傪庴偗晅偗側偄 */
 	io_out8(PIC1_IMR,  0xff  ); /* 慡偰偺妱傝崬傒傪庴偗晅偗側偄 */

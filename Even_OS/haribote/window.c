@@ -1,12 +1,4 @@
-/* --------------------------------
-	B Y : S T O N
-	WINDOW ���ڽӿ�
-	HELO OS ϵͳר��Դ����
-	HELO OS �����ļ�
-	    ver. 1.0
-         DATE : 2019-1-19  
------------------------------------ */
-/* copyright(C) 2019 PZK . */
+/* �E�B���h�E�֌W */
 
 #include "bootpack.h"
 
@@ -138,19 +130,18 @@ void make_window7(unsigned char *buf, int xsize, int ysize, char *title) //窗�
 	return;
 }
 
+
 void make_window8(unsigned char *buf, int xsize, int ysize, char *title, char act)
 {
-	boxfill8(buf, xsize, COL8_FFFFFF, 0,         0,         xsize - 1, 0        );
-	boxfill8(buf, xsize, 16+(30/51)+(144/51)*6+(255/51)*36, 0,         0,         xsize - 1, 0        );
-	boxfill8(buf, xsize, 16+(30/51)+(144/51)*6+(255/51)*36, 1,         1,         xsize - 2, 1        );
-	boxfill8(buf, xsize, 16+(30/51)+(144/51)*6+(255/51)*36, 0,         0,         0,         ysize - 1);
-	boxfill8(buf, xsize, 16+(30/51)+(144/51)*6+(255/51)*36, 1,         1,         1,         ysize - 2);
-	boxfill8(buf, xsize, 16+(30/51)+(144/51)*6+(255/51)*36, xsize - 2, 1,         xsize - 2, ysize - 2);
-	boxfill8(buf, xsize, 16+(30/51)+(144/51)*6+(255/51)*36, xsize - 1, 0,         xsize - 1, ysize - 1);
-	boxfill8(buf, xsize, COL8_FFFFFF, 2,         2,         xsize - 3, ysize - 3);
-	boxfill8(buf, xsize, COL8_FFFFFF, 3,         3,         xsize - 4, 20       );
-	boxfill8(buf, xsize, 16+(30/51)+(144/51)*6+(255/51)*36, 1,         ysize - 2, xsize - 2, ysize - 2);
-	boxfill8(buf, xsize, 16+(30/51)+(144/51)*6+(255/51)*36, 0,         ysize - 1, xsize - 1, ysize - 1);
+	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         xsize - 1, 0        );
+	boxfill8(buf, xsize, COL8_FFFFFF, 1,         1,         xsize - 2, 1        );
+	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         0,         ysize - 1);
+	boxfill8(buf, xsize, COL8_FFFFFF, 1,         1,         1,         ysize - 2);
+	boxfill8(buf, xsize, COL8_848484, xsize - 2, 1,         xsize - 2, ysize - 2);
+	boxfill8(buf, xsize, COL8_000000, xsize - 1, 0,         xsize - 1, ysize - 1);
+	boxfill8(buf, xsize, COL8_C6C6C6, 2,         2,         xsize - 3, ysize - 3);
+	boxfill8(buf, xsize, COL8_848484, 1,         ysize - 2, xsize - 2, ysize - 2);
+	boxfill8(buf, xsize, COL8_000000, 0,         ysize - 1, xsize - 1, ysize - 1);
 	make_wtitle8(buf, xsize, title, act);
 	return;
 }
@@ -158,29 +149,29 @@ void make_window8(unsigned char *buf, int xsize, int ysize, char *title, char ac
 void make_wtitle8(unsigned char *buf, int xsize, char *title, char act)
 {
 	static char closebtn[14][16] = {
-		"QQQQQQ$$$$QQQQQQ",
-		"QQQQ$$$$$$$$QQQQ",
-		"QQQ$$$$$$$$$$QQQ",
-		"QQ$$@@$$$$@@$$QQ",
-		"QQ$$$@@$$@@$$$QQ",
-		"Q$$$$$@@@@$$$$$Q",
-		"Q$$$$$$@@$$$$$$Q",
-		"Q$$$$$@@@@$$$$$Q",
-		"Q$$$$@@$$@@$$$$Q",
-		"QQ$$@@$$$$@@$$QQ",
-		"QQ$$$$$$$$$$$$QQ",
-		"QQQ$$$$$$$$$$QQQ",
-		"QQQQ$$$$$$$$QQQQ",
-		"QQQQQQ$$$$QQQQQQ"
+		"OOOOOOOOOOOOOOO@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQ@@QQQQ@@QQ$@",
+		"OQQQQ@@QQ@@QQQ$@",
+		"OQQQQQ@@@@QQQQ$@",
+		"OQQQQQQ@@QQQQQ$@",
+		"OQQQQQ@@@@QQQQ$@",
+		"OQQQQ@@QQ@@QQQ$@",
+		"OQQQ@@QQQQ@@QQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"O$$$$$$$$$$$$$$@",
+		"@@@@@@@@@@@@@@@@"
 	};
 	int x, y;
 	char c, tc, tbc;
 	if (act != 0) {
-		tc = COL8_C6C6C6;
-		tbc = COL8_FFFFFF;
+		tc = COL8_FFFFFF;
+		tbc = COL8_000084;
 	} else {
-		tc = COL8_000000;
-		tbc = COL8_FFFFFF;
+		tc = COL8_C6C6C6;
+		tbc = COL8_848484;
 	}
 	boxfill8(buf, xsize, tbc, 3, 3, xsize - 4, 20);
 	putfonts8_asc(buf, xsize, 24, 4, tc, title);
@@ -188,11 +179,11 @@ void make_wtitle8(unsigned char *buf, int xsize, char *title, char act)
 		for (x = 0; x < 16; x++) {
 			c = closebtn[y][x];
 			if (c == '@') {
-				c = COL8_FFFFFF;
+				c = COL8_000000;
 			} else if (c == '$') {
-				c = COL8_FF0000;
+				c = COL8_848484;
 			} else if (c == 'Q') {
-				c = COL8_FFFFFF;
+				c = COL8_C6C6C6;
 			} else {
 				c = COL8_FFFFFF;
 			}
@@ -261,3 +252,30 @@ void change_wtitle8(struct SHEET *sht, char act)
 	return;
 }
 
+//制作菜单图层
+void make_menu(struct SHEET *sht, int n)
+{
+	if(n == 1){
+		putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "  reboot", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "  shutdown", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-54, COL8_000000, COL8_C6C6C6, "background>", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-72, COL8_000000, COL8_C6C6C6, "  program >", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-90, COL8_000000, COL8_C6C6C6, "  app     >", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-108, COL8_000000, COL8_C6C6C6, "  console", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-126, COL8_000000, COL8_C6C6C6, " user info ", 11);
+	}else if(n == 2){
+		putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "  line", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "  time", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-54, COL8_000000, COL8_C6C6C6, "  star", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-72, COL8_000000, COL8_C6C6C6, "  color", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-90, COL8_000000, COL8_C6C6C6, "  walk", 11);
+	}else if(n == 3){
+		putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "  ...", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "  ball", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-54, COL8_000000, COL8_C6C6C6, "  photo", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-72, COL8_000000, COL8_C6C6C6, "  flight", 11);
+	}else if(n == 4){
+		putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "background1", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "background2", 11);
+	}
+} 

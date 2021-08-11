@@ -1,11 +1,4 @@
-/* --------------------------------
-	B Y : S T O N
-	HELO OS ϵͳר��Դ����
-	    ver. 1.0
-         DATE : 2019-1-19  
------------------------------------ */
-/* copyright(C) 2019 PZK . */
-
+/* �O���t�B�b�N�����֌W */
 
 #include "bootpack.h"
 
@@ -70,16 +63,12 @@ void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, i
 	}
 	return;
 }
+
 void init_screen8(char *vram, int x, int y)
 {
-	int *fat;
-	unsigned char c;
-	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
-	boxfill8(vram, x, COL8_008484, 0, 0, x - 1, y - 29);
-	fat = (int *) memman_alloc_4k(memman, 4 * 2880);
-	file_readfat(fat, (unsigned char *) (ADR_DISKIMG + 0x000200));
-	read_picture(fat, vram, x, y);
-	memman_free_4k(memman, (int) fat, 4 * 2880);
+	
+	boxfill8(vram, x, COL8_008484,  0,     0,      x -  1, y - 29);
+	set_picture(vram, x, y);
 	boxfill8(vram, x, COL8_C6C6C6,  0,     y - 28, x -  1, y - 28);
 	boxfill8(vram, x, COL8_FFFFFF,  0,     y - 27, x -  1, y - 27);
 	boxfill8(vram, x, COL8_C6C6C6,  0,     y - 26, x -  1, y -  1);
@@ -90,12 +79,60 @@ void init_screen8(char *vram, int x, int y)
 	boxfill8(vram, x, COL8_848484, 59,     y - 23, 59,     y -  5);
 	boxfill8(vram, x, COL8_000000,  2,     y -  3, 59,     y -  3);
 	boxfill8(vram, x, COL8_000000, 60,     y - 24, 60,     y -  3);
-
+	
 	boxfill8(vram, x, COL8_848484, x - 47, y - 24, x -  4, y - 24);
 	boxfill8(vram, x, COL8_848484, x - 47, y - 23, x - 47, y -  4);
 	boxfill8(vram, x, COL8_FFFFFF, x - 47, y -  3, x -  4, y -  3);
 	boxfill8(vram, x, COL8_FFFFFF, x -  3, y - 24, x -  3, y -  3);
+	
 	return;
+}
+
+int set_picture(unsigned char *vram, int x, int y)
+{
+	int i, j, x0, y0, fsize, info[4];
+	unsigned char *filebuf, r, g, b;
+	struct RGB *picbuf;
+	struct MEMMAN *memman  = (struct MEMMAN *) MEMMAN_ADDR;
+	struct BOOTINFO *binfo = (struct BOOTINFO *) ADR_BOOTINFO;
+	struct FILEINFO *finfo;
+	struct DLL_STRPICENV *env;
+	int *fat;
+
+	fat = (int *) memman_alloc_4k(memman, 4 * 2880);
+	file_readfat(fat, (unsigned char *) (ADR_DISKIMG + 0x000200));
+	finfo = file_search("heloos.jpg", (struct FILEINFO *) (ADR_DISKIMG + 0x002600), 224);
+	if (finfo == 0 || (finfo->type & 0x18) != 0) {
+		boxfill8(vram, x, COL8_FF0000, 100, 100, 300, 400);
+		return -1;
+	}
+	fsize   = finfo->size;
+	filebuf = (unsigned char *) memman_alloc_4k(memman, fsize);
+	filebuf = file_loadfile2(finfo->clustno, &fsize, fat);
+
+	env = (struct DLL_STRPICENV *) memman_alloc_4k(memman, sizeof(struct DLL_STRPICENV));
+	if(info_JPEG(env, info, fsize, filebuf) == 0){
+		return -1;			//		不是jpeg文件
+	}
+	picbuf  = (struct RGB *) memman_alloc_4k(memman, info[2] * info[3] * sizeof(struct RGB));
+	decode0_JPEG(env, fsize, filebuf, 4, (unsigned char *) picbuf, 0);
+
+	x0 = (int) ((x - info[2]) / 2);
+	y0 = (int) ((y - info[3]) / 2);
+	for (i = 0; i < info[3]; i++) {
+		for (j = 0; j < info[2]; j++) {
+			r = picbuf[i * info[2] + j].r;
+			g = picbuf[i * info[2] + j].g;
+			b = picbuf[i * info[2] + j].b;
+			vram[(y0 + i) * x + (x0 + j)] =(unsigned char) rgb2pal(r, g, b, j, i, binfo->vmode);
+		}
+	}
+
+	memman_free_4k(memman, (int) filebuf, fsize);
+	memman_free_4k(memman, (int) picbuf , info[2] * info[3] * sizeof(struct RGB));
+	memman_free_4k(memman, (int) env    , sizeof(struct DLL_STRPICENV));
+	memman_free_4k(memman, (int) fat, 4 * 2880);
+	return 0;
 }
 
 void putfont8(char *vram, int xsize, int x, int y, char c, char *font)
@@ -117,61 +154,9 @@ void putfont8(char *vram, int xsize, int x, int y, char c, char *font)
 	return;
 }
 
-
-void putfont32(char *vram, int xsize, int x, int y, char c, char *font1, char *font2)
-{
-	int i,k,j,f;
-	char *p, d ;
-	j=0;
-	p=vram+(y+j)*xsize+x;
-	j++;
-	//�ϰ벿��
-	for(i=0;i<16;i++)
-	{
-		for(k=0;k<8;k++)
-		{
-			if(font1[i]&(0x80>>k))
-			{
-				p[k+(i%2)*8]=c;
-			}
-		}
-		for(k=0;k<8/2;k++)
-		{
-			f=p[k+(i%2)*8];
-			p[k+(i%2)*8]=p[8-1-k+(i%2)*8];
-			p[8-1-k+(i%2)*8]=f;
-		}
-		if(i%2)
-		{
-			p=vram+(y+j)*xsize+x;
-			j++;
-		}
-	}
-	//�°벿��
-	for(i=0;i<16;i++)
-	{
-		for(k=0;k<8;k++)
-		{
-			if(font2[i]&(0x80>>k))
-			{
-				p[k+(i%2)*8]=c;
-			}
-		}
-		for(k=0;k<8/2;k++)
-		{
-			f=p[k+(i%2)*8];
-			p[k+(i%2)*8]=p[8-1-k+(i%2)*8];
-			p[8-1-k+(i%2)*8]=f;
-		}
-		if(i%2)
-		{
-			p=vram+(y+j)*xsize+x;
-			j++;
-		}
-	}
-	return;
-}
-
+/**
+* putfonts8_asc put font with 8 data.
+ */
 void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s)
 {
 	extern char hankaku[4096];
@@ -234,27 +219,8 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 			x += 8;
 		}
 	}
-	if (task->langmode == 3) {
-		for (; *s != 0x00; s++) {
-			if (task->langbyte1 == 0) {
-				if (0xa1 <= *s && *s <= 0xfe) {
-					task->langbyte1 = *s;
-				} else {
-					putfont8(vram, xsize, x, y, c, hankaku + *s * 16);
-				}
-			} else {
-				k = task->langbyte1 - 0xa1;
-				t = *s - 0xa1;
-				task->langbyte1 = 0;
-				font = nihongo + (k * 94 + t) * 32;
-				putfont32(vram,xsize,x-8,y,c,font,font+16);
-			}
-			x += 8;
-		}
-	}
 	return;
 }
-
 void init_mouse_cursor8(char *mouse, char bc)
 /* �}�E�X�J�[�\���������i16x16�j */
 {
@@ -306,41 +272,6 @@ void putblock8_8(char *vram, int vxsize, int pxsize,
 	return;
 }
 
-int read_picture(int *fat, short *vram, int x, int y)
-{
-	int i, j, x0, y0, fsize, info[4];
-	unsigned char *filebuf, r, g, b;
-	struct RGB *picbuf;
-	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
-	struct BOOTINFO *binfo = (struct BOOTINFO *) ADR_BOOTINFO;
-	struct FILEINFO *finfo;
-	struct DLL_STRPICENV *env;
-	finfo = file_search("heloos.jpg", (struct FILEINFO *) (ADR_DISKIMG + 0x002600), 224);
-	if (finfo == 0) {
-	return -1;
-}
-	fsize = finfo->size;
-	filebuf = (unsigned char *) memman_alloc_4k(memman, fsize);
-	filebuf = file_loadfile2(finfo->clustno, &fsize, fat);
-	env = (struct DLL_STRPICENV *) memman_alloc_4k(memman, sizeof(struct DLL_STRPICENV));
-	info_JPEG(env, info, fsize, filebuf);
-	picbuf = (struct RGB *) memman_alloc_4k(memman, info[2] * info[3] * sizeof(struct RGB));
-	decode0_JPEG(env, fsize, filebuf, 4, (unsigned char *) picbuf, 0);
-	x0 = (int) ((x - info[2]) / 2);
-	y0 = (int) ((y - info[3]) / 2);
-	for (i = 0; i < info[3]; i++) {
-	for (j = 0; j < info[2]; j++) {
-	r = picbuf[i * info[2] + j].r;
-	g = picbuf[i * info[2] + j].g;
-	b = picbuf[i * info[2] + j].b;
-	vram[(y0 + i) * x + (x0 + j)] = rgb2pal(r, g, b, j, i, binfo->vmode);
-	}
-}
-	memman_free_4k(memman, (int) filebuf, fsize);
-	memman_free_4k(memman, (int) picbuf , info[2] * info[3] * sizeof(struct RGB));
-	memman_free_4k(memman, (int) env , sizeof(struct DLL_STRPICENV));
-	return 0;
-}
 
 unsigned short rgb2pal(int r, int g, int b, int x, int y, int cb)
 {
@@ -361,7 +292,6 @@ unsigned short rgb2pal(int r, int g, int b, int x, int y, int cb)
 	return((unsigned short) (((r << 8) & 0xf800) | ((g << 3) & 0x07e0) | (b >> 3)));
 	}
 }
-
 
 void boxfilly(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
 {
@@ -472,4 +402,79 @@ void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x
 	   }
 	}
 	return;
+}
+
+
+void putfont8_ch(char *vram, int xsize, int x, int y, char c, char *font)
+{
+	int i;
+	char *p, d;
+	for (i = 0; i < 16; i++)
+	{
+		p = vram + (y + i) * xsize + x;
+		d = font[i * 2];
+		if ((d & 0x80) != 0) p[0] = c;
+		if ((d & 0x40) != 0) p[1] = c;
+		if ((d & 0x20) != 0) p[2] = c;
+		if ((d & 0x10) != 0) p[3] = c;
+		if ((d & 0x08) != 0) p[4] = c;
+		if ((d & 0x04) != 0) p[5] = c;
+		if ((d & 0x02) != 0) p[6] = c;
+		if ((d & 0x01) != 0) p[7] = c;
+	}
+	return;
+}
+
+void putfont32(char *vram, int xsize, int x, int y, char c, char *font1, char *font2)
+{
+    int i,k,j,f;
+    char *p, d ;
+    j=0;
+    p=vram+(y+j)*xsize+x;
+    j++;
+    //上半部分
+    for(i=0;i<16;i++)
+    {
+        for(k=0;k<8;k++)
+        {
+            if(font1[i]&(0x80>>k))
+            {
+                p[k+(i%2)*8]=c;
+            }
+        }
+        for(k=0;k<8/2;k++)
+        {
+            f=p[k+(i%2)*8];
+            p[k+(i%2)*8]=p[8-1-k+(i%2)*8];
+            p[8-1-k+(i%2)*8]=f;
+        }
+        if(i%2)
+        {
+            p=vram+(y+j)*xsize+x;
+            j++;
+        }
+    }
+    //下半部分
+    for(i=0;i<16;i++)
+    {
+        for(k=0;k<8;k++)
+        {
+            if(font2[i]&(0x80>>k))
+            {
+                p[k+(i%2)*8]=c;
+            }
+        }
+        for(k=0;k<8/2;k++)
+        {
+            f=p[k+(i%2)*8];
+            p[k+(i%2)*8]=p[8-1-k+(i%2)*8];
+            p[8-1-k+(i%2)*8]=f;
+        }
+        if(i%2)
+        {
+            p=vram+(y+j)*xsize+x;
+            j++;
+        }
+    }
+    return;
 }
