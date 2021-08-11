@@ -61,22 +61,24 @@ void init_mouse_cursor8(char *mouse, char bc);
 void putblock8_8(char *vram, int vxsize, int pxsize,
 	int pysize, int px0, int py0, char *buf, int bxsize);
 int read_picture(int *fat, short *vram, int x, int y); /* 锟斤拷锟斤！ */
-#define COL8_000000		0
-#define COL8_FF0000		1
-#define COL8_00FF00		2
-#define COL8_FFFF00		3
-#define COL8_0000FF		4
-#define COL8_FF00FF		5
-#define COL8_00FFFF		6
-#define COL8_FFFFFF		7
-#define COL8_C6C6C6		8
-#define COL8_840000		9
-#define COL8_008400		10
-#define COL8_848400		11
-#define COL8_000084		12
-#define COL8_840084		13
-#define COL8_008484		14
-#define COL8_848484		15
+#define COL8_000000		0 // 黑色
+#define COL8_FF0000		1 // 红色
+#define COL8_00FF00		2 // 荧光绿
+#define COL8_FFCC33		3 // 黄色
+#define COL8_0000FF		4 // 蓝色
+#define COL8_FF00FF		5 // 芭比粉
+#define COL8_00FFFF		6 // 荧光蓝
+#define COL8_FFFFFF		7 // 白色
+#define COL8_C6C6C6		8 // 灰色
+#define COL8_4273BF  	9 // 酒红色改蓝色
+#define COL8_008400		10 // 中绿色
+#define COL8_848400		11 // 草绿色
+#define COL8_000084		12 // 深蓝色
+#define COL8_840084		13 // 紫罗兰
+#define COL8_008484		14 // 漂亮的绿色 可以用
+#define COL8_848484		15 // 暖调的灰色
+#define COL8_FD5B46		16 // 我用的橙色
+#define COL8_4273BF		17 // 我用的蓝色
 
 /* dsctbl.c */
 struct SEGMENT_DESCRIPTOR {
@@ -201,8 +203,8 @@ int timer_cancel(struct TIMER *timer);
 void timer_cancelall(struct FIFO32 *fifo);
 
 /* mtask.c */
-#define MAX_TASKS		1000	/* �ő�^�X�N�� */
-#define TASK_GDT0		3		/* TSS��GDT�̉��Ԃ��犄�蓖�Ă�̂� */
+#define MAX_TASKS 1000	/*最大任务数量*/
+#define TASK_GDT0 3			/*定义从GDT的几号开始分配给TSS */
 #define MAX_TASKS_LV	100
 #define MAX_TASKLEVELS	10
 struct TSS32 {
@@ -212,8 +214,8 @@ struct TSS32 {
 	int ldtr, iomap;
 };
 struct TASK {
-	int sel, flags; /* sel��GDT�̔ԍ��̂��� */
-	int level, priority;
+	int sel, flags;		/* sel用来存放GDT的编号*/
+	int level, priority; /* 优先级 */
 	struct FIFO32 fifo;
 	struct TSS32 tss;
 	struct SEGMENT_DESCRIPTOR ldt[2];
@@ -222,18 +224,26 @@ struct TASK {
 	struct FILEHANDLE *fhandle;
 	int *fat;
 	char *cmdline;
+	char *TaskName;
 	unsigned char langmode, langbyte1;
 };
 struct TASKLEVEL {
-	int running; /* ���삵�Ă���^�X�N�̐� */
-	int now; /* ���ݓ��삵�Ă���^�X�N���ǂꂾ��������悤�ɂ��邽�߂̕ϐ� */
-	struct TASK *tasks[MAX_TASKS_LV];
+	int running; /*该优先层正在运行的任务数量*/
+	int now; /*这个变量用来记录当前正在运行的是哪个任务*/
+	struct TASK*	tasks[MAX_TASKS_LV];
+	
 };
 struct TASKCTL {
-	int now_lv; /* ���ݓ��쒆�̃��x�� */
-	char lv_change; /* ����^�X�N�X�C�b�`�̂Ƃ��ɁA���x�����ς����ق����������ǂ��� */
+	int runningNum;
+	int stoppedTasksNum;	//number of stopped tasks
+	int sleepTasksNum;		// number of sleep task
+	int now_lv; /*现在活动中的LEVEL */
+	char lv_change; /*在下次任务切换时是否需要改变LEVEL */	
 	struct TASKLEVEL level[MAX_TASKLEVELS];
-	struct TASK tasks0[MAX_TASKS];
+	struct TASK tasks0[MAX_TASKS];	
+	struct TASK	*runningTasks[MAX_TASKS];	// running task list
+	struct TASK	*sleepTasks[MAX_TASKS];		// sleep task list
+	struct TASK	*stoppedTasks[MAX_TASKS];	// stopped task list
 };
 extern struct TASKCTL *taskctl;
 extern struct TIMER *task_timer;

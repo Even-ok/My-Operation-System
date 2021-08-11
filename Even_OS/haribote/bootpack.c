@@ -134,6 +134,7 @@ void HariMain(void)
     task_a = task_init(memman);
     fifo.task = task_a;
     task_run(task_a, 1, 2);
+	task_a->TaskName="console";
     *((int *) 0x0fe4) = (int) shtctl;
     task_a->langmode = 0;
 
@@ -295,45 +296,45 @@ void HariMain(void)
 		if(i==15){
 			timer_init(timer2, &fifo, 16);
 			boxfill8(buf_qidong,binfo->scrnx,8,0,0,binfo->scrnx,binfo->scrny);
-			line(buf_qidong,binfo->scrnx,7,470,300,500,300,3);
+			line(buf_qidong,binfo->scrnx,7,470+112,300+84,500+112,300+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
 		}
 		if(i==16){
 			timer_init(timer2, &fifo, 17);
-			line(buf_qidong,binfo->scrnx,7,461,265,487,250,3);
+			line(buf_qidong,binfo->scrnx,7,461+112,265+84,487+112,250+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
 		}
 		if(i==17){
 			timer_init(timer2, &fifo, 18);
-			line(buf_qidong,binfo->scrnx,7,435,239,450,213,3);
+			line(buf_qidong,binfo->scrnx,7,435+112,239+84,450+112,213+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
 		}
 		if(i==18){
 			timer_init(timer2, &fifo, 19);
-			line(buf_qidong,binfo->scrnx,7,400,200,400,230,3);
+			line(buf_qidong,binfo->scrnx,7,400+112,200+84,400+112,230+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
 		}
 		if(i==19){
 			timer_init(timer2, &fifo, 20);
-			line(buf_qidong,binfo->scrnx,7,350,213,365,239,3);
+			line(buf_qidong,binfo->scrnx,7,350+112,213+84,365+112,239+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
 		}
 		if(i==20){
 			timer_init(timer2, &fifo, 21);
-			line(buf_qidong,binfo->scrnx,7,313,250,339,265,3);
+			line(buf_qidong,binfo->scrnx,7,313+112,250+84,339+112,265+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
 		}
 		if(i==21){
 			timer_init(timer2, &fifo, 22);
-			line(buf_qidong,binfo->scrnx,7,300,300,330,300,3);
-			line(buf_qidong,binfo->scrnx,8,470,300,500,300,3);
+			line(buf_qidong,binfo->scrnx,7,300+112,300+84,330+112,300+84,3);
+			line(buf_qidong,binfo->scrnx,8,470+112,300+84,500+112,300+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 5);
@@ -342,8 +343,8 @@ void HariMain(void)
 		}
 		if(i==22){
 			timer_init(timer2, &fifo, 23);
-			line(buf_qidong,binfo->scrnx,7,313,350,339,335,3);
-			line(buf_qidong,binfo->scrnx,8,461,265,487,250,3);
+			line(buf_qidong,binfo->scrnx,7,313+112,350+84,339+112,335+84,3);
+			line(buf_qidong,binfo->scrnx,8,461+112,265+84,487+112,250+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 5);
@@ -351,8 +352,8 @@ void HariMain(void)
 		}
 		if(i==23){
 			timer_init(timer2, &fifo, 24);
-			line(buf_qidong,binfo->scrnx,7,350,387,365,361,3);
-			line(buf_qidong,binfo->scrnx,8,435,239,450,213,3);
+			line(buf_qidong,binfo->scrnx,7,350+112,387+84,365+112,361+84,3);
+			line(buf_qidong,binfo->scrnx,8,435+112,239+84,450+112,213+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 5);
 			//qidong=1;
@@ -360,57 +361,32 @@ void HariMain(void)
 		if(i==24)
 		{
 			timer_init(timer2, &fifo, 25);
-			line(buf_qidong,binfo->scrnx,7,400,400,400,370,3);
-			line(buf_qidong,binfo->scrnx,8,400,200,400,230,3);
+			line(buf_qidong,binfo->scrnx,7,400+112,400+84,400+112,370+84,3);
+			line(buf_qidong,binfo->scrnx,8,400+112,200+84,400+112,230+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 5);
 		}
 		if(i==25)
 		{
 			timer_init(timer2, &fifo, 26);
-			line(buf_qidong,binfo->scrnx,7,435,361,450,387,3);
-			line(buf_qidong,binfo->scrnx,8,350,213,365,239,3);
-			/*
-			int i;
-			for(i=1;i<=60;i=i+5)
-			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4, kdy1[i]-4, kdx1[i]+4, kdy1[i]+4);
-			}
-            int j;
-			for(j=0;j<=60;j=j+5)
-			{
-				boxfilly(buf_qidong, binfo->scrnx, 1, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
-			}*/
-			//boxfill8(buf_qidong,binfo->scrnx,7,0,0,280,600);
+			line(buf_qidong,binfo->scrnx,7,435+112,361+84,450+112,387+84,3);
+			line(buf_qidong,binfo->scrnx,8,350+112,213+84,365+112,239+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 5);
 		}
 		if(i==26)
 		{
 			timer_init(timer2, &fifo, 27);
-			line(buf_qidong,binfo->scrnx,7,461,335,487,350,3);
-			line(buf_qidong,binfo->scrnx,8,313,250,339,265,3);
-			/*
-			int j;
-			for(j=0;j<=60;j=j+5)
-			{
-				boxfilly(buf_qidong, binfo->scrnx, 1, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
-			}
-			//boxfill8(buf_qidong,binfo->scrnx,7,0,0,280,600);
-
-			boxfilly(buf_qidong, binfo->scrnx, 3, 325, 225, 475, 375);
-			boxfilly(buf_qidong, binfo->scrnx, 1, 348, 248, 452, 352);
-			boxfilly(buf_qidong, binfo->scrnx, 3, 385, 285, 415, 315);
-*/
+			line(buf_qidong,binfo->scrnx,7,461+112,335+84,487+112,350+84,3);
+			line(buf_qidong,binfo->scrnx,8,313+112,250+84,339+112,265+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 5);
 		}
 		if(i==27)
 		{
 			timer_init(timer2, &fifo, 28);
-			line(buf_qidong,binfo->scrnx,7,470,300,500,300,3);
-			line(buf_qidong,binfo->scrnx,8,300,300,330,300,3);
-
+			line(buf_qidong,binfo->scrnx,7,470+112,300+84,500+112,300+84,3);
+			line(buf_qidong,binfo->scrnx,8,300+112,300+84,330+112,300+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 2);
 			//qidong=1;
@@ -418,8 +394,8 @@ void HariMain(void)
 		if(i==28)
 		{
 			timer_init(timer2, &fifo, 29);
-			line(buf_qidong,binfo->scrnx,7,461,265,487,250,3);
-			line(buf_qidong,binfo->scrnx,8,313,350,339,335,3);
+			line(buf_qidong,binfo->scrnx,7,461+112,265+84,487+112,250+84,3);
+			line(buf_qidong,binfo->scrnx,8,313+112,350+84,339+112,335+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 2);
 			//qidong=1;
@@ -427,8 +403,8 @@ void HariMain(void)
 		if(i==29)
 		{
 			timer_init(timer2, &fifo, 30);
-			line(buf_qidong,binfo->scrnx,7,435,239,450,213,3);
-			line(buf_qidong,binfo->scrnx,8,350,387,365,361,3);
+			line(buf_qidong,binfo->scrnx,7,435+112,239+84,450+112,213+84,3);
+			line(buf_qidong,binfo->scrnx,8,350+112,387+84,365+112,361+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
@@ -437,8 +413,8 @@ void HariMain(void)
 		if(i==30)
 		{
 			timer_init(timer2, &fifo, 31);
-			line(buf_qidong,binfo->scrnx,7,400,200,400,230,3);
-			line(buf_qidong,binfo->scrnx,8,400,400,400,370,3);
+			line(buf_qidong,binfo->scrnx,7,400+112,200+84,400+112,230+84,3);
+			line(buf_qidong,binfo->scrnx,8,400+112,400+84,400+112,370+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 2);
 			//qidong=1;
@@ -446,8 +422,8 @@ void HariMain(void)
 		if(i==31)
 		{
 			timer_init(timer2, &fifo, 32);
-			line(buf_qidong,binfo->scrnx,7,350,213,365,239,3);
-			line(buf_qidong,binfo->scrnx,8,435,361,450,387,3);
+			line(buf_qidong,binfo->scrnx,7,350+112,213+84,365+112,239+84,3);
+			line(buf_qidong,binfo->scrnx,8,435+112,361+84,450+112,387+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
@@ -455,8 +431,8 @@ void HariMain(void)
 		if(i==32)
 		{
 			timer_init(timer2, &fifo, 33);
-			line(buf_qidong,binfo->scrnx,7,313,250,339,265,3);
-			line(buf_qidong,binfo->scrnx,8,461,335,487,350,3);
+			line(buf_qidong,binfo->scrnx,7,313+112,250+84,339+112,265+84,3);
+			line(buf_qidong,binfo->scrnx,8,461+112,335+84,487+112,350+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 2);
@@ -465,7 +441,7 @@ void HariMain(void)
 		if(i==33)
 		{
 			timer_init(timer2, &fifo, 34);
-			line(buf_qidong,binfo->scrnx,7,300,300,330,300,3);
+			line(buf_qidong,binfo->scrnx,7,300+112,300+84,330+112,300+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 2);
@@ -474,7 +450,7 @@ void HariMain(void)
 		if(i==34)
 		{
 			timer_init(timer2, &fifo, 35);
-			line(buf_qidong,binfo->scrnx,7,313,350,339,335,3);
+			line(buf_qidong,binfo->scrnx,7,313+112,350+84,339+112,335+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 2);
@@ -483,7 +459,7 @@ void HariMain(void)
 		if(i==35)
 		{
 			timer_init(timer2, &fifo, 36);
-			line(buf_qidong,binfo->scrnx,7,350,387,365,361,3);
+			line(buf_qidong,binfo->scrnx,7,350+112,387+84,365+112,361+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 2);
@@ -492,7 +468,7 @@ void HariMain(void)
 		if(i==36)
 		{
             timer_init(timer2, &fifo, 37);
-			line(buf_qidong,binfo->scrnx,7,400,400,400,370,3);
+			line(buf_qidong,binfo->scrnx,7,400+112,400+84,400+112,370+84,3);
 
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 3);
@@ -501,7 +477,7 @@ void HariMain(void)
 		if(i==37)
 		{
             timer_init(timer2, &fifo, 38);
-			line(buf_qidong,binfo->scrnx,7,435,361,450,387,3);
+			line(buf_qidong,binfo->scrnx,7,435+112,361+84,450+112,387+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 20);
 			//qidong=1;
@@ -509,7 +485,7 @@ void HariMain(void)
 		if(i==38)
 		{
             timer_init(timer2, &fifo, 39);
-			line(buf_qidong,binfo->scrnx,7,461,335,487,350,3);
+			line(buf_qidong,binfo->scrnx,7,461+112,335+84,487+112,350+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 10);
 			//qidong=1;
@@ -517,18 +493,18 @@ void HariMain(void)
 		if(i==39)
 		{
             timer_init(timer2, &fifo, 40);
-			line(buf_qidong,binfo->scrnx,8,400,200,400,230,3);
-			line(buf_qidong,binfo->scrnx,8,400,400,400,370,3);
-			line(buf_qidong,binfo->scrnx,8,300,300,330,300,3);
-			line(buf_qidong,binfo->scrnx,8,470,300,500,300,3);
-			line(buf_qidong,binfo->scrnx,8,435,239,450,213,3);
-			line(buf_qidong,binfo->scrnx,8,461,265,487,250,3);
-			line(buf_qidong,binfo->scrnx,8,461,335,487,350,3);
-			line(buf_qidong,binfo->scrnx,8,435,361,450,387,3);
-			line(buf_qidong,binfo->scrnx,8,313,350,339,335,3);
-			line(buf_qidong,binfo->scrnx,8,350,387,365,361,3);
-			line(buf_qidong,binfo->scrnx,8,313,250,339,265,3);
-			line(buf_qidong,binfo->scrnx,8,350,213,365,239,3);
+			line(buf_qidong,binfo->scrnx,8,400+112,200+84,400+112,230+84,3);
+			line(buf_qidong,binfo->scrnx,8,400+112,400+84,400+112,370+84,3);
+			line(buf_qidong,binfo->scrnx,8,300+112,300+84,330+112,300+84,3);
+			line(buf_qidong,binfo->scrnx,8,470+112,300+84,500+112,300+84,3);
+			line(buf_qidong,binfo->scrnx,8,435+112,239+84,450+112,213+84,3);
+			line(buf_qidong,binfo->scrnx,8,461+112,265+84,487+112,250+84,3);
+			line(buf_qidong,binfo->scrnx,8,461+112,335+84,487+112,350+84,3);
+			line(buf_qidong,binfo->scrnx,8,435+112,361+84,450+112,387+84,3);
+			line(buf_qidong,binfo->scrnx,8,313+112,350+84,339+112,335+84,3);
+			line(buf_qidong,binfo->scrnx,8,350+112,387+84,365+112,361+84,3);
+			line(buf_qidong,binfo->scrnx,8,313+112,250+84,339+112,265+84,3);
+			line(buf_qidong,binfo->scrnx,8,350+112,213+84,365+112,239+84,3);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 20);
 			//qidong=1;
@@ -545,17 +521,17 @@ void HariMain(void)
 		{
             timer_init(timer2, &fifo, 42);
 			
-			boxfilly(buf_qidong, binfo->scrnx, 16, 350, 250, 450, 350);
-			boxfilly(buf_qidong, binfo->scrnx, 7, 360, 260, 440, 340);
-			boxfilly(buf_qidong, binfo->scrnx, 16, 385, 285, 415, 315);
+			boxfilly(buf_qidong, binfo->scrnx, 16, 350+112, 250+84, 450+112, 350+84);
+			boxfilly(buf_qidong, binfo->scrnx, 7, 360+112, 260+84, 440+112, 340+84);
+			boxfilly(buf_qidong, binfo->scrnx, 16, 385+112, 285+84, 415+112, 315+84);
 			
 			int i;
 			for(i=3;i<=60;i=i+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kx1[i]-2, ky1[i]-2, kx1[i]+2, ky1[i]+2);
+				boxfilly(buf_qidong, binfo->scrnx, 7, kx1[i]-2+112, ky1[i]-2+84, kx1[i]+2+112, ky1[i]+2+84);
 			}
-			line(buf_qidong,binfo->scrnx,7,0,420,50,420,2);
-			line(buf_qidong,binfo->scrnx,7,750,420,800,420,2);
+			line(buf_qidong,binfo->scrnx,7,0,420+84,50+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,750+112,420+84,1024,420+84,2);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 100);
 			//qidong=1;
@@ -565,17 +541,17 @@ void HariMain(void)
             timer_init(timer2, &fifo, 43);
 
 
-			boxfilly(buf_qidong, binfo->scrnx, 16, 340, 240, 460, 360);
-			boxfilly(buf_qidong, binfo->scrnx, 7, 350, 250, 450, 350);
-			boxfilly(buf_qidong, binfo->scrnx, 16, 375, 275, 425, 325);
+			boxfilly(buf_qidong, binfo->scrnx, 16, 340+112, 240+84, 460+112, 360+84);
+			boxfilly(buf_qidong, binfo->scrnx, 7, 350+112, 250+84, 450+112, 350+84);
+			boxfilly(buf_qidong, binfo->scrnx, 16, 375+112, 275+84, 425+112, 325+84);
 			int j;
 			for(j=4;j<=60;j=j+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[j]-4+112, kdy1[j]-4+84, kdx1[j]+4+112, kdy1[j]+4+84);
 			}
 
-			line(buf_qidong,binfo->scrnx,7,50,420,150,420,2);
-			line(buf_qidong,binfo->scrnx,7,650,420,750,420,2);
+			line(buf_qidong,binfo->scrnx,7,50+112,420+84,150+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,650+112,420+84,750+112,420+84,2);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 100);
 			//qidong=1;
@@ -583,18 +559,18 @@ void HariMain(void)
 		if(i==43)
 		{
             timer_init(timer2, &fifo, 44);
-			line(buf_qidong,binfo->scrnx,7,50,420,150,420,2);
-			line(buf_qidong,binfo->scrnx,7,650,420,750,420,2);
+			line(buf_qidong,binfo->scrnx,7,50+112,420+84,150+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,650+112,420+84,750+112,420+84,2);
 
 			int j;
 			for(j=4;j<=60;j=j+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4+112, kdy1[j]-4+84, kdx1[j]+4+112, kdy1[j]+4+84);
 			}
 			int i;
 			for(i=3;i<=60;i=i+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4, kdy1[i]-4, kdx1[i]+4, kdy1[i]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4+112, kdy1[i]-4+84, kdx1[i]+4+112, kdy1[i]+4+84);
 			}
 
 			//boxfill8(buf_qidong,binfo->scrnx,0,0,0,800,600);
@@ -605,18 +581,18 @@ void HariMain(void)
 		if(i==44)
 		{
             timer_init(timer2, &fifo, 45);
-			line(buf_qidong,binfo->scrnx,7,150,420,350,420,2);
-			line(buf_qidong,binfo->scrnx,7,450,420,650,420,2);
+			line(buf_qidong,binfo->scrnx,7,150+112,420+84,350+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,450+112,420+84,650+112,420+84,2);
 			
 			int j;
 			for(j=3;j<=60;j=j+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4+112, kdy1[j]-4+84, kdx1[j]+4+112, kdy1[j]+4+84);
 			}
 			int i;
 			for(i=2;i<=60;i=i+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4, kdy1[i]-4, kdx1[i]+4, kdy1[i]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4+112, kdy1[i]-4+84, kdx1[i]+4+112, kdy1[i]+4+84);
 			}
 			
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
@@ -629,16 +605,16 @@ void HariMain(void)
 			int j;
 			for(j=2;j<=60;j=j+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4+112, kdy1[j]-4+84, kdx1[j]+4+112, kdy1[j]+4+84);
 			}
 			int i;
 			for(i=1;i<=60;i=i+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4, kdy1[i]-4, kdx1[i]+4, kdy1[i]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4+112, kdy1[i]-4+84, kdx1[i]+4+112, kdy1[i]+4+84);
 			}
 
-			line(buf_qidong,binfo->scrnx,7,350,420,400,420,2);
-			line(buf_qidong,binfo->scrnx,7,400,420,450,420,2);
+			line(buf_qidong,binfo->scrnx,7,350+112,420+84,400+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,400+112,420+84,450+112,420+84,2);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 100);
 			//qidong=1;
@@ -650,16 +626,16 @@ void HariMain(void)
 			int j;
 			for(j=1;j<=60;j=j+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4+112, kdy1[j]-4+84, kdx1[j]+4+112, kdy1[j]+4+84);
 			}
 			int i;
 			for(i=0;i<=60;i=i+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4, kdy1[i]-4, kdx1[i]+4, kdy1[i]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4+112, kdy1[i]-4+84, kdx1[i]+4+112, kdy1[i]+4+84);
 			}
 
-			line(buf_qidong,binfo->scrnx,7,350,420,400,420,2);
-			line(buf_qidong,binfo->scrnx,7,400,420,450,420,2);
+			line(buf_qidong,binfo->scrnx,7,350+112,420+84,400+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,400+112,420+84,450+112,420+84,2);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 40);
 			//qidong=1;
@@ -670,16 +646,16 @@ void HariMain(void)
 			int j;
 			for(j=0;j<=60;j=j+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4+112, kdy1[j]-4+84, kdx1[j]+4+112, kdy1[j]+4+84);
 			}
 			int i;
 			for(i=4;i<=60;i=i+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4, kdy1[i]-4, kdx1[i]+4, kdy1[i]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4+112, kdy1[i]-4+84, kdx1[i]+4+112, kdy1[i]+4+84);
 			}
 
-			line(buf_qidong,binfo->scrnx,7,350,420,400,420,2);
-			line(buf_qidong,binfo->scrnx,7,400,420,450,420,2);
+			line(buf_qidong,binfo->scrnx,7,350+112,420+84,400+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,400+112,420+84,450+112,420+84,2);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 40);
 			//qidong=1;
@@ -690,15 +666,15 @@ void HariMain(void)
 			int j;
 			for(j=4;j<=60;j=j+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4, kdy1[j]-4, kdx1[j]+4, kdy1[j]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 15, kdx1[j]-4+112, kdy1[j]-4+84, kdx1[j]+4+112, kdy1[j]+4+84);
 			}
 			int i;
 			for(i=3;i<=60;i=i+5)
 			{
-				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4, kdy1[i]-4, kdx1[i]+4, kdy1[i]+4);
+				boxfilly(buf_qidong, binfo->scrnx, 7, kdx1[i]-4+112, kdy1[i]-4+84, kdx1[i]+4+112, kdy1[i]+4+84);
 			}
-			line(buf_qidong,binfo->scrnx,7,350,420,400,420,2);
-			line(buf_qidong,binfo->scrnx,7,400,420,450,420,2);
+			line(buf_qidong,binfo->scrnx,7,350+112,420+84,400+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,400+112,420+84,450+112,420+84,2);
 			boxfill8(buf_qidong,binfo->scrnx, 0, 0, 0,binfo->scrnx,binfo->scrny);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 40);
@@ -707,8 +683,8 @@ void HariMain(void)
 		if(i==49)
 		{
             timer_init(timer2, &fifo, 50);
-			line(buf_qidong,binfo->scrnx,7,350,420,400,420,2);
-			line(buf_qidong,binfo->scrnx,7,400,420,450,420,2);
+			line(buf_qidong,binfo->scrnx,7,350+112,420+84,400+112,420+84,2);
+			line(buf_qidong,binfo->scrnx,7,400+112,420+84,450+112,420+84,2);
 			sheet_refresh(sht_qidong, 0, 0, binfo->scrnx, binfo->scrny);
 			timer_settime(timer2, 40);
 			qidong=1;
@@ -724,7 +700,7 @@ void HariMain(void)
     // sheet_updown(sht_mouse, 2);
 
 static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
-	int cursor_pin = 327; //�������봦�Ĺ��
+	int cursor_pin = 327+112; //�������봦�Ĺ��
 	int flag_mima[10] = {0};
 	int cursor_cpin = 0;
 	int mima_count = 0;
@@ -772,7 +748,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 					{
 						sheet_updown(key_win,3);
 						//timer_init(timer4, &fifo, 50);
-						putfonts8_asc_sht(key_win, 250, 300, COL8_000000, 7,  "After 3 seconds can you try again!", 34);
+						putfonts8_asc_sht(key_win, 250+112, 300, COL8_000000, 7,  "After 3 seconds can you try again!", 34);
 						//timer_settime(timer4, 300);
 						//sheet_updown(key_win,-1);
 						int i=0;
@@ -784,7 +760,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 						{
 							//sheet_updown(key_win,-1);
 							//wrong=0;
-							putfonts8_asc_sht(key_win, 250, 300, COL8_000000, 7,  "After 2 seconds can you try again!", 34);
+							putfonts8_asc_sht(key_win, 250+112, 300, COL8_000000, 7,  "After 2 seconds can you try again!", 34);
 						}
 						int i1=0;
 						while(i1<=500000000)
@@ -793,7 +769,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 						}
 						if(i1>=500000000)
 						{
-							putfonts8_asc_sht(key_win, 250, 300, COL8_000000, 7,  "After 1 seconds can you try again!", 34);
+							putfonts8_asc_sht(key_win, 250+112, 300, COL8_000000, 7,  "After 1 seconds can you try again!", 34);
 						}
 						int i2=0;
 						while(i2<=500000000)
@@ -810,10 +786,10 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 						
 					timer_init(timer4, &fifo, 2);
 					timer_settime(timer4, 60);
-					putfonts8_asc_sht(sht_boot, 350, 360, COL8_000000, 7,  "Wrong Number!", 13);
-					putfonts8_asc_sht(sht_boot, 327-10, 403, 7, 7,  " ", 16);
+					putfonts8_asc_sht(sht_boot, 350+112, 360, COL8_000000, 7,  "Wrong Number!", 13);
+					putfonts8_asc_sht(sht_boot, 327-10+112, 403, 7, 7,  " ", 16);
 					//boxfill8(buf_boot, sht_boot->bxsize, 21,sht_boot->vx0 + 400-71, sht_boot->vy0 + 404,sht_boot->vx0 + 400+65, sht_boot->vy0 + 418);
-					cursor_pin = 327;//���ָ�ԭλ
+					cursor_pin = 327+112;//���ָ�ԭ
 					for (p=0; p<8; p++) flag_mima[p] = 0;
 					cursor_cpin = 0;
 					mima_count = 0;
@@ -822,7 +798,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 
 				if (i == 2) //�������
 				{
-					putfonts8_asc_sht(sht_boot, 350, 360, COL8_000000, 28,  "                                     ", 33);
+					putfonts8_asc_sht(sht_boot, 350+112, 360, COL8_000000, 28,  "                                     ", 33);
 				}
             
 		}
@@ -1286,6 +1262,8 @@ struct TASK *open_constask(struct SHEET *sht, unsigned int memtotal)
 	*((int *) (task->tss.esp + 4)) = (int) sht;
 	*((int *) (task->tss.esp + 8)) = memtotal;
 	task_run(task, 2, 2); /* level=2, priority=2 */
+	taskctl->runningNum++;
+	taskctl->runningTasks[taskctl->runningNum] = task;
 	fifo32_init(&task->fifo, 128, cons_fifo, task);
 	return task;
 }
@@ -1299,6 +1277,7 @@ struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal)
 	make_window8(buf, 256, 165, "console", 0);
 	make_textbox8(sht, 8, 28, 240, 128, COL8_000000);
 	sht->task = open_constask(sht, memtotal);
+	sht->task->TaskName = "console";
 	sht->flags |= 0x20;	/* �J�[�\������ */
 	return sht;
 }
@@ -1312,6 +1291,7 @@ struct SHEET *open_log(struct SHTCTL *shtctl, unsigned int memtotal)
 	make_window8(buf, 256*2, 165*4, "log", 0);
 	make_textbox8(sht, 8, 28, 256*2-16 , 165*4-37, COL8_000000);
 	sht->task = open_constask(sht, memtotal);
+	sht->task->TaskName = "log";
 	sht->flags |= 0x20;
 	return sht;
 }
@@ -1320,6 +1300,8 @@ void close_constask(struct TASK *task)
 {
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 	task_sleep(task);
+	taskctl->runningTasks[taskctl->runningNum] = NULL;
+	taskctl->runningNum--;
 	memman_free_4k(memman, task->cons_stack, 64 * 1024);
 	memman_free_4k(memman, (int) task->fifo.buf, 128 * 4);
 	task->flags = 0; /* task_free(task); �̑��� */
@@ -1338,14 +1320,14 @@ void close_console(struct SHEET *sht)
 
 void bootpage(unsigned char *buf, int xsize, int ysize){
 	boxfill8(buf, xsize, 28, 0, 0, xsize, ysize);
-	boxfilly(buf, xsize, 7, 300, 100, 500, 300);
-	boxfilly(buf, xsize, 8, 375, 150, 425, 200);
-	boxfilly(buf, xsize, 7, 382, 157, 418, 193);
+	boxfilly(buf, xsize, 7, 300+112, 100, 500+112, 300);
+	boxfilly(buf, xsize, 8, 375+112, 150, 425+112, 200);
+	boxfilly(buf, xsize, 7, 382+112, 157, 418+112, 193);
 	int i,j,x,y;
 	int x0 = xsize / 2;
-	for(i=350;i<=450;i++){
+	for(i=350+112;i<=450+112;i++){
 		for(j=200;j<=250;j++){
-			if((i-400)*(i-400)+(j-250)*(j-250)>=40*40&&(i-400)*(i-400)+(j-250)*(j-250)<=50*50){
+			if((i-400-112)*(i-400-112)+(j-250)*(j-250)>=40*40&&(i-400-112)*(i-400-112)+(j-250)*(j-250)<=50*50){
 				buf[j * xsize + i] = COL8_C6C6C6;
 			}
 		}
@@ -1431,7 +1413,7 @@ int cin_pin(struct SHEET *sht, int i, char keytable[],int cursor_pin, int cursor
     char s[2];
     if (i >= 256 && i < 0x54 + 256) 
     {
-		if (keytable[i - 256] != 0 && cursor_pin < 455) 
+		if (keytable[i - 256] != 0 && cursor_pin < 455+112) 
         { /*�������� */
 				//s[0] = keytable[i - 256];
                 s[0] = keytable[55];
@@ -1450,7 +1432,7 @@ int cin_pin(struct SHEET *sht, int i, char keytable[],int cursor_pin, int cursor
                 (*mima_count)++;
 		}
 	}
-	if (i == 256 + 0x0e && cursor_pin > 327) 
+	if (i == 256 + 0x0e && cursor_pin > 327+112) 
     { /* ɾ���� */
 		putfonts8_asc_sht(sht, cursor_pin-10, 403, COL8_000000, 7,  " ", 1);
 		cursor_pin -= 8;

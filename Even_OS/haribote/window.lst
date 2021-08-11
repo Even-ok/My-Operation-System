@@ -836,9 +836,9 @@
    794 000006C2 E8 [00000000]                   	CALL	_boxfill8
    795 000006C7 8B 4D E0                        	MOV	ECX,DWORD [-32+EBP]
    796 000006CA 83 C4 1C                        	ADD	ESP,28
-   797 000006CD 80 B9 000000BC 00               	CMP	BYTE [188+ECX],0
+   797 000006CD 80 B9 000000C0 00               	CMP	BYTE [192+ECX],0
    798 000006D4 74 09                           	JE	L74
-   799 000006D6 80 B9 000000BD 00               	CMP	BYTE [189+ECX],0
+   799 000006D6 80 B9 000000C1 00               	CMP	BYTE [193+ECX],0
    800 000006DD 75 40                           	JNE	L77
    801 000006DF                                 L74:
    802 000006DF FF 75 E8                        	PUSH	DWORD [-24+EBP]

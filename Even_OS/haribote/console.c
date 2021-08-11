@@ -430,7 +430,9 @@ void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal)
 		cmd_show(cons, cmdline);
 	} else if (strcmp(cmdline, "test") == 0 && cons->sht != 0){
 		cmd_test(cons);
-	} 
+	} else if (strcmp(cmdline, "top") == 0 && cons->sht != 0) {
+		cmd_top(cons);
+	}
 	else if(strcmp(cmdline, "stamp") == 0&& cons->sht != 0)
 	{
 		cmd_stamp(cons, cmdline);
@@ -1495,6 +1497,24 @@ void cmd_ncst(struct CONSOLE *cons, char *cmdline, int memtotal)
 		fifo32_put(fifo, cmdline[i] + 256);
 	}
 	fifo32_put(fifo, 10 + 256);	/* Enter */
+	cons_newline(cons);
+	return;
+}
+/*
+show running task
+*/
+void cmd_top(struct CONSOLE *cons)
+{
+	int i, j, nameLen;
+	//cons_putstr0(cons, "Task Name  ID  priority  state\n");
+	struct TASKLEVEL *tl = &taskctl->level[taskctl->now_lv];
+	for(i = 1; i < taskctl->runningNum; i++) {
+		//char prio = taskctl->runningTasks[i]->priority + '0';
+		char s[60];
+		sprintf(s, "Task Name:%s\nID:%d\nPriority:%d\nState: Running\n",taskctl->runningTasks[i]->TaskName , taskctl->runningTasks[i]->sel,taskctl->runningTasks[i]->priority);
+		cons_putstr0(cons, s);
+		cons_putstr0(cons, "\n");
+	}
 	cons_newline(cons);
 	return;
 }
