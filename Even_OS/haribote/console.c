@@ -126,25 +126,25 @@ void console_task(struct SHEET *sheet, int memtotal)
 				cmd_exit(&cons, fat);
 			}
 			if (i == 5) {	//ȡ����5  
-				cmd_app(&cons, fat, "lines");
+				//cmd_app(&cons, fat, "lines");
 			}
 			if (i == 6) {	//ȡ����6  
 				cmd_app(&cons, fat, "noodle");
 			}
 			if (i == 7) {	//ȡ����7  
-		    	cmd_app(&cons, fat, "star1"); 
+		    	//cmd_app(&cons, fat, "star1"); 
 			}
 			if (i == 8) {	//ȡ����8  
-				cmd_app(&cons, fat, "color2"); 
+				//cmd_app(&cons, fat, "color2"); 
 			}
 			if (i == 9) {	//ȡ����9  
-				cmd_app(&cons, fat, "walk");
+				//cmd_app(&cons, fat, "walk");
 			}
 			if (i == 10) {	//ȡ����10    ���� 
 				
 			}
 			if (i == 11) {	//ȡ����11 
-			    cmd_app(&cons, fat, "bball");
+			   // cmd_app(&cons, fat, "bball");
 			}
 			if (i == 12) {	//ͼƬ������  task->cmdline
 				cmdline[0]='G'; cmdline[1]='V'; cmdline[2]='I'; cmdline[3]='E'; cmdline[4]='W';  cmdline[5]=' '; 
