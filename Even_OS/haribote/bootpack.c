@@ -941,6 +941,15 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
                     fifo32_put(&keycmd, KEYCMD_LED);
                     fifo32_put(&keycmd, key_leds);
         		}
+				if (i == 256 + 0x48) {
+					task = key_win->task;
+				if (key_win != 0) fifo32_put(&task->fifo, 18 + 256);
+				}
+				if (i == 256 + 0x50) {
+					task = key_win->task;
+				if (key_win != 0) fifo32_put(&task->fifo, 20 + 256);
+				}
+
                 if (i == 256 + 0x3b && key_shift != 0 && key_win != 0) {    /* Shift+F1 */ //强制结束
                     task = key_win->task;
                     if (task != 0 && task->tss.ss0 != 0) {

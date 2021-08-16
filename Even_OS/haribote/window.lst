@@ -1093,29 +1093,29 @@
   1051 0000093A C6 45 E8 0C                     	MOV	BYTE [-24+EBP],12
   1052 0000093E E9 FFFFFF73                     	JMP	L81
   1053                                          [SECTION .data]
-  1054 000002A0                                 LC16:
+  1054 000002A0                                 LC15:
   1055 000002A0 62 61 63 6B 67 72 6F 75 6E 64   	DB	"background1",0x00
        000002AA 31 00 
-  1056 000002AC                                 LC17:
+  1056 000002AC                                 LC16:
   1057 000002AC 62 61 63 6B 67 72 6F 75 6E 64   	DB	"background2",0x00
        000002B6 32 00 
-  1058 000002B8                                 LC12:
+  1058 000002B8                                 LC11:
   1059 000002B8 20 20 2E 2E 2E 00               	DB	"  ...",0x00
-  1060 000002BE                                 LC13:
+  1060 000002BE                                 LC12:
   1061 000002BE 20 20 62 61 6C 6C 00            	DB	"  ball",0x00
-  1062 000002C5                                 LC14:
+  1062 000002C5                                 LC13:
   1063 000002C5 20 20 70 68 6F 74 6F 00         	DB	"  photo",0x00
-  1064 000002CD                                 LC15:
+  1064 000002CD                                 LC14:
   1065 000002CD 20 20 66 6C 69 67 68 74 00      	DB	"  flight",0x00
-  1066 000002D6                                 LC7:
+  1066 000002D6                                 LC6:
   1067 000002D6 20 20 6C 69 6E 65 00            	DB	"  line",0x00
-  1068 000002DD                                 LC8:
+  1068 000002DD                                 LC7:
   1069 000002DD 20 20 74 69 6D 65 00            	DB	"  time",0x00
-  1070 000002E4                                 LC9:
+  1070 000002E4                                 LC8:
   1071 000002E4 20 20 73 74 61 72 00            	DB	"  star",0x00
-  1072 000002EB                                 LC10:
+  1072 000002EB                                 LC9:
   1073 000002EB 20 20 63 6F 6C 6F 72 00         	DB	"  color",0x00
-  1074 000002F3                                 LC11:
+  1074 000002F3                                 LC10:
   1075 000002F3 20 20 77 61 6C 6B 00            	DB	"  walk",0x00
   1076 000002FA                                 LC0:
   1077 000002FA 20 20 72 65 62 6F 6F 74 00      	DB	"  reboot",0x00
@@ -1129,220 +1129,205 @@
   1083 0000031A 20 20 70 72 6F 67 72 61 6D 20   	DB	"  program >",0x00
        00000324 3E 00 
   1084 00000326                                 LC4:
-  1085 00000326 20 20 61 70 70 20 20 20 20 20   	DB	"  app     >",0x00
-       00000330 3E 00 
-  1086 00000332                                 LC5:
-  1087 00000332 20 20 63 6F 6E 73 6F 6C 65 00   	DB	"  console",0x00
-  1088 0000033C                                 LC6:
-  1089 0000033C 20 75 73 65 72 20 69 6E 66 6F   	DB	" user info ",0x00
-       00000346 20 00 
-  1090                                          [SECTION .text]
-  1091 00000943                                 	GLOBAL	_make_menu
-  1092 00000943                                 _make_menu:
-  1093 00000943 55                              	PUSH	EBP
-  1094 00000944 89 E5                           	MOV	EBP,ESP
-  1095 00000946 53                              	PUSH	EBX
-  1096 00000947 8B 45 0C                        	MOV	EAX,DWORD [12+EBP]
-  1097 0000094A 8B 5D 08                        	MOV	EBX,DWORD [8+EBP]
-  1098 0000094D 83 F8 01                        	CMP	EAX,1
-  1099 00000950 0F 84 00000145                  	JE	L111
-  1100 00000956 83 F8 02                        	CMP	EAX,2
-  1101 00000959 0F 84 000000AC                  	JE	L112
-  1102 0000095F 83 F8 03                        	CMP	EAX,3
-  1103 00000962 74 43                           	JE	L113
-  1104 00000964 83 F8 04                        	CMP	EAX,4
-  1105 00000967 74 05                           	JE	L114
-  1106 00000969                                 L101:
-  1107 00000969 8B 5D FC                        	MOV	EBX,DWORD [-4+EBP]
-  1108 0000096C C9                              	LEAVE
-  1109 0000096D C3                              	RET
-  1110 0000096E                                 L114:
-  1111 0000096E 6A 0B                           	PUSH	11
-  1112 00000970 68 [000002A0]                   	PUSH	LC16
-  1113 00000975 6A 08                           	PUSH	8
-  1114 00000977 6A 00                           	PUSH	0
-  1115 00000979 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1116 0000097C 83 E8 12                        	SUB	EAX,18
-  1117 0000097F 50                              	PUSH	EAX
-  1118 00000980 6A 01                           	PUSH	1
-  1119 00000982 53                              	PUSH	EBX
-  1120 00000983 E8 FFFFFCE9                     	CALL	_putfonts8_asc_sht
-  1121 00000988 6A 0B                           	PUSH	11
-  1122 0000098A 68 [000002AC]                   	PUSH	LC17
-  1123 0000098F 6A 08                           	PUSH	8
-  1124 00000991 6A 00                           	PUSH	0
-  1125 00000993 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1126 00000996 83 E8 24                        	SUB	EAX,36
-  1127 00000999                                 L109:
-  1128 00000999 50                              	PUSH	EAX
-  1129 0000099A 6A 01                           	PUSH	1
-  1130 0000099C 53                              	PUSH	EBX
-  1131 0000099D E8 FFFFFCCF                     	CALL	_putfonts8_asc_sht
-  1132 000009A2 83 C4 38                        	ADD	ESP,56
-  1133 000009A5 EB C2                           	JMP	L101
-  1134 000009A7                                 L113:
-  1135 000009A7 6A 0B                           	PUSH	11
-  1136 000009A9 68 [000002B8]                   	PUSH	LC12
-  1137 000009AE 6A 08                           	PUSH	8
-  1138 000009B0 6A 00                           	PUSH	0
-  1139 000009B2 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1140 000009B5 83 E8 12                        	SUB	EAX,18
-  1141 000009B8 50                              	PUSH	EAX
-  1142 000009B9 6A 01                           	PUSH	1
-  1143 000009BB 53                              	PUSH	EBX
-  1144 000009BC E8 FFFFFCB0                     	CALL	_putfonts8_asc_sht
-  1145 000009C1 6A 0B                           	PUSH	11
-  1146 000009C3 68 [000002BE]                   	PUSH	LC13
-  1147 000009C8 6A 08                           	PUSH	8
-  1148 000009CA 6A 00                           	PUSH	0
-  1149 000009CC 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1150 000009CF 83 E8 24                        	SUB	EAX,36
-  1151 000009D2 50                              	PUSH	EAX
-  1152 000009D3 6A 01                           	PUSH	1
-  1153 000009D5 53                              	PUSH	EBX
-  1154 000009D6 E8 FFFFFC96                     	CALL	_putfonts8_asc_sht
-  1155 000009DB 83 C4 38                        	ADD	ESP,56
-  1156 000009DE 6A 0B                           	PUSH	11
-  1157 000009E0 68 [000002C5]                   	PUSH	LC14
-  1158 000009E5 6A 08                           	PUSH	8
-  1159 000009E7 6A 00                           	PUSH	0
-  1160 000009E9 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1161 000009EC 83 E8 36                        	SUB	EAX,54
-  1162 000009EF 50                              	PUSH	EAX
-  1163 000009F0 6A 01                           	PUSH	1
-  1164 000009F2 53                              	PUSH	EBX
-  1165 000009F3 E8 FFFFFC79                     	CALL	_putfonts8_asc_sht
-  1166 000009F8 6A 0B                           	PUSH	11
-  1167 000009FA 68 [000002CD]                   	PUSH	LC15
-  1168 000009FF 6A 08                           	PUSH	8
-  1169 00000A01 6A 00                           	PUSH	0
-  1170 00000A03 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1171 00000A06 83 E8 48                        	SUB	EAX,72
-  1172 00000A09 EB 8E                           	JMP	L109
-  1173 00000A0B                                 L112:
-  1174 00000A0B 6A 0B                           	PUSH	11
-  1175 00000A0D 68 [000002D6]                   	PUSH	LC7
-  1176 00000A12 6A 08                           	PUSH	8
-  1177 00000A14 6A 00                           	PUSH	0
-  1178 00000A16 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1179 00000A19 83 E8 12                        	SUB	EAX,18
-  1180 00000A1C 50                              	PUSH	EAX
-  1181 00000A1D 6A 01                           	PUSH	1
-  1182 00000A1F 53                              	PUSH	EBX
-  1183 00000A20 E8 FFFFFC4C                     	CALL	_putfonts8_asc_sht
-  1184 00000A25 6A 0B                           	PUSH	11
-  1185 00000A27 68 [000002DD]                   	PUSH	LC8
-  1186 00000A2C 6A 08                           	PUSH	8
-  1187 00000A2E 6A 00                           	PUSH	0
-  1188 00000A30 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1189 00000A33 83 E8 24                        	SUB	EAX,36
-  1190 00000A36 50                              	PUSH	EAX
-  1191 00000A37 6A 01                           	PUSH	1
-  1192 00000A39 53                              	PUSH	EBX
-  1193 00000A3A E8 FFFFFC32                     	CALL	_putfonts8_asc_sht
-  1194 00000A3F 83 C4 38                        	ADD	ESP,56
-  1195 00000A42 6A 0B                           	PUSH	11
-  1196 00000A44 68 [000002E4]                   	PUSH	LC9
-  1197 00000A49 6A 08                           	PUSH	8
-  1198 00000A4B 6A 00                           	PUSH	0
-  1199 00000A4D 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1200 00000A50 83 E8 36                        	SUB	EAX,54
-  1201 00000A53 50                              	PUSH	EAX
-  1202 00000A54 6A 01                           	PUSH	1
-  1203 00000A56 53                              	PUSH	EBX
-  1204 00000A57 E8 FFFFFC15                     	CALL	_putfonts8_asc_sht
-  1205 00000A5C 6A 0B                           	PUSH	11
-  1206 00000A5E 68 [000002EB]                   	PUSH	LC10
-  1207 00000A63 6A 08                           	PUSH	8
-  1208 00000A65 6A 00                           	PUSH	0
-  1209 00000A67 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1210 00000A6A 83 E8 48                        	SUB	EAX,72
-  1211 00000A6D 50                              	PUSH	EAX
-  1212 00000A6E 6A 01                           	PUSH	1
-  1213 00000A70 53                              	PUSH	EBX
-  1214 00000A71 E8 FFFFFBFB                     	CALL	_putfonts8_asc_sht
-  1215 00000A76 83 C4 38                        	ADD	ESP,56
-  1216 00000A79 6A 0B                           	PUSH	11
-  1217 00000A7B 68 [000002F3]                   	PUSH	LC11
-  1218 00000A80 6A 08                           	PUSH	8
-  1219 00000A82 6A 00                           	PUSH	0
-  1220 00000A84 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1221 00000A87 83 E8 5A                        	SUB	EAX,90
-  1222 00000A8A                                 L110:
-  1223 00000A8A 50                              	PUSH	EAX
-  1224 00000A8B 6A 01                           	PUSH	1
-  1225 00000A8D 53                              	PUSH	EBX
-  1226 00000A8E E8 FFFFFBDE                     	CALL	_putfonts8_asc_sht
-  1227 00000A93 83 C4 1C                        	ADD	ESP,28
-  1228 00000A96 E9 FFFFFECE                     	JMP	L101
-  1229 00000A9B                                 L111:
-  1230 00000A9B 6A 0B                           	PUSH	11
-  1231 00000A9D 68 [000002FA]                   	PUSH	LC0
-  1232 00000AA2 6A 08                           	PUSH	8
-  1233 00000AA4 6A 00                           	PUSH	0
-  1234 00000AA6 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1235 00000AA9 83 E8 12                        	SUB	EAX,18
-  1236 00000AAC 50                              	PUSH	EAX
-  1237 00000AAD 6A 01                           	PUSH	1
-  1238 00000AAF 53                              	PUSH	EBX
-  1239 00000AB0 E8 FFFFFBBC                     	CALL	_putfonts8_asc_sht
-  1240 00000AB5 6A 0B                           	PUSH	11
-  1241 00000AB7 68 [00000303]                   	PUSH	LC1
-  1242 00000ABC 6A 08                           	PUSH	8
-  1243 00000ABE 6A 00                           	PUSH	0
-  1244 00000AC0 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1245 00000AC3 83 E8 24                        	SUB	EAX,36
-  1246 00000AC6 50                              	PUSH	EAX
-  1247 00000AC7 6A 01                           	PUSH	1
-  1248 00000AC9 53                              	PUSH	EBX
-  1249 00000ACA E8 FFFFFBA2                     	CALL	_putfonts8_asc_sht
-  1250 00000ACF 83 C4 38                        	ADD	ESP,56
-  1251 00000AD2 6A 0B                           	PUSH	11
-  1252 00000AD4 68 [0000030E]                   	PUSH	LC2
-  1253 00000AD9 6A 08                           	PUSH	8
-  1254 00000ADB 6A 00                           	PUSH	0
-  1255 00000ADD 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1256 00000AE0 83 E8 36                        	SUB	EAX,54
-  1257 00000AE3 50                              	PUSH	EAX
-  1258 00000AE4 6A 01                           	PUSH	1
-  1259 00000AE6 53                              	PUSH	EBX
-  1260 00000AE7 E8 FFFFFB85                     	CALL	_putfonts8_asc_sht
-  1261 00000AEC 6A 0B                           	PUSH	11
-  1262 00000AEE 68 [0000031A]                   	PUSH	LC3
-  1263 00000AF3 6A 08                           	PUSH	8
-  1264 00000AF5 6A 00                           	PUSH	0
-  1265 00000AF7 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1266 00000AFA 83 E8 48                        	SUB	EAX,72
-  1267 00000AFD 50                              	PUSH	EAX
-  1268 00000AFE 6A 01                           	PUSH	1
-  1269 00000B00 53                              	PUSH	EBX
-  1270 00000B01 E8 FFFFFB6B                     	CALL	_putfonts8_asc_sht
-  1271 00000B06 83 C4 38                        	ADD	ESP,56
-  1272 00000B09 6A 0B                           	PUSH	11
-  1273 00000B0B 68 [00000326]                   	PUSH	LC4
-  1274 00000B10 6A 08                           	PUSH	8
-  1275 00000B12 6A 00                           	PUSH	0
-  1276 00000B14 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1277 00000B17 83 E8 5A                        	SUB	EAX,90
-  1278 00000B1A 50                              	PUSH	EAX
-  1279 00000B1B 6A 01                           	PUSH	1
-  1280 00000B1D 53                              	PUSH	EBX
-  1281 00000B1E E8 FFFFFB4E                     	CALL	_putfonts8_asc_sht
-  1282 00000B23 6A 0B                           	PUSH	11
-  1283 00000B25 68 [00000332]                   	PUSH	LC5
-  1284 00000B2A 6A 08                           	PUSH	8
-  1285 00000B2C 6A 00                           	PUSH	0
-  1286 00000B2E 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1287 00000B31 83 E8 6C                        	SUB	EAX,108
-  1288 00000B34 50                              	PUSH	EAX
-  1289 00000B35 6A 01                           	PUSH	1
-  1290 00000B37 53                              	PUSH	EBX
-  1291 00000B38 E8 FFFFFB34                     	CALL	_putfonts8_asc_sht
-  1292 00000B3D 83 C4 38                        	ADD	ESP,56
-  1293 00000B40 6A 0B                           	PUSH	11
-  1294 00000B42 68 [0000033C]                   	PUSH	LC6
-  1295 00000B47 6A 08                           	PUSH	8
-  1296 00000B49 6A 00                           	PUSH	0
-  1297 00000B4B 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
-  1298 00000B4E 83 E8 7E                        	SUB	EAX,126
-  1299 00000B51 E9 FFFFFF34                     	JMP	L110
+  1085 00000326 20 20 63 6F 6E 73 6F 6C 65 00   	DB	"  console",0x00
+  1086 00000330                                 LC5:
+  1087 00000330 20 75 73 65 72 20 69 6E 66 6F   	DB	" user info ",0x00
+       0000033A 20 00 
+  1088                                          [SECTION .text]
+  1089 00000943                                 	GLOBAL	_make_menu
+  1090 00000943                                 _make_menu:
+  1091 00000943 55                              	PUSH	EBP
+  1092 00000944 89 E5                           	MOV	EBP,ESP
+  1093 00000946 53                              	PUSH	EBX
+  1094 00000947 8B 45 0C                        	MOV	EAX,DWORD [12+EBP]
+  1095 0000094A 8B 5D 08                        	MOV	EBX,DWORD [8+EBP]
+  1096 0000094D 83 F8 01                        	CMP	EAX,1
+  1097 00000950 0F 84 00000145                  	JE	L110
+  1098 00000956 83 F8 02                        	CMP	EAX,2
+  1099 00000959 0F 84 000000AC                  	JE	L111
+  1100 0000095F 83 F8 03                        	CMP	EAX,3
+  1101 00000962 74 43                           	JE	L112
+  1102 00000964 83 F8 04                        	CMP	EAX,4
+  1103 00000967 74 05                           	JE	L113
+  1104 00000969                                 L101:
+  1105 00000969 8B 5D FC                        	MOV	EBX,DWORD [-4+EBP]
+  1106 0000096C C9                              	LEAVE
+  1107 0000096D C3                              	RET
+  1108 0000096E                                 L113:
+  1109 0000096E 6A 0B                           	PUSH	11
+  1110 00000970 68 [000002A0]                   	PUSH	LC15
+  1111 00000975 6A 08                           	PUSH	8
+  1112 00000977 6A 00                           	PUSH	0
+  1113 00000979 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1114 0000097C 83 E8 12                        	SUB	EAX,18
+  1115 0000097F 50                              	PUSH	EAX
+  1116 00000980 6A 01                           	PUSH	1
+  1117 00000982 53                              	PUSH	EBX
+  1118 00000983 E8 FFFFFCE9                     	CALL	_putfonts8_asc_sht
+  1119 00000988 6A 0B                           	PUSH	11
+  1120 0000098A 68 [000002AC]                   	PUSH	LC16
+  1121 0000098F 6A 08                           	PUSH	8
+  1122 00000991 6A 00                           	PUSH	0
+  1123 00000993 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1124 00000996 83 E8 24                        	SUB	EAX,36
+  1125 00000999                                 L109:
+  1126 00000999 50                              	PUSH	EAX
+  1127 0000099A 6A 01                           	PUSH	1
+  1128 0000099C 53                              	PUSH	EBX
+  1129 0000099D E8 FFFFFCCF                     	CALL	_putfonts8_asc_sht
+  1130 000009A2 83 C4 38                        	ADD	ESP,56
+  1131 000009A5 EB C2                           	JMP	L101
+  1132 000009A7                                 L112:
+  1133 000009A7 6A 0B                           	PUSH	11
+  1134 000009A9 68 [000002B8]                   	PUSH	LC11
+  1135 000009AE 6A 08                           	PUSH	8
+  1136 000009B0 6A 00                           	PUSH	0
+  1137 000009B2 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1138 000009B5 83 E8 12                        	SUB	EAX,18
+  1139 000009B8 50                              	PUSH	EAX
+  1140 000009B9 6A 01                           	PUSH	1
+  1141 000009BB 53                              	PUSH	EBX
+  1142 000009BC E8 FFFFFCB0                     	CALL	_putfonts8_asc_sht
+  1143 000009C1 6A 0B                           	PUSH	11
+  1144 000009C3 68 [000002BE]                   	PUSH	LC12
+  1145 000009C8 6A 08                           	PUSH	8
+  1146 000009CA 6A 00                           	PUSH	0
+  1147 000009CC 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1148 000009CF 83 E8 24                        	SUB	EAX,36
+  1149 000009D2 50                              	PUSH	EAX
+  1150 000009D3 6A 01                           	PUSH	1
+  1151 000009D5 53                              	PUSH	EBX
+  1152 000009D6 E8 FFFFFC96                     	CALL	_putfonts8_asc_sht
+  1153 000009DB 83 C4 38                        	ADD	ESP,56
+  1154 000009DE 6A 0B                           	PUSH	11
+  1155 000009E0 68 [000002C5]                   	PUSH	LC13
+  1156 000009E5 6A 08                           	PUSH	8
+  1157 000009E7 6A 00                           	PUSH	0
+  1158 000009E9 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1159 000009EC 83 E8 36                        	SUB	EAX,54
+  1160 000009EF 50                              	PUSH	EAX
+  1161 000009F0 6A 01                           	PUSH	1
+  1162 000009F2 53                              	PUSH	EBX
+  1163 000009F3 E8 FFFFFC79                     	CALL	_putfonts8_asc_sht
+  1164 000009F8 6A 0B                           	PUSH	11
+  1165 000009FA 68 [000002CD]                   	PUSH	LC14
+  1166 000009FF 6A 08                           	PUSH	8
+  1167 00000A01 6A 00                           	PUSH	0
+  1168 00000A03 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1169 00000A06 83 E8 48                        	SUB	EAX,72
+  1170 00000A09 EB 8E                           	JMP	L109
+  1171 00000A0B                                 L111:
+  1172 00000A0B 6A 0B                           	PUSH	11
+  1173 00000A0D 68 [000002D6]                   	PUSH	LC6
+  1174 00000A12 6A 08                           	PUSH	8
+  1175 00000A14 6A 00                           	PUSH	0
+  1176 00000A16 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1177 00000A19 83 E8 12                        	SUB	EAX,18
+  1178 00000A1C 50                              	PUSH	EAX
+  1179 00000A1D 6A 01                           	PUSH	1
+  1180 00000A1F 53                              	PUSH	EBX
+  1181 00000A20 E8 FFFFFC4C                     	CALL	_putfonts8_asc_sht
+  1182 00000A25 6A 0B                           	PUSH	11
+  1183 00000A27 68 [000002DD]                   	PUSH	LC7
+  1184 00000A2C 6A 08                           	PUSH	8
+  1185 00000A2E 6A 00                           	PUSH	0
+  1186 00000A30 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1187 00000A33 83 E8 24                        	SUB	EAX,36
+  1188 00000A36 50                              	PUSH	EAX
+  1189 00000A37 6A 01                           	PUSH	1
+  1190 00000A39 53                              	PUSH	EBX
+  1191 00000A3A E8 FFFFFC32                     	CALL	_putfonts8_asc_sht
+  1192 00000A3F 83 C4 38                        	ADD	ESP,56
+  1193 00000A42 6A 0B                           	PUSH	11
+  1194 00000A44 68 [000002E4]                   	PUSH	LC8
+  1195 00000A49 6A 08                           	PUSH	8
+  1196 00000A4B 6A 00                           	PUSH	0
+  1197 00000A4D 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1198 00000A50 83 E8 36                        	SUB	EAX,54
+  1199 00000A53 50                              	PUSH	EAX
+  1200 00000A54 6A 01                           	PUSH	1
+  1201 00000A56 53                              	PUSH	EBX
+  1202 00000A57 E8 FFFFFC15                     	CALL	_putfonts8_asc_sht
+  1203 00000A5C 6A 0B                           	PUSH	11
+  1204 00000A5E 68 [000002EB]                   	PUSH	LC9
+  1205 00000A63 6A 08                           	PUSH	8
+  1206 00000A65 6A 00                           	PUSH	0
+  1207 00000A67 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1208 00000A6A 83 E8 48                        	SUB	EAX,72
+  1209 00000A6D 50                              	PUSH	EAX
+  1210 00000A6E 6A 01                           	PUSH	1
+  1211 00000A70 53                              	PUSH	EBX
+  1212 00000A71 E8 FFFFFBFB                     	CALL	_putfonts8_asc_sht
+  1213 00000A76 83 C4 38                        	ADD	ESP,56
+  1214 00000A79 6A 0B                           	PUSH	11
+  1215 00000A7B 68 [000002F3]                   	PUSH	LC10
+  1216 00000A80 6A 08                           	PUSH	8
+  1217 00000A82 6A 00                           	PUSH	0
+  1218 00000A84 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1219 00000A87 83 E8 5A                        	SUB	EAX,90
+  1220 00000A8A 50                              	PUSH	EAX
+  1221 00000A8B 6A 01                           	PUSH	1
+  1222 00000A8D 53                              	PUSH	EBX
+  1223 00000A8E E8 FFFFFBDE                     	CALL	_putfonts8_asc_sht
+  1224 00000A93 83 C4 1C                        	ADD	ESP,28
+  1225 00000A96 E9 FFFFFECE                     	JMP	L101
+  1226 00000A9B                                 L110:
+  1227 00000A9B 6A 0B                           	PUSH	11
+  1228 00000A9D 68 [000002FA]                   	PUSH	LC0
+  1229 00000AA2 6A 08                           	PUSH	8
+  1230 00000AA4 6A 00                           	PUSH	0
+  1231 00000AA6 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1232 00000AA9 83 E8 12                        	SUB	EAX,18
+  1233 00000AAC 50                              	PUSH	EAX
+  1234 00000AAD 6A 01                           	PUSH	1
+  1235 00000AAF 53                              	PUSH	EBX
+  1236 00000AB0 E8 FFFFFBBC                     	CALL	_putfonts8_asc_sht
+  1237 00000AB5 6A 0B                           	PUSH	11
+  1238 00000AB7 68 [00000303]                   	PUSH	LC1
+  1239 00000ABC 6A 08                           	PUSH	8
+  1240 00000ABE 6A 00                           	PUSH	0
+  1241 00000AC0 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1242 00000AC3 83 E8 24                        	SUB	EAX,36
+  1243 00000AC6 50                              	PUSH	EAX
+  1244 00000AC7 6A 01                           	PUSH	1
+  1245 00000AC9 53                              	PUSH	EBX
+  1246 00000ACA E8 FFFFFBA2                     	CALL	_putfonts8_asc_sht
+  1247 00000ACF 83 C4 38                        	ADD	ESP,56
+  1248 00000AD2 6A 0B                           	PUSH	11
+  1249 00000AD4 68 [0000030E]                   	PUSH	LC2
+  1250 00000AD9 6A 08                           	PUSH	8
+  1251 00000ADB 6A 00                           	PUSH	0
+  1252 00000ADD 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1253 00000AE0 83 E8 36                        	SUB	EAX,54
+  1254 00000AE3 50                              	PUSH	EAX
+  1255 00000AE4 6A 01                           	PUSH	1
+  1256 00000AE6 53                              	PUSH	EBX
+  1257 00000AE7 E8 FFFFFB85                     	CALL	_putfonts8_asc_sht
+  1258 00000AEC 6A 0B                           	PUSH	11
+  1259 00000AEE 68 [0000031A]                   	PUSH	LC3
+  1260 00000AF3 6A 08                           	PUSH	8
+  1261 00000AF5 6A 00                           	PUSH	0
+  1262 00000AF7 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1263 00000AFA 83 E8 48                        	SUB	EAX,72
+  1264 00000AFD 50                              	PUSH	EAX
+  1265 00000AFE 6A 01                           	PUSH	1
+  1266 00000B00 53                              	PUSH	EBX
+  1267 00000B01 E8 FFFFFB6B                     	CALL	_putfonts8_asc_sht
+  1268 00000B06 83 C4 38                        	ADD	ESP,56
+  1269 00000B09 6A 0B                           	PUSH	11
+  1270 00000B0B 68 [00000326]                   	PUSH	LC4
+  1271 00000B10 6A 08                           	PUSH	8
+  1272 00000B12 6A 00                           	PUSH	0
+  1273 00000B14 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1274 00000B17 83 E8 5A                        	SUB	EAX,90
+  1275 00000B1A 50                              	PUSH	EAX
+  1276 00000B1B 6A 01                           	PUSH	1
+  1277 00000B1D 53                              	PUSH	EBX
+  1278 00000B1E E8 FFFFFB4E                     	CALL	_putfonts8_asc_sht
+  1279 00000B23 6A 0B                           	PUSH	11
+  1280 00000B25 68 [00000330]                   	PUSH	LC5
+  1281 00000B2A 6A 08                           	PUSH	8
+  1282 00000B2C 6A 00                           	PUSH	0
+  1283 00000B2E 8B 43 08                        	MOV	EAX,DWORD [8+EBX]
+  1284 00000B31 83 E8 6C                        	SUB	EAX,108
+  1285 00000B34 E9 FFFFFE60                     	JMP	L109

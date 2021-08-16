@@ -3,12 +3,29 @@
 #include <stdio.h>
 #include <string.h>
 
+#define CMDHIS_NR 32
+#define CMDBUF 1024
+
+
+struct CMDHISTORY {
+int first, last, head, tail, now;
+char ** argv;
+char *buf;
+}s;
+
 /* Global�ϐ� */
 struct CONSOLE *log;
 //unsigned int *g_current_dir;
 // int g_pathname_length = 0;
 int console_id=0;
 struct MYFILEDATA *setfdata = 0;
+
+
+struct CMDHISTORY cmdhis;
+char cmd_buf[CMDBUF];
+/* 代码中略*/
+
+cmdhisbuf = cmd_buf;
 
 
 /* ���O�R���\�[���ɕ�����str���o�͂��� */
@@ -178,9 +195,45 @@ void console_task(struct SHEET *sheet, int memtotal)
 					cmdline[cons.cur_x / 8 - (path_length) - 2] = 0;
 					cons_newline(&cons);
 
+					cmdhis.argv = (char **)cmd_buf;
+					*cmdhis.argv = cmdhis.buf;
+					cmdhis.first = 0;
+					cmdhis.last = 0;
+					cmdhis.head = CMDHIS_NR * 4;
+					cmdhis.tail = 0; /* not use but we reserving it */
+					cmdhis.now = 0;
+
 					// *****�R�}���h���C���̃f�o�b�O�R�[�h*****
 					// sprintf(s, "original cmdline = %s[EOF]\n", cmdline);
 					// cons_putstr(&cons, s);
+
+											/* 在以下添加如下代码 */
+						if (cmdline[0] != 0) {
+						if (cmdhis.head+strlen(cmdline)+1 >= CMDBUF) {
+						cmdhis.head = CMDHIS_NR << 2;
+						}
+						if ((unsigned int)(cmdhis.buf + cmdhis.head) <=
+						(unsigned int)*(cmdhis.argv + cmdhis.last) &&
+						cmdhis.first != cmdhis.last) {
+						while ((unsigned int)(cmdhis.buf + cmdhis.head) +
+						strlen(cmdline) + 1 >
+						(unsigned int)*(cmdhis.argv + cmdhis.last)) {
+						if (++cmdhis.last == CMDHIS_NR) cmdhis.last = 0;
+						if (cmdhis.last == cmdhis.first) break;
+
+						}
+						}
+						strcpy(cmdhis.buf + cmdhis.head, cmdline);
+						*(cmdhis.argv + cmdhis.first) = cmdhis.buf + cmdhis.head;
+
+						cmdhis.head = cmdhis.head + strlen(cmdline) + 1;
+						cmdhis.now = cmdhis.first;
+						if(++cmdhis.first == CMDHIS_NR) cmdhis.first = 0;
+						if(cmdhis.last == cmdhis.first) {
+						if(++cmdhis.last == CMDHIS_NR) cmdhis.last = 0;
+						}
+						*(cmdhis.argv + cmdhis.first) = 0;
+						}
 
 					cons_runcmd(cmdline, &cons, fat, memtotal);	/* �R�}���h���s */
 					if (cons.sht == 0) {
@@ -189,7 +242,38 @@ void console_task(struct SHEET *sheet, int memtotal)
 					/* �v�����v�g�\�� */
 					path_length = cons_putdir(&cons);
 					cons_putchar(&cons, '>', 1);
-				} else {
+				} else if (i == 18 + 256 && (*(cmdhis.argv+cmdhis.now) != 0)) {
+					while(cons.cur_x > 24) {
+					cons_putchar(&cons, ' ', 0);
+					cons.cur_x -= 8;
+					}
+					cons_putstr0(&cons, *(cmdhis.argv + cmdhis.now));
+					strcpy(cmdline, *(cmdhis.argv+cmdhis.now));
+
+					if(cmdhis.now == cmdhis.last) cmdhis.now++;
+					cmdhis.now--;
+					if(cmdhis.first < cmdhis.last && cmdhis.now < 0)
+					cmdhis.now = CMDHIS_NR-1;
+					} else if (i == 20 + 256 && (*(cmdhis.argv+cmdhis.now) != 0)) {
+						while(cons.cur_x > 24) {
+						cons_putchar(&cons, ' ', 0);
+						cons.cur_x -= 8;
+						}
+						cons_putstr0(&cons, *(cmdhis.argv + cmdhis.now)); 
+						strcpy(cmdline, *(cmdhis.argv+cmdhis.now));
+						cmdhis.now++;
+
+						if(cmdhis.now == cmdhis.first) cmdhis.now--;
+						if(cmdhis.now == CMDHIS_NR){
+						if(cmdhis.first == 0) {
+						cmdhis.now--;
+						}else {
+						cmdhis.now = 0;
+						}
+						}
+						}			
+				
+				else {
 					/* ��ʕ��� */
 					if (cons.cur_x < 240) {
 						/* �ꕶ���\�����Ă���A�J�[�\����1�i�߂� */
@@ -2010,55 +2094,56 @@ void cmd_stamp(struct CONSOLE *cons1, char *cmdline)
 {
 	struct TASK *task = task_now();
 	cons_putstr0(cons1,"input 4 stamp values:");
+	cons_newline(cons1);
 	cmd_clearline(cons1,cmdline);//全都清空
 	cmd_clearline(cons1,task->cmdline);//全都清空
 	struct CONSOLE cons=*cons1;
 	//cons_newline(&cons);
-	//cons_putchar(&cons, '>', 1);
+	cons_putchar(cons1, '>', 1);
 	char *str;
 	str = get_1_line(cons,cmdline);
-	
-	cons1->cur_y +=32;
+	cons_putstr0(cons1,str);
+	cons1->cur_y +=16;
 
-     char result[20], * cmd_str;
-    int i, j, k, l, p, q;
-    int a[4];
-    static int s[1000];  /*�?�?*/
-    int x, y, r = 0, count = 0; //r用来做移动指针工�?,x指向数字开头，y指向连续数字结尾
-    for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	/* �X�y�[�X������܂œǂݔ�΂� */
-    for (; cmd_str[r]!=0; )
-    {
+    //  char result[20], * cmd_str;
+    // int i, j, k, l, p, q;
+    // int a[4];
+    // static int s[1000];  /*�?�?*/
+    // int x, y, r = 0, count = 0; //r用来做移动指针工�?,x指向数字开头，y指向连续数字结尾
+    // for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	/* �X�y�[�X������܂œǂݔ�΂� */
+    // for (; cmd_str[r]!=0; )
+    // {
 
-        if ('0' <= cmd_str[r] && cmd_str[r] <= '9')//�?数字
-        {
-            p = r;
-            q = r + 1;
-            a[count] = cmd_str[r] - '0';
-            while ('0' <= cmd_str[q] && cmd_str[q] <= '9')
-            {
-                a[count] = 10 * a[count] + (cmd_str[q] - '0');
-                q++;
-            }
-            r = q;  //新起�?
-            count++; //count应�?�为4
+    //     if ('0' <= cmd_str[r] && cmd_str[r] <= '9')//�?数字
+    //     {
+    //         p = r;
+    //         q = r + 1;
+    //         a[count] = cmd_str[r] - '0';
+    //         while ('0' <= cmd_str[q] && cmd_str[q] <= '9')
+    //         {
+    //             a[count] = 10 * a[count] + (cmd_str[q] - '0');
+    //             q++;
+    //         }
+    //         r = q;  //新起�?
+    //         count++; //count应�?�为4
 
-        }
-        else r++;
+    //     }
+    //     else r++;
 
-    }
-    //scanf("%d %d %d %d", &a, &b, &c, &d);  /*输入四�?�面值邮�?*/
-    for(i=0; i<=5; i++)  /*�?�?变量i用于控制a分面值邮票的张数，最�?5�?*/
-        for(j=0; i+j<=5; j++)  /*�?�?变量j用于控制b分面值邮票的张数，a分邮�?+b分邮票最�?5�?*/
-            for(k=0; k+i+j<=5; k++)  /*�?�?变量k用于控制c分面值邮票的张数，a分邮�?+b分邮�?+c分邮票最�?5�?*/
-                for(l=0; k+i+j+l<=5; l++)  /*�?�?变量l用于控制d分面值邮票的张数,a分邮�?+b分邮�?+c分邮�?+d分邮票最�?5�?*/
-                    if( a[0]*i+a[1]*j+a[2]*k+a[3]*l )
-                        s[a[0]*i+a[1]*j+a[2]*k+a[3]*l]++;
-    for(i=1; i<=1000; i++)
-        if( !s[i] )
-            break;
+    // }
+    // //scanf("%d %d %d %d", &a, &b, &c, &d);  /*输入四�?�面值邮�?*/
+    // for(i=0; i<=5; i++)  /*�?�?变量i用于控制a分面值邮票的张数，最�?5�?*/
+    //     for(j=0; i+j<=5; j++)  /*�?�?变量j用于控制b分面值邮票的张数，a分邮�?+b分邮票最�?5�?*/
+    //         for(k=0; k+i+j<=5; k++)  /*�?�?变量k用于控制c分面值邮票的张数，a分邮�?+b分邮�?+c分邮票最�?5�?*/
+    //             for(l=0; k+i+j+l<=5; l++)  /*�?�?变量l用于控制d分面值邮票的张数,a分邮�?+b分邮�?+c分邮�?+d分邮票最�?5�?*/
+    //                 if( a[0]*i+a[1]*j+a[2]*k+a[3]*l )
+    //                     s[a[0]*i+a[1]*j+a[2]*k+a[3]*l]++;
+    // for(i=1; i<=1000; i++)
+    //     if( !s[i] )
+    //         break;
 
-    sprintf(result, "The max is %d\n", --i);
-    cons_putstr0(cons1,result);
+    // sprintf(result, "The max is %d\n", --i);
+    // cons_putstr0(cons1,result);
 	//cons_putstr0(cons1, cmdline);
 	return;
 
@@ -2068,6 +2153,8 @@ void cmd_stamp(struct CONSOLE *cons1, char *cmdline)
 char *get_1_line(struct CONSOLE cons, char *cmdline)
 {
 	struct TASK *task = task_now();
+	int path_length = 0; // for calculating cmdline
+	path_length = cons_putdir(&cons);
 	int i;
 		for (;;) {
 		io_cli();
@@ -2107,7 +2194,7 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 			if (256 <= i && i <= 511) { /* �L�[�{�[�h�f�[�^�i�^�X�NA�o�R�j */
 				if (i == 8 + 256) {
 					/* �o�b�N�X�y�[�X */
-					if (cons.cur_x > 16) {
+					if (cons.cur_x > 16 + path_length * 8) {
 						/* �J�[�\�����X�y�[�X�ŏ����Ă���A�J�[�\����1�߂� */
 						cons_putchar(&cons, ' ', 0);
 						cons.cur_x -= 8;
@@ -2116,7 +2203,7 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 					/* Enter */
 					/* �J�[�\�����X�y�[�X�ŏ����Ă�����s���� */
 					cons_putchar(&cons, ' ', 0);
-					cmdline[cons.cur_x / 8 - 2] = 0;
+					cmdline[cons.cur_x / 8 - (path_length) - 2] = 0;
 					cons_newline(&cons);
 					if (cons.sht == 0) {
 						cmd_exit(&cons, task->fat);
@@ -2124,12 +2211,13 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 					/* �v�����v�g�\�� */
 					//cons_putchar(&cons, '>', 1);
 					//cons_putstr0(&cons, cmdline);
-					break;
+					return cmdline;
+					//break;
 				} else {
 					/* ��ʕ���? */
 					if (cons.cur_x < 272) {
 						/* �ꕶ���\�����Ă���A�J�[�\����1�i�߂� */
-						cmdline[cons.cur_x / 8 - 2] = i - 256;
+						cmdline[cons.cur_x / 8 - (path_length) - 2] = i - 256;
 						cons_putchar(&cons, i - 256, 1);
 					}
 				}

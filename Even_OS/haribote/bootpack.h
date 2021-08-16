@@ -467,3 +467,4 @@ int decode0_JPEG(struct DLL_STRPICENV*env,int size,unsigned char *fp,int b_type,
 /*icon.c*/
 int newBackGround(char *cmdline, int *fat, struct CONSOLE *cons);
 int InitIcon_xxx(struct SHEET *sht, int *fat, int number);
+
