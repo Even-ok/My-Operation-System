@@ -164,6 +164,38 @@ void make_wtitle8(unsigned char *buf, int xsize, char *title, char act)
 		"O$$$$$$$$$$$$$$@",
 		"@@@@@@@@@@@@@@@@"
 	};
+	static char large[14][16] = {
+		"OOOOOOOOOOOOOOOO",
+		"O@@@@@@@@@@@@@@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@QQQQQQQQQQQQ@O",
+		"O@@@@@@@@@@@@@@O",
+		"O$$$$$$$$$$$$$$O",
+		"@@@@@@@@@@@@@@@@"
+	};
+	static char small[14][16] = {
+		"OOOOOOOOOOOOOOO@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"O@@@@@@@@@@@@@$@",
+		"O@@@@@@@@@@@@@$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"O$$$$$$$$$$$$$$@",
+		"@@@@@@@@@@@@@@@@"
+	};
 	int x, y;
 	char c, tc, tbc;
 	if (act != 0) {
@@ -173,6 +205,41 @@ void make_wtitle8(unsigned char *buf, int xsize, char *title, char act)
 		tc = COL8_C6C6C6;
 		tbc = COL8_848484;
 	}
+
+	boxfill8(buf, xsize, 8,0,40,800,600);
+	boxfill8(buf, xsize, 7,6,46,794,594);
+	boxfill8(buf, xsize, 25,0,0,800,40);
+	boxfill8(buf, xsize, 6,0,20,800,40);
+    //7个功能
+    boxfill8(buf, xsize, 8,2,22,18,38);
+	//
+	boxfill8(buf, xsize, 15,4,26,16,34);
+    boxfill8(buf, xsize, 0,8,28,12,32);
+
+	boxfill8(buf, xsize, 8,23,22,39,38);
+	boxfill8(buf, xsize, 0,25,24,37,26);
+	boxfill8(buf, xsize, 0,25,34,37,36);
+	line(buf,xsize,0,25,34,37,26,1);
+
+	//boxfill8(buf, xsize, 8,44,22,60,38);
+	boxfill8(buf, xsize, 1,44,22,60,38);
+	boxfill8(buf, xsize, 2,46,24,58,36);
+	boxfill8(buf, xsize, 3,48,26,56,34);
+	boxfill8(buf, xsize, 4,50,28,54,32);
+
+	boxfill8(buf, xsize, 8,65,22,81,38);
+    boxfill8(buf, xsize, 0,67,26,79,34);
+	boxfill8(buf, xsize, 8,68,27,78,33);
+
+	boxfill8(buf, xsize, 8,86,22,102,38);
+    line(buf,xsize,0,86,22,102,38,1);
+
+	boxfill8(buf, xsize, 8,107,22,123,38);
+	boxfill8(buf, xsize, 7,110,25,120,35);
+	
+	boxfill8(buf, xsize, 8,128,22,144,38);
+	san(buf, xsize, 0,130,24,142,36);
+
 	boxfill8(buf, xsize, tbc, 3, 3, xsize - 4, 20);
 	putfonts8_asc(buf, xsize, 24, 4, tc, title);
 	for (y = 0; y < 14; y++) {
@@ -190,7 +257,49 @@ void make_wtitle8(unsigned char *buf, int xsize, char *title, char act)
 			buf[(5 + y) * xsize + (xsize - 21 + x)] = c;
 		}
 	}
+	for (y = 0; y < 14; y++) {
+		for (x = 0; x < 16; x++) {
+			c = large[y][x];
+			if (c == '@') {
+				c = COL8_000000;
+			} else if (c == '$') {
+				c = COL8_848484;
+			} else if (c == 'Q') {
+				c = COL8_C6C6C6;
+			} else {
+				c = COL8_FFFFFF;
+			}
+			buf[(5 + y) * xsize + (xsize - 38 + x)] = c;
+		}
+	}
+	for (y = 0; y < 14; y++) {
+		for (x = 0; x < 16; x++) {
+			c = small[y][x];
+			if (c == '@') {
+				c = COL8_000000;
+			} else if (c == '$') {
+				c = COL8_848484;
+			} else if (c == 'Q') {
+				c = COL8_C6C6C6;
+			} else {
+				c = COL8_FFFFFF;
+			}
+			buf[(5 + y) * xsize + (xsize - 55 + x)] = c;
+		}
+	}
+
 	return;
+}
+
+int min(int x,int y)
+{
+	if(x>=y) return y;
+	else return x;
+}
+int max(int x,int y)
+{
+	if(x<=y) return y;
+	else return x;
 }
 
 void putfonts8_asc_sht(struct SHEET *sht, int x, int y, int c, int b, char *s, int l)
@@ -260,21 +369,22 @@ void make_menu(struct SHEET *sht, int n)
 		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "  shutdown", 11);
 		putfonts8_asc_sht(sht, 1, sht->bysize-54, COL8_000000, COL8_C6C6C6, "background>", 11);
 		putfonts8_asc_sht(sht, 1, sht->bysize-72, COL8_000000, COL8_C6C6C6, "  program >", 11);
-		putfonts8_asc_sht(sht, 1, sht->bysize-90, COL8_000000, COL8_C6C6C6, "  app     >", 11);
+		//putfonts8_asc_sht(sht, 1, sht->bysize-90, COL8_000000, COL8_C6C6C6, "  app     >", 11);
 		putfonts8_asc_sht(sht, 1, sht->bysize-108, COL8_000000, COL8_C6C6C6, "  console", 11);
 		putfonts8_asc_sht(sht, 1, sht->bysize-126, COL8_000000, COL8_C6C6C6, " user info ", 11);
-	}else if(n == 2){
-		putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "  line", 11);
-		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "  time", 11);
-		putfonts8_asc_sht(sht, 1, sht->bysize-54, COL8_000000, COL8_C6C6C6, "  star", 11);
-		putfonts8_asc_sht(sht, 1, sht->bysize-72, COL8_000000, COL8_C6C6C6, "  color", 11);
-		putfonts8_asc_sht(sht, 1, sht->bysize-90, COL8_000000, COL8_C6C6C6, "  walk", 11);
+	}/*else if(n == 2){
+	}*/
+	else if(n == 2){
+		//putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "  line", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "  time", 11);
+		//putfonts8_asc_sht(sht, 1, sht->bysize-54, COL8_000000, COL8_C6C6C6, "  star", 11);
+		//putfonts8_asc_sht(sht, 1, sht->bysize-72, COL8_000000, COL8_C6C6C6, "  color", 11);
+		//putfonts8_asc_sht(sht, 1, sht->bysize-90, COL8_000000, COL8_C6C6C6, "  walk", 11);
+		//putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "  ...", 11);
+		//putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "  ball", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "  photo", 11);
+		putfonts8_asc_sht(sht, 1, sht->bysize-54, COL8_000000, COL8_C6C6C6, "  flight", 11);
 	}else if(n == 3){
-		putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "  ...", 11);
-		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "  ball", 11);
-		putfonts8_asc_sht(sht, 1, sht->bysize-54, COL8_000000, COL8_C6C6C6, "  photo", 11);
-		putfonts8_asc_sht(sht, 1, sht->bysize-72, COL8_000000, COL8_C6C6C6, "  flight", 11);
-	}else if(n == 4){
 		putfonts8_asc_sht(sht, 1, sht->bysize-18, COL8_000000, COL8_C6C6C6, "background1", 11);
 		putfonts8_asc_sht(sht, 1, sht->bysize-36, COL8_000000, COL8_C6C6C6, "background2", 11);
 	}

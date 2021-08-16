@@ -13,27 +13,26 @@ struct MYFILEDATA *setfdata = 0;
 
 /* ���O�R���\�[���ɕ�����str���o�͂��� */
 void debug_print(char *str){
-	/*	�f�o�b�O�p�̏o�͂�����Ƃ���"//"������
-	char s[50];
-	sprintf(s, "[debug] ");
-	cons_putstr(log, s);
-	int i;
-	for(i=0; str[i]!='0' && str[i]!='\0'; i++){
-		if(i == 150){
-			str[i] = '0';
-			break;
-		}
-	}
+	// char s[50];
+	// sprintf(s, "[debug] ");
+	// cons_putstr(log, s);
+	// int i;
+	// for(i=0; str[i]!='0' && str[i]!='\0'; i++){
+	// 	if(i == 150){
+	// 		str[i] = '0';
+	// 		break;
+	// 	}
+	// }
 
-	// 150�����ȏ�͏o�͂��Ȃ�
-	if(i<150){
-		cons_putstr(log, str);
-	}else{
-		sprintf(s, "[CAUTION:(str.length>150)]");
-		cons_putstr(log, s);
-		cons_putstr(log, str);
-	}
-	//*/
+	// // 150�����ȏ�͏o�͂��Ȃ�
+	// if(i<150){
+	// 	cons_putstr(log, str);
+	// }else{
+	// 	sprintf(s, "[CAUTION:(str.length>150)]");
+	// 	cons_putstr(log, s);
+	// 	cons_putstr(log, str);
+	// }
+	
 	return;
 }
 
@@ -713,6 +712,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 			cons_newline(cons);
 			return;
 		}else if(strcmp(option, "save") == 0){
+			//cons_putstr(cons, "enter myfsave!");
 			if(myfsave(setfdata) == -1){
 				sprintf(s, "Can't save because of error in myfinfo_search() in myfsave()\n");
 				cons_putstr(cons, s);
@@ -852,8 +852,6 @@ void cmd_mkdir(struct CONSOLE *cons, char *cmdline){
 	struct MYFILEINFO *finfo; // for debug
 
 	dir_name = cmdline + 6;
-
-	/* �f�B���N�g�����̕��������𒴂���/���ɓ����f�B���N�g���������݂��Ă���ꍇ�͉������Ȃ� */
 	for(i=0; dir_name[i] != 0; i++);
 	if(i > 8){
 		sprintf(s, "directory name shoule be within 8 letters.\n");
@@ -1000,16 +998,16 @@ void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
 	test.head.stat = STAT_ALL;	// �V�K�t�@�C���쐬���̓X�e�[�^�X�r�b�g��S�ė��Ă�(�v����)
 	test.head.this_dir = dinfo->this_dir;//�v����
 	struct MYFILEDATA *fdata = get_newfdata(&test); // �V�K�f�[�^���擾�@//�v����
-	//strcpy(fdata->head.name, name);	// �t�@�C���f�[�^�ɂ����O���R�s�[("name"�ł��邱�Ƃɒ��ӁI)
+	strcpy(fdata->head.name, name);	// �t�@�C���f�[�^�ɂ����O���R�s�[("name"�ł��邱�Ƃɒ��ӁI)
 
 	/***** debug *****/
-	//sprintf(s, "fdata->head.name =\t\t%s[EOF]\n", fdata->head.name);
-	//debug_print(s);
-	//sprintf(s, "dinfo->finfo[i].name =\t%s[EOF]\n", dinfo->finfo[i].name);
-	//debug_print(s);
-	//struct MYFILEINFO *debug = myfinfo_search(fdata->head.name, dinfo, MAX_FINFO_NUM);
-	//sprintf(s, "test(should not be 0) = %d\n", debug);
-	//debug_print(s);
+	sprintf(s, "fdata->head.name =\t\t%s[EOF]\n", fdata->head.name);
+	debug_print(s);
+	sprintf(s, "dinfo->finfo[i].name =\t%s[EOF]\n", dinfo->finfo[i].name);
+	debug_print(s);
+	struct MYFILEINFO *debug = myfinfo_search(fdata->head.name, dinfo, MAX_FINFO_NUM);
+	sprintf(s, "test(should not be 0) = %d\n", debug);
+	debug_print(s);
 	/*****************/
 	fdata->head.stat = 0x01;	// valid bit�𗧂Ă�
 	fdata->head.this_fdata = fdata; // �f�[�^�̈�̈�ԖڂɊm�ۂ���

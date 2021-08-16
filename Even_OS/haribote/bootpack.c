@@ -145,6 +145,9 @@ void HariMain(void)
     init_screen8(buf_back, binfo->scrnx, binfo->scrny);
 	putfonts8_asc_sht(sht_back, 8, binfo->scrny -20, COL8_000000, COL8_C6C6C6, "menu", 5);//����һ���˵��� 
 
+		/* log window */
+	key_win = open_log(shtctl, memtotal);
+
 //sht_menu
 	sht_menu1 = sheet_alloc(shtctl);
 	buf_menu1  = (unsigned char *) memman_alloc_4k(memman, 100 * 200);
@@ -170,8 +173,6 @@ void HariMain(void)
 	make_menu(sht_menu2[2], 4);
 	sht_menu2[2]->flags = -4;  //��־����
 
-	// /* log window */
-	key_win = open_log(shtctl, memtotal);
 
     /* sht_mouse */
     sht_mouse = sheet_alloc(shtctl);
@@ -187,13 +188,6 @@ void HariMain(void)
 	// sheet_updown(sht_back,  0);
 	// sheet_updown(key_win,   1);
 	// sheet_updown(sht_mouse, 2);
-
-	// /* Console Window????? */
-	// // log = key_win->task->cons;
-	// key_win = open_console(shtctl, memtotal);
-	// sheet_slide(key_win, 32, 4);
-	// sheet_updown(key_win, shtctl->top);
-	// keywin_on(key_win);	// ?J?[?\????console???????
 
 
     //����ҳ��
@@ -693,6 +687,7 @@ void HariMain(void)
 }
 
 	sheet_updown(sht_qidong,-1);
+	sheet_free(sht_qidong);  //delete it;
 	//sheet_updown(sht_boot,2);
 
     // sheet_updown(sht_back,  0);
@@ -805,10 +800,8 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 		//sheet_updown(sht_boot,-1);
 	}
    sheet_updown(sht_boot,-1);
+   sheet_free(sht_boot);
 
-
-	/* log window */
-	key_win = open_log(shtctl, memtotal);
 
     	/* ?e?X???C?h???u??????? */
 	sheet_slide(key_win,   512, 4);
