@@ -468,3 +468,66 @@ int decode0_JPEG(struct DLL_STRPICENV*env,int size,unsigned char *fp,int b_type,
 int newBackGround(char *cmdline, int *fat, struct CONSOLE *cons);
 int InitIcon_xxx(struct SHEET *sht, int *fat, int number);
 
+struct process{
+	char name[100];
+	struct TASK *task;
+	struct process *next;
+};
+struct S{//�ź���
+	struct process *list_last;//ָ����ǰ�б�����һ���ڵ㣨����null�����б���Ϊnull��
+	struct process *list_first;//ָ���б���һ���ڵ㣨�б���ʱΪnull��
+	int value;
+};
+//��ʼ���ź���
+void init_S();
+//svar.c
+//用户态的竞争条件
+#define VAR_MAX_NUM 100 //规定操作系统最多只能设置100个共享变量
+struct SVAR{//共享变量的名字，标志位和内容；
+	char *name;
+	int flag;//为0表示该变量存在，为1表示该变量不存在。
+	int length;//表示共享变量的内容长度
+	int *content;
+};
+struct SVARCTL{
+	struct SVAR var[VAR_MAX_NUM];
+};
+void init_Svar(struct MEMMAN *memman);
+int var_create(char *name,int length);
+int var_read(char *name,int n);
+int var_wrt(char *name,int n,int value);
+int var_free(char *name);
+void avoid_sleep();
+int TestAndSet(int *t);
+void Tlock();
+void unTlock();
+
+/* graphic.c */
+void init_palette(void);
+void set_palette(int start, int end, unsigned char *rgb);
+void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
+void init_screen8(char *vram, int x, int y);
+void putfont8(char *vram, int xsize, int x, int y, char c, char *font);
+void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s);
+void init_mouse_cursor8(char *mouse, char bc);
+void putblock8_8(char *vram, int vxsize, int pxsize,
+	int pysize, int px0, int py0, char *buf, int bxsize);
+int read_picture(int *fat, short *vram, int x, int y); /* 锟斤拷锟斤！ */
+#define COL8_000000		0 // 黑色
+#define COL8_FF0000		1 // 红色
+#define COL8_00FF00		2 // 荧光绿
+#define COL8_FFCC33		3 // 黄色
+#define COL8_0000FF		4 // 蓝色
+#define COL8_FF00FF		5 // 芭比粉
+#define COL8_00FFFF		6 // 荧光蓝
+#define COL8_FFFFFF		7 // 白色
+#define COL8_C6C6C6		8 // 灰色
+#define COL8_4273BF  	9 // 酒红色改蓝色
+#define COL8_008400		10 // 中绿色
+#define COL8_848400		11 // 草绿色
+#define COL8_000084		12 // 深蓝色
+#define COL8_840084		13 // 紫罗兰
+#define COL8_008484		14 // 漂亮的绿色 可以用
+#define COL8_848484		15 // 暖调的灰色
+#define COL8_FD5B46		16 // 我用的橙色
+#define COL8_4273BF		17 // 我用的蓝色

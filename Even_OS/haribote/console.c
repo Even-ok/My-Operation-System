@@ -11,7 +11,7 @@ struct CMDHISTORY {
 int first, last, head, tail, now;
 char ** argv;
 char *buf;
-}s;
+};
 
 /* Global�ϐ� */
 struct CONSOLE *log;
@@ -26,6 +26,28 @@ char cmd_buf[CMDBUF];
 /* 代码中略*/
 
 cmdhisbuf = cmd_buf;
+
+char s[100];
+int gdt_addr;
+int ldt_addr_offset;
+struct SEGMENT_DESCRIPTOR temp;
+int ldt_addr;
+int phy_addr;
+
+int gdt;
+int ldt_index;
+int ldt_des;
+int ds_index;
+int ds_des;
+int ds_addr;
+unsigned int addrlist[100];
+unsigned int sizelist[100];
+int num = 0;
+
+struct S mutex;
+struct S wrt;
+int readcount;
+int share_bupt;
 
 
 /* ���O�R���\�[���ɕ�����str���o�͂��� */
@@ -519,7 +541,28 @@ void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal)
 	else if(strcmp(cmdline, "stamp") == 0&& cons->sht != 0)
 	{
 		cmd_stamp(cons, cmdline);
-	}else if (cmdline[0] != 0) {
+	}else if (strcmp(cmdline, "reader")== 0) {
+		cmd_reader();
+	} else if (strcmp(cmdline, "writer")== 0) {
+		cmd_writer();
+	}else if (strncmp(cmdline, "alloc", 5)== 0) {
+		cmd_mymem(cmdline);
+	}
+	else if(strcmp(cmdline,"free")==0){
+		cmd_free();
+	}
+	else if (strcmp(cmdline, "1") == 0 && cons->sht != 0) {
+		produce(cons);
+	}else if (strcmp(cmdline, "2") == 0 && cons->sht != 0) {
+		consume(cons);
+	}else if (strcmp(cmdline, "add") == 0 && cons->sht != 0) {
+		shareadd(cons);
+	}else if (strcmp(cmdline, "rps") == 0&& cons->sht != 0)  //Rock-Scissors-Paper game
+	{
+		cmd_rps(cons, cmdline);
+	}
+	
+	else if (cmdline[0] != 0) {
 		if (cmd_app(cons, fat, cmdline) == 0) {
 			/* �R�}���h�ł͂Ȃ��A�A�v���ł��Ȃ��A����ɋ�s�ł��Ȃ� */
 			cons_putstr0(cons, "Bad command.\n\n");
@@ -1986,13 +2029,83 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		 */
 		reg[7] = task->langmode;
 		break;
-	case 28:
+case 28:
+	    {
+	    gdt_addr = ADR_GDT;
+	    ldt_addr_offset = task->tss.ldtr;
+	    temp =  *(struct SEGMENT_DESCRIPTOR *)(ADR_GDT + ldt_addr_offset);
+	    ldt_addr = temp.base_low +(temp.base_mid << 16) + (temp.base_high<<24);
+	    temp = *(struct SEGMENT_DESCRIPTOR *)(ldt_addr + 1*8);
+	    ds_base = temp.base_low +(temp.base_mid << 16) + (temp.base_high<<24);
+	    phy_addr = ds_base + eax;
+	    sprintf(s,"gdt_base: %x\nldt_base: %x\nds_base: %x\nlog_addr: %x\nphy_addr: %x\nvalue: %d\n",gdt_addr,ldt_addr,ds_base,eax,phy_addr,*(int *)(phy_addr));
+	    //int addr = task->ldt[1].base_low + (task->ldt[1].base_mid<<16) +(task->ldt[1].base_high<<24);
+	    //sprintf(s,"%x %x %x %x %d\n",addr,task->ds_base,eax,addr+eax,*(int *)(addr+eax));
+	    cons_putstr0(cons, s);
+		//int i = ADR_GDT +task->tss.ldtr;
+		//struct SEGMENT_DESCRIPTOR* des = *(ADR_GDT +task->tss.ldtr);
+		//i = des->base_low + des->base_mid <<8 + des->base_high<<12;
+	  	reg[7] = phy_addr;
+		  break;
+		  }
+		case 29:
+        gdt = *(int *)(ds_base+eax+2);
+        ldt_index = ecx >>3;
+        ldt_des = gdt + ldt_index*8;
+        temp =  *(struct SEGMENT_DESCRIPTOR *)(ldt_des);
+        ldt_addr = temp.base_low +(temp.base_mid << 16) + (temp.base_high<<24);
+        ds_index = ebx>>3;
+        ds_des = ldt_addr + ds_index*8;
+        temp = *(struct SEGMENT_DESCRIPTOR *)(ds_des);
+        ds_addr = temp.base_low +(temp.base_mid << 16) + (temp.base_high<<24);
+        phy_addr = ds_addr + ebp;
+        sprintf(s,"gdt_base: %x  ldt_index: %d\nldt_des: %x  ldt_addr: %x\nds_index: %d  ds_des: %x\nds_addr: %x  log_addr: %x\nphy_addr:%x  value: %d\n",gdt,ldt_index,ldt_des,ldt_addr,ds_index,ds_des,ds_addr,ebp,phy_addr,*(int *)phy_addr);
+        cons_putstr0(cons, s);
 		break;
-	case 29:
+	
+		case 30:
+		cmd_reader();
 		break;
-	case 30:
+		case 31:
+		cmd_writer();
 		break;
-	default :
+		case 32:
+    	shareadd(cons);
+		break;
+		case 33:
+		consume(cons);
+		break;
+		case 34:
+		produce(cons);
+		break;
+		case 35:
+		entrance(eax);
+		break;
+		case 36:
+		exiting(eax);
+		break;
+		case 37:
+		reg[7]=var_create((char*)ds_base+ebx,ecx);
+		break;
+		case 38:
+		reg[7]=var_read((char*)ds_base+ebx,ecx);
+		break;
+		case 39:
+		reg[7]=var_wrt((char*)ds_base+ebx,ecx,eax);
+		break;
+		case 40:
+		reg[7]=var_free((char*)ds_base+ebx);
+		break;
+		case 41:
+		avoid_sleep();
+		break;
+		case 42:
+		Tlock();
+		break;
+		case 43:
+		unTlock();
+		break;
+		default:
 		break;
 	}
 
@@ -2099,51 +2212,53 @@ void cmd_stamp(struct CONSOLE *cons1, char *cmdline)
 	cmd_clearline(cons1,task->cmdline);//全都清空
 	struct CONSOLE cons=*cons1;
 	//cons_newline(&cons);
-	cons_putchar(cons1, '>', 1);
 	char *str;
 	str = get_1_line(cons,cmdline);
-	cons_putstr0(cons1,str);
+	// cons1->cur_y +=16;
+	// cons_putstr0(cons1,str);
+	// cons1->cur_y +=16;
+	// cons1->cur_x = 8 ;
+
+     char result[20], * cmd_str;
+    int i, j, k, l, p, q;
+    int a[4];
+    static int s[1000];  /*�?�?*/
+    int x, y, r = 0, count = 0; //r用来做移动指针工�?,x指向数字开头，y指向连续数字结尾
+    for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	/* �X�y�[�X������܂œǂݔ�΂� */
+    for (; cmd_str[r]!=0; )
+    {
+
+        if ('0' <= cmd_str[r] && cmd_str[r] <= '9')//�?数字
+        {
+            p = r;
+            q = r + 1;
+            a[count] = cmd_str[r] - '0';
+            while ('0' <= cmd_str[q] && cmd_str[q] <= '9')
+            {
+                a[count] = 10 * a[count] + (cmd_str[q] - '0');
+                q++;
+            }
+            r = q;  //新起�?
+            count++; //count应�?�为4
+
+        }
+        else r++;
+
+    }
+    //scanf("%d %d %d %d", &a, &b, &c, &d);  /*输入四�?�面值邮�?*/
+    for(i=0; i<=5; i++)  /*�?�?变量i用于控制a分面值邮票的张数，最�?5�?*/
+        for(j=0; i+j<=5; j++)  /*�?�?变量j用于控制b分面值邮票的张数，a分邮�?+b分邮票最�?5�?*/
+            for(k=0; k+i+j<=5; k++)  /*�?�?变量k用于控制c分面值邮票的张数，a分邮�?+b分邮�?+c分邮票最�?5�?*/
+                for(l=0; k+i+j+l<=5; l++)  /*�?�?变量l用于控制d分面值邮票的张数,a分邮�?+b分邮�?+c分邮�?+d分邮票最�?5�?*/
+                    if( a[0]*i+a[1]*j+a[2]*k+a[3]*l )
+                        s[a[0]*i+a[1]*j+a[2]*k+a[3]*l]++;
+    for(i=1; i<=1000; i++)
+        if( !s[i] )
+            break;
 	cons1->cur_y +=16;
-
-    //  char result[20], * cmd_str;
-    // int i, j, k, l, p, q;
-    // int a[4];
-    // static int s[1000];  /*�?�?*/
-    // int x, y, r = 0, count = 0; //r用来做移动指针工�?,x指向数字开头，y指向连续数字结尾
-    // for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	/* �X�y�[�X������܂œǂݔ�΂� */
-    // for (; cmd_str[r]!=0; )
-    // {
-
-    //     if ('0' <= cmd_str[r] && cmd_str[r] <= '9')//�?数字
-    //     {
-    //         p = r;
-    //         q = r + 1;
-    //         a[count] = cmd_str[r] - '0';
-    //         while ('0' <= cmd_str[q] && cmd_str[q] <= '9')
-    //         {
-    //             a[count] = 10 * a[count] + (cmd_str[q] - '0');
-    //             q++;
-    //         }
-    //         r = q;  //新起�?
-    //         count++; //count应�?�为4
-
-    //     }
-    //     else r++;
-
-    // }
-    // //scanf("%d %d %d %d", &a, &b, &c, &d);  /*输入四�?�面值邮�?*/
-    // for(i=0; i<=5; i++)  /*�?�?变量i用于控制a分面值邮票的张数，最�?5�?*/
-    //     for(j=0; i+j<=5; j++)  /*�?�?变量j用于控制b分面值邮票的张数，a分邮�?+b分邮票最�?5�?*/
-    //         for(k=0; k+i+j<=5; k++)  /*�?�?变量k用于控制c分面值邮票的张数，a分邮�?+b分邮�?+c分邮票最�?5�?*/
-    //             for(l=0; k+i+j+l<=5; l++)  /*�?�?变量l用于控制d分面值邮票的张数,a分邮�?+b分邮�?+c分邮�?+d分邮票最�?5�?*/
-    //                 if( a[0]*i+a[1]*j+a[2]*k+a[3]*l )
-    //                     s[a[0]*i+a[1]*j+a[2]*k+a[3]*l]++;
-    // for(i=1; i<=1000; i++)
-    //     if( !s[i] )
-    //         break;
-
-    // sprintf(result, "The max is %d\n", --i);
-    // cons_putstr0(cons1,result);
+	cons1->cur_x = 8 ;
+    sprintf(result, "The max is %d\n", --i);
+    cons_putstr0(cons1,result);
 	//cons_putstr0(cons1, cmdline);
 	return;
 
@@ -2156,6 +2271,8 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 	int path_length = 0; // for calculating cmdline
 	path_length = cons_putdir(&cons);
 	int i;
+
+	cons_putchar(&cons, '>', 1);
 		for (;;) {
 		io_cli();
 		if (fifo32_status(&task->fifo) == 0) {
@@ -2234,3 +2351,431 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 	}
 	return cmdline;
 }
+
+void cmd_rps(struct CONSOLE *cons, char *cmdline)
+{
+	struct TASK *task = task_now();
+	// cons_putstr0(cons,"input 4 stamp values:");
+	// cons_newline(cons);
+	// cmd_clearline(cons,cmdline);//全都清空
+	// cmd_clearline(cons,task->cmdline);//全都清空
+	// //cons_newline(&cons);
+	// char *str;
+	// str = get_1_line(cons,cmdline);
+	char gamer;  // 玩家出拳
+    int computer;  // 电脑出拳
+    int result;  // 比赛结果
+
+	 // 为了避免玩一次游戏就退出程序，可以将代码放在循环中
+    while (1){
+        cons_putstr0(cons,"Welcome to Rock-paper-scissors! Please choose your choice:\n");
+        cons_putstr0(cons,"A:scissors\nB:Rock\nC:paper\nD:Exit\n");
+		cmd_clearline(cons,cmdline);//全都清空
+		cmd_clearline(cons,task->cmdline);//全都清空
+		cons_newline(&cons);
+		char *str;
+		str = get_1_line(*cons,cmdline);  //获得玩家的输入情况
+		char  result_str[40],* cmd_str;
+		for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	
+		gamer = cmd_str[0];
+		cons_newline(&cons);
+		cons->cur_y +=16;
+		cons->cur_x = 8 ;
+
+		cons_putstr1(cons,gamer,1);
+		cons_newline(&cons);
+		cons->cur_y +=16;
+		cons->cur_x = 8 ;
+
+        //scanf("%c%*c",&gamer);
+    //     switch (gamer){
+    //         case 65:  //A
+    //         case 97:  //a
+    //             gamer=4;
+    //             break;
+    //         case 66:  //B
+    //         case 98:  //b
+    //             gamer=7;
+    //             break;
+    //         case 67:  //C
+    //         case 99:  //c
+    //             gamer=10;
+    //             break;
+    //         case 68:  //D
+    //         case 100:  //d
+    //             return 0;
+          
+    //         default:
+    //             sprintf(result_str,"Your choice %c is wrong,exit...\n",gamer);
+	// 			cons_putstr0(cons,result_str);
+    //             return 0;
+    //             break;
+    //     }
+      
+    //     my_srand((unsigned)time(NULL));  // 随机数种子
+    //     computer=my_rand()%3;  // 产生随机数并取余，得到电脑出拳
+    //     result=(int)gamer+computer;  // gamer 为 char 类型，数学运算时要强制转换类型
+    //     cons_putstr0(cons,"Computer:");
+    //     switch (computer)
+    //     {
+    //         case 0:cons_putstr0(cons,"scissors\n");break; //4    1
+    //         case 1:cons_putstr0(cons,"Rock\n");break; //7  2
+    //         case 2:cons_putstr0(cons,"paper\n");break;   //10 3
+    //     }
+    //     cons_putstr0(cons,"You:");
+    //     switch (gamer)
+    //     {
+    //         case 4:cons_putstr0(cons,"scissors\n");break; 
+    //         case 7:cons_putstr0(cons,"Rock\n");break; 
+    //         case 10:cons_putstr0(cons,"paper\n");break;   
+    //     }
+    //     if (result==6||result==7||result==11) cons_putstr0(cons,"You win!");
+    //     else if (result==5||result==9||result==10) cons_putstr0(cons,"Computer win!");
+    //     else cons_putstr0(cons,"Tie");  //平局
+     }
+    return 0;
+}
+
+void wait(struct S *s,struct process *this_process,char * which_s){
+	char buf[100];
+	int eflags= io_load_eflags();
+	io_cli();
+	s->value--;
+	if(s->value<0){
+		//��ʾ˭�ڵȴ�
+		sprintf(buf, "%s is waiting %s!\n", this_process->name, which_s);
+	    cons_putstr0(this_process->task->cons, buf);
+
+		//�����ȴ��б�
+		if(s->list_last==NULL){//�б���
+			s->list_first=this_process;
+			s->list_last=this_process;
+			s->list_last->next=NULL;
+		}
+		else{//�б�����
+			s->list_last->next=this_process;
+			s->list_last=s->list_last->next;
+			s->list_last->next=NULL;
+		}
+		//����
+		task_sleep(this_process->task);
+	}
+	io_store_eflags(eflags);
+}
+
+void signal(struct S *s,char * which_s){
+	struct process *temp;
+	char buf[100];
+	int eflags= io_load_eflags();
+	io_cli();
+	s->value++;
+	if(s->value<=0){
+		//�б�
+		temp=s->list_first;
+
+		if(s->list_first==s->list_last){//ֻ��һ�������ڵȴ������Ѻ��ȴ��б���
+			s->list_first=s->list_last=NULL;
+		}
+		else
+			s->list_first=s->list_first->next;
+		//
+		task_run(temp->task,-1,-1);//����ԭ����Ĭ�����ȼ�
+
+		sprintf(buf, "%s already get %s.\n", temp->name, which_s);
+	    cons_putstr0(temp->task->cons, buf);
+
+	}
+	io_store_eflags(eflags);
+}
+
+void init_S(){
+	
+	mutex.value=1;
+	mutex.list_first=NULL;
+	mutex.list_last=NULL;
+	wrt.value=1;
+	wrt.list_first=NULL;
+	wrt.list_last=NULL;
+	readcount=0;
+	share_bupt=0;
+}
+#define END 1000
+void cmd_reader(){
+	char readbuf[100];
+	int if_end=0;
+	struct process this_process;
+	this_process.next=NULL;
+	this_process.task=task_now();
+	while(1){
+		sprintf(this_process.name,"reader %d",readcount+1);
+		wait(&mutex,&this_process,"mutex");
+		readcount++;
+		if(readcount==1){
+			wait(&wrt,&this_process,"wrt");
+		}
+		signal(&mutex,"mutex");
+		//�������������ٽ���
+		sprintf(readbuf,"%s get share=%d|| %d\n",this_process.name,share_bupt,if_end+1);
+		cons_putstr0(this_process.task->cons, readbuf);
+
+		wait(&mutex,&this_process,"mutex");
+		readcount--;
+		if(readcount==0){
+			signal(&wrt,"wrt");
+		}
+		signal(&mutex,"mutex");
+
+		if_end++;
+		if(if_end==END)
+			break;
+	}
+}
+void cmd_writer(){
+	char writebuf[100];
+	int if_end=0;
+	struct process this_process;
+	this_process.next=NULL;
+	this_process.task=task_now();
+	sprintf(this_process.name,"writer");
+
+	while(1){
+		wait(&wrt,&this_process,"wrt");
+
+		share_bupt++;
+		sprintf(writebuf,"%s have written share=%d|| %d\n",this_process.name,share_bupt,if_end+1);
+		cons_putstr0(this_process.task->cons, writebuf);
+
+		signal(&wrt,"wrt");
+
+		if_end++;
+		if(if_end==END)
+			break;
+	}
+}
+
+unsigned int char2int(char *cSize){//��char����ת��Ϊint������
+	unsigned int iSize=0;
+	char c;
+	int i=0;
+	while((c=cSize[i])!='\0'){
+		iSize=iSize*10+c-'0';
+		i++;
+	}
+	return iSize;
+}
+void cmd_mymem(char *cmdline){//������alloc�ڴ棺alloc mode size
+	char cSize[10];
+	int mode;//�����ڴ���ģʽ����0����1����
+
+	unsigned int iSize;
+	int i;
+	unsigned int addr;
+
+	char memsizebuf[100];
+
+	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
+	struct TASK *task=task_now();
+	//
+	for(i=0;cmdline[i]!=' ';i++);
+
+	mode=cmdline[i+1]-'0';//ȡ��ģʽ
+
+	strcpy(cSize,&cmdline[i+3]);//ȡ����С
+	iSize=char2int(cSize);
+	//allocǰ��ʾ������С
+	sprintf(memsizebuf,"before alloc %d:\n",iSize);
+	cons_putstr0(task->cons,memsizebuf);
+	for (i = 0; i < memman->frees; i++) {
+		sprintf(memsizebuf,"NO.%d-size=%d  ",i,memman->free[i].size);
+		cons_putstr0(task->cons,memsizebuf);
+	}
+	//alloc
+	addr=memman_alloc((struct MEMMAN *) MEMMAN_ADDR,iSize);
+	//��alloc�Ŀ鶼�ǵ������freeʹ��
+	addrlist[num]=addr;
+	sizelist[num]=iSize;
+	num++;
+	//alloc֮����ʾ������С
+	cons_putstr0(task->cons,"\nafter alloc:\n");
+	for (i = 0; i < memman->frees; i++) {
+		sprintf(memsizebuf,"NO.%d-size=%d  ",i,memman->free[i].size);
+		cons_putstr0(task->cons,memsizebuf);
+	}
+	cons_putstr0(task->cons,"\n");
+	//memman_free((struct MEMMAN *) MEMMAN_ADDR, addr,iSize);
+}
+
+void cmd_free(){//free֮ǰ��������alloc���ڴ�
+	int i;
+	for(i=0;i<num;i++){
+		memman_free((struct MEMMAN *) MEMMAN_ADDR, addrlist[i],sizelist[i]);
+	}
+}
+
+int share=0;
+int sharenum=0;//ʹ�ù��������Ľ�������
+void shareadd(struct CONSOLE *cons)
+{
+	int i,j,x,temp,e;
+	char s[60];
+	struct TASK *now_task;
+
+	if(sharenum==0)
+	   share=0;
+	sharenum+=1;
+	while(sharenum<2)
+	{
+		now_task=task_now();
+		now_task->flags=2;
+	}
+	for(;;)
+	{
+		temp=share;
+		e=io_load_eflags();
+		io_cli();
+		share+=1;
+		io_store_eflags(e);
+		x=share;
+		if((x-temp)>1)
+		{
+		sprintf(s,"share=%d,but share+1=%d\n",temp,x);
+		cons_putstr0(cons,s);
+		sharenum-=1;
+		break;
+		}
+	}
+	return ;
+}
+
+//�����ߺ������߳���������������peterson�㷨
+#define BUFFER_SIZE 100
+int producer=0,consumer=1;
+int flag[2]={0,0};//��ʾ�ĸ������������ٽ���
+int turn;//��ʾ�ĸ����̿��Խ����ٽ���
+int in=0,out=0,counter=0;
+int buffer[BUFFER_SIZE];//������
+int xnum=0;
+
+void produce(struct CONSOLE *cons)
+{
+	char *s;
+	int temp,outcome,e;
+	struct TASK *now_task;
+	now_task=task_now();
+	while(1){
+		while (counter == BUFFER_SIZE)
+		{
+			now_task=task_now();//����ѭ��������ֹ��������
+			now_task->flags=2;
+		}
+	    // xnum++;
+		   flag[producer]=1;
+		   turn=consumer;
+	   	 while(flag[consumer]==1&&turn==consumer)
+		   xnum++;
+		  //�ٽ���
+			 temp=in;
+			 outcome=rand();
+		   buffer[in]=outcome;
+		   in = (in + 1)%BUFFER_SIZE;
+			 counter++;
+		   flag[producer]=0;
+			 //ʣ����
+			 sprintf(s,"in buffer %d,produce %d\n",temp+1,outcome);
+			 cons_putstr0(cons,s);
+	}
+	return ;
+}
+
+void consume(struct CONSOLE *cons)
+{
+	char *s;
+	int temp,outcome,e;
+	struct TASK *now_task;
+	while(1){
+		while (counter==0)
+		{
+			now_task=task_now();
+			now_task->flags=2;
+		}
+		  flag[consumer]=1;
+		  turn=producer;
+		  while(flag[producer]==1&&turn==producer)
+		  xnum++;
+		  //�ٽ���
+			temp=out;
+			outcome=buffer[out];
+			out=(out+1)%BUFFER_SIZE;
+			counter--;
+			flag[consumer]=0;
+			//ʣ����
+			sprintf(s,"in buffer %d,consume %d\n",temp+1,outcome);
+			cons_putstr0(cons,s);
+	}
+	return ;
+}
+
+//peterson算法的进入区和退出区，这2个可以当成互斥锁来使用，但仅能用于2个进程之间
+void entrance(int x)
+{
+	if(x==1)
+	{
+		flag[consumer]=1;
+		turn=producer;
+		while(flag[producer]==1&&turn==producer)
+		xnum++;
+	}
+	if(x==0)
+	{
+		flag[producer]=1;
+		turn=consumer;
+		while(flag[consumer]==1&&turn==consumer)
+		xnum++;
+	}
+}
+
+void exiting(int x)
+{
+   if(x==1)
+	 {
+		flag[consumer]=0;
+	 }
+	 if(x==0)
+	 {
+		 flag[producer]=0;
+	 }
+}
+
+//c语言产生随机数的代码
+#define RANDOM_MAX 0x7FFFFFFF
+
+static long my_do_rand(unsigned long *value)
+
+{
+
+   long quotient, remainder, t;
+   quotient = *value / 127773L;
+
+   remainder = *value % 127773L;
+
+   t = 16807L * remainder - 2836L * quotient;
+
+
+   if (t <= 0)
+
+      t += 0x7FFFFFFFL;
+
+   return ((*value = t) % ((unsigned long)RANDOM_MAX + 1));
+
+}
+
+static unsigned long next = 1;
+
+int my_rand(void)
+
+{
+
+   return my_do_rand(&next);
+
+}
+

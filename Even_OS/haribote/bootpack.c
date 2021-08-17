@@ -1321,7 +1321,7 @@ void close_console(struct SHEET *sht)
 }
 
 void bootpage(unsigned char *buf, int xsize, int ysize){
-	boxfill8(buf, xsize, 28, 0, 0, xsize, ysize);
+	boxfill8(buf, xsize, 9, 0, 0, xsize, ysize);
 	boxfilly(buf, xsize, 7, 300+112, 100, 500+112, 300);
 	boxfilly(buf, xsize, 8, 375+112, 150, 425+112, 200);
 	boxfilly(buf, xsize, 7, 382+112, 157, 418+112, 193);
