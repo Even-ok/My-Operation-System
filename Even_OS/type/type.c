@@ -2,24 +2,26 @@
 
 void HariMain(void)
 {
-	int fh;
-	char c, cmdline[30], *p;
-
+	int fileOpenResult;
+	char content, cmdline[30], *p;
 	api_cmdline(cmdline, 30);
-	for (p = cmdline; *p > ' '; p++) { }	/* ƒXƒy[ƒX‚ª—ˆ‚é‚Ü‚Å“Ç‚Ý”ò‚Î‚· */
-	for (; *p == ' '; p++) { }	/* ƒXƒy[ƒX‚ð“Ç‚Ý”ò‚Î‚· */
-	fh = api_fopen(p);
-	if (fh != 0) {
-		for (;;) {
-			/* ƒtƒ@ƒCƒ‹‚ð“Ç‚ñ‚Å‚¢‚«, I—¹‹L†(0)‚ªoŒ»‚µ‚½‚çI—¹ */
-			if (api_fread(&c, 1, fh) == 0) {
+	p = cmdline;
+	while (*p > ' ') {
+		p++;
+	}
+	while (*p == ' ') {
+		p++;
+	}
+	fileOpenResult = api_fopen(p);
+	if (fileOpenResult != 0) {
+		while (1) {
+			if (api_fread(&content, 1, fileOpenResult) == 0) {
 				break;
 			}
-
-			api_putchar(c);
+			api_putchar(content);
 		}
 	} else {
-		api_putstr0("File not found.\n");
+		api_putstr0("\n Î´ï¿½Òµï¿½ï¿½Ä¼ï¿½\n File not found.\n");
 	}
 	api_end();
 }

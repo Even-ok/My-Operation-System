@@ -1,4 +1,4 @@
-/* ï¿?Rï¿½ï¿½ï¿?\ï¿?[ï¿½ï¿½ï¿½Ö?W */
+/* ï¿½?Rï¿½ï¿½ï¿½?\ï¿½?[ï¿½ï¿½ï¿½ï¿½?W */
 #include "bootpack.h"
 #include <stdio.h>
 #include <string.h>
@@ -48,7 +48,7 @@ int readcount;
 int share_bupt;
 
 
-/* debugæ¨¡å?æ????¥æ??ä»¶ç³»ç»????é¢? */
+/* debugæ¨¡ï¿½?ï¿½ï¿½????ï¿½ï¿½??ä»¶ç³»ï¿½????ï¿½? */
 void debug_print(char *str){
 	// char s[50];
 	// sprintf(s, "[debug] ");
@@ -108,7 +108,7 @@ void console_task(struct SHEET *sheet, int memtotal)
 	}
 	task->fhandle = fhandle;
 	task->fat = fat;
-	if (nihongo[4096] != 0xff) {	/* ï¿½ï¿½ï¿?{ï¿½ï¿½tï¿?Hï¿½ï¿½ï¿?gï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½H */
+	if (nihongo[4096] != 0xff) {	/* ï¿½ï¿½ï¿½?{ï¿½ï¿½tï¿½?Hï¿½ï¿½ï¿½?gï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½H */
 		task->langmode = 1;
 	} else {
 		task->langmode = 0;
@@ -116,11 +116,11 @@ void console_task(struct SHEET *sheet, int memtotal)
 	task->langbyte1 = 0;
 	task->langmode = 3;
 
-	/* ï¿?vï¿½ï¿½ï¿½ï¿½ï¿?vï¿?gï¿?\ï¿½ï¿½ */
+	/* ï¿½?vï¿½ï¿½ï¿½ï¿½ï¿½?vï¿½?gï¿½?\ï¿½ï¿½ */
 	if(cons.id == 1){
-		cmd_mkfs(&cons);	/* ï¿½ï¿½ï¿½ï¿½ï¿?Rï¿½ï¿½ï¿?\ï¿?[ï¿½ï¿½ï¿½É???ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½mkfsï¿½ï¿½ï¿?gï¿½ï¿½ */
+		cmd_mkfs(&cons);	/* ï¿½ï¿½ï¿½ï¿½ï¿½?Rï¿½ï¿½ï¿½?\ï¿½?[ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½mkfsï¿½ï¿½ï¿½?gï¿½ï¿½ */
 	}else if(cons.id == 0){
-		cmd_setlog(&cons);	/* ï¿½ï¿½ï¿?Oï¿?pï¿?Rï¿½ï¿½ï¿?\ï¿?[ï¿½ï¿½ï¿½É???ï¿½ï¿½??ï¿½ï¿½Oï¿?oï¿½Í?pï¿½Ì???ï¿½ï¿½ï¿?{ï¿½ï¿½ */
+		cmd_setlog(&cons);	/* ï¿½ï¿½ï¿½?Oï¿½?pï¿½?Rï¿½ï¿½ï¿½?\ï¿½?[ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½??ï¿½ï¿½Oï¿½?oï¿½ï¿½?pï¿½ï¿½???ï¿½ï¿½ï¿½?{ï¿½ï¿½ */
 	}
 	path_length = cons_putdir(&cons);
 	
@@ -134,7 +134,7 @@ void console_task(struct SHEET *sheet, int memtotal)
 		} else {
 			i = fifo32_get(&task->fifo);
 			io_sti();
-			if (i <= 1 && cons.sht != 0) { /* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿?pï¿?^ï¿?Cï¿?} */
+			if (i <= 1 && cons.sht != 0) { /* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½?pï¿½?^ï¿½?Cï¿½?} */
 				if (i != 0) {
 					timer_init(cons.timer, &task->fifo, 0); /* ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ */
 					if (cons.cur_c >= 0) {
@@ -148,17 +148,17 @@ void console_task(struct SHEET *sheet, int memtotal)
 				}
 				timer_settime(cons.timer, 50);
 			}
-			if (i == 2) {	/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ON */
+			if (i == 2) {	/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ON */
 				cons.cur_c = COL8_FFFFFF;
 			}
-			if (i == 3) {	/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½OFF */
+			if (i == 3) {	/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½OFF */
 				if (cons.sht != 0) {
 					boxfill8(cons.sht->buf, cons.sht->bxsize, COL8_000000,
 							cons.cur_x, cons.cur_y, cons.cur_x + 7, cons.cur_y + 15);
 				}
 				cons.cur_c = -1;
 			}
-			if (i == 4) {	/* ï¿?Rï¿½ï¿½ï¿?\ï¿?[ï¿½ï¿½ï¿½Ì?uï¿?~ï¿?vï¿?{ï¿?^ï¿½ï¿½ï¿?Nï¿½ï¿½ï¿?bï¿?N */
+			if (i == 4) {	/* ï¿½?Rï¿½ï¿½ï¿½?\ï¿½?[ï¿½ï¿½ï¿½ï¿½?uï¿½?~ï¿½?vï¿½?{ï¿½?^ï¿½ï¿½ï¿½?Nï¿½ï¿½ï¿½?bï¿½?N */
 				cmd_exit(&cons, fat);
 			}
 			if (i == 5) {	//È¡ï¿½ï¿½ï¿½ï¿½5  
@@ -202,15 +202,15 @@ void console_task(struct SHEET *sheet, int memtotal)
 			if (i == 23) {	
 			    cmd_app(&cons, fat, "time");
 			}
-			if (256 <= i && i <= 511) { /* ï¿?Lï¿?[ï¿?{ï¿?[ï¿?hï¿?fï¿?[ï¿?^ï¿?iï¿?^ï¿?Xï¿?NAï¿?oï¿?Rï¿?j */
-				if (i == 8 + 256) { /* ï¿?oï¿?bï¿?Nï¿?Xï¿?yï¿?[ï¿?X */
+			if (256 <= i && i <= 511) { /* ï¿½?Lï¿½?[ï¿½?{ï¿½?[ï¿½?hï¿½?fï¿½?[ï¿½?^ï¿½?iï¿½?^ï¿½?Xï¿½?NAï¿½?oï¿½?Rï¿½?j */
+				if (i == 8 + 256) { /* ï¿½?oï¿½?bï¿½?Nï¿½?Xï¿½?yï¿½?[ï¿½?X */
 					if (cons.cur_x > 16 + path_length * 8) {
-						/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½ï¿?Xï¿?yï¿?[ï¿?Xï¿½Å?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿?Aï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½1ï¿½Â???ï¿? */
+						/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½ï¿½?Xï¿½?yï¿½?[ï¿½?Xï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½?Aï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½???ï¿½? */
 						cons_putchar(&cons, ' ', 0);
 						cons.cur_x -= 8;
 					}
 				} else if (i == 10 + 256) { /* if press Enter */
-					/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½ï¿?Xï¿?yï¿?[ï¿?Xï¿½Å?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿?sï¿½ï¿½ï¿½ï¿½ */
+					/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½ï¿½?Xï¿½?yï¿½?[ï¿½?Xï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½?sï¿½ï¿½ï¿½ï¿½ */
 					cons_putchar(&cons, ' ', 0);
 					cmdline[cons.cur_x / 8 - (path_length) - 2] = 0;
 					cons_newline(&cons);
@@ -223,11 +223,11 @@ void console_task(struct SHEET *sheet, int memtotal)
 					cmdhis.tail = 0; /* not use but we reserving it */
 					cmdhis.now = 0;
 
-					// *****ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½ï¿½ï¿?Cï¿½ï¿½ï¿½Ì?fï¿?oï¿?bï¿?Oï¿?Rï¿?[ï¿?h*****
+					// *****ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½ï¿½?Cï¿½ï¿½ï¿½ï¿½?fï¿½?oï¿½?bï¿½?Oï¿½?Rï¿½?[ï¿½?h*****
 					// sprintf(s, "original cmdline = %s[EOF]\n", cmdline);
 					// cons_putstr(&cons, s);
 
-											/* ???ä»¥ä??æ·»å??å¦?ä¸?ä»£ç?? */
+											/* ???ä»¥ï¿½??æ·»ï¿½??ï¿½?ï¿½?ä»£ï¿½?? */
 						if (cmdline[0] != 0) {
 						if (cmdhis.head+strlen(cmdline)+1 >= CMDBUF) {
 						cmdhis.head = CMDHIS_NR << 2;
@@ -255,11 +255,11 @@ void console_task(struct SHEET *sheet, int memtotal)
 						*(cmdhis.argv + cmdhis.first) = 0;
 						}
 
-					cons_runcmd(cmdline, &cons, fat, memtotal);	/* ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½ï¿½ï¿?s */
+					cons_runcmd(cmdline, &cons, fat, memtotal);	/* ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½ï¿½?s */
 					if (cons.sht == 0) {
 						cmd_exit(&cons, fat);
 					}
-					/* ï¿?vï¿½ï¿½ï¿½ï¿½ï¿?vï¿?gï¿?\ï¿½ï¿½ */
+					/* ï¿½?vï¿½ï¿½ï¿½ï¿½ï¿½?vï¿½?gï¿½?\ï¿½ï¿½ */
 					path_length = cons_putdir(&cons);
 					cons_putchar(&cons, '>', 1);
 				} else if (i == 18 + 256 && (*(cmdhis.argv+cmdhis.now) != 0)) {
@@ -294,19 +294,19 @@ void console_task(struct SHEET *sheet, int memtotal)
 						}			
 				
 				else {
-					/* ï¿½ï¿½??ï¿½ï¿½ï¿? */
+					/* ï¿½ï¿½??ï¿½ï¿½ï¿½? */
 					if (cons.cur_x < 240) {
-						/* ï¿½ê?¶ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½Ä?ï¿½ï¿½ï¿?Aï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½1ï¿½Â?iï¿½ß?ï¿? */
+						/* ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½?Aï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½?iï¿½ï¿½?ï¿½? */
 						/* ï¿½ï¿½ï¿½ï¿½,
-						 * cons.cur_x / 8 = ï¿?wï¿½ï¿½ï¿½ï¿½ï¿½Ú???ï¿½ï¿½ï¿?
-						 * -2 = 0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½('>')ï¿½Í???????ï¿?
+						 * cons.cur_x / 8 = ï¿½?wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½?
+						 * -2 = 0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½('>')ï¿½ï¿½???????ï¿½?
 						 */
 						cmdline[cons.cur_x / 8 - (path_length) - 2] = i - 256;
 						cons_putchar(&cons, i - 256, 1);
 					}
 				}
 			}
-			/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½Ä?\ï¿½ï¿½ */
+			/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½?\ï¿½ï¿½ */
 			if (cons.sht != 0) {
 				if (cons.cur_c >= 0) {
 					boxfill8(cons.sht->buf, cons.sht->bxsize, cons.cur_c,
@@ -326,7 +326,7 @@ void cons_putchar(struct CONSOLE *cons, int chr, char move)
 	char s[2];
 	s[0] = chr;
 	s[1] = 0;
-	if (s[0] == 0x09) {	/* ï¿?^ï¿?u */
+	if (s[0] == 0x09) {	/* ï¿½?^ï¿½?u */
 		for (;;) {
 			if (cons->sht != 0) {
 				putfonts8_asc_sht(cons->sht, cons->cur_x, cons->cur_y, COL8_FFFFFF, COL8_000000, " ", 1);
@@ -337,19 +337,19 @@ void cons_putchar(struct CONSOLE *cons, int chr, char move)
 				cons_newline(cons);
 			}
 			if (((cons->cur_x - 8) & 0x1f) == 0) {
-				break;	/* 32ï¿½Å?ï¿½ï¿½ï¿½Ø???½ï¿½ï¿?break */
+				break;	/* 32ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½?break */
 			}
 		}
-	} else if (s[0] == 0x0a) {	/* ï¿½ï¿½ï¿?s */
+	} else if (s[0] == 0x0a) {	/* ï¿½ï¿½ï¿½?s */
 		cons_newline(cons);
-	} else if (s[0] == 0x0d) {	/* ï¿½ï¿½ï¿?A */
-		/* ï¿½Æ????ï¿½ï¿½ï¿½ï¿½ï¿½È???ï¿½ï¿½ï¿½ï¿½??ï¿? */
-	} else {	/* ï¿½ï¿½ï¿½Ê???ï¿½ï¿½ï¿? */
+	} else if (s[0] == 0x0d) {	/* ï¿½ï¿½ï¿½?A */
+		/* ï¿½ï¿½????ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½ï¿½??ï¿½? */
+	} else {	/* ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½? */
 		if (cons->sht != 0) {
 			putfonts8_asc_sht(cons->sht, cons->cur_x, cons->cur_y, COL8_FFFFFF, COL8_000000, s, 1);
 		}
 		if (move != 0) {
-			/* moveï¿½ï¿½0ï¿½Ì???ï¿½ï¿½??Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½iï¿½ß???ï¿? */
+			/* moveï¿½ï¿½0ï¿½ï¿½???ï¿½ï¿½??Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½???ï¿½? */
 			cons->cur_x += 8;
 			if (cons->cur_x == 8 + cons->sht->bxsize-16) {
 				cons_newline(cons);
@@ -371,24 +371,24 @@ void cons_newline(struct CONSOLE *cons)
 	struct TASK *task = task_now();
 	//if (cons->cur_y < 28 + 112) {
 	if (cons->cur_y < 28 + ymax - 16){
-		cons->cur_y += 16; /* ï¿½ï¿½ï¿½Ì?sï¿½ï¿½ */
+		cons->cur_y += 16; /* ï¿½ï¿½ï¿½ï¿½?sï¿½ï¿½ */
 	} else {
-		/* ï¿?Xï¿?Nï¿½ï¿½ï¿?[ï¿½ï¿½ */
+		/* ï¿½?Xï¿½?Nï¿½ï¿½ï¿½?[ï¿½ï¿½ */
 		if (sheet != 0) {
-			/* VRAMï¿½ï¿½ï¿½Ì?e1ï¿?sï¿½ï¿½ï¿?Aï¿½ï¿½??ï¿½Ì????ï¿½É?Rï¿?sï¿?[ï¿½ï¿½ï¿½ï¿½ */
+			/* VRAMï¿½ï¿½ï¿½ï¿½?e1ï¿½?sï¿½ï¿½ï¿½?Aï¿½ï¿½??ï¿½ï¿½????ï¿½ï¿½?Rï¿½?sï¿½?[ï¿½ï¿½ï¿½ï¿½ */
 			for (y = 28; y < 28 + ymax - 16; y++) {
 				for (x = 8; x < 8 + xmax; x++) {
 					sheet->buf[x + y * sheet->bxsize] = sheet->buf[x + (y + 16) * sheet->bxsize];
 				}
 			}
 
-			/* ï¿½Å?ï¿½Ì?sï¿½ï¿½ï¿½ï¿½ï¿½Å?hï¿½ï¿½????ï¿? */
+			/* ï¿½ï¿½?ï¿½ï¿½?sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?hï¿½ï¿½????ï¿½? */
 			for (y = 28 + ymax - 16; y < 28 + ymax; y++) {
 				for (x = 8; x < 8 + xmax; x++) {
 					sheet->buf[x + y * sheet->bxsize] = COL8_000000;
 				}
 			}
-			/* ï¿?Vï¿?[ï¿?gï¿½ï¿½ï¿½ï¿½8<x<248, 28<y<156ï¿½Ì?????ï¿½ï¿½??`ï¿½æ?·ï¿½ï¿? */
+			/* ï¿½?Vï¿½?[ï¿½?gï¿½ï¿½ï¿½ï¿½8<x<248, 28<y<156ï¿½ï¿½?????ï¿½ï¿½??`ï¿½ï¿½?ï¿½ï¿½ï¿½? */
 			sheet_refresh(sheet, 8, 28, 8 + xmax, 28 + ymax);
 		}
 	}
@@ -400,7 +400,7 @@ void cons_newline(struct CONSOLE *cons)
 }
 
 /**
- * consoleï¿½É?ï¿½ï¿½ï¿½ï¿½ï¿?sï¿½ï¿½ï¿?oï¿½Í?ï¿½ï¿½ï¿?
+ * consoleï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½?sï¿½ï¿½ï¿½?oï¿½ï¿½?ï¿½ï¿½ï¿½?
  */
 void cons_putstr(struct CONSOLE *cons, char *s)
 {
@@ -412,7 +412,7 @@ void cons_putstr(struct CONSOLE *cons, char *s)
 
 
 /**
- * consoleï¿½É?ï¿½ï¿½ï¿½ï¿½ï¿?sï¿½ï¿½ï¿?oï¿½Í?ï¿½ï¿½ï¿?
+ * consoleï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½?sï¿½ï¿½ï¿½?oï¿½ï¿½?ï¿½ï¿½ï¿½?
  */
 void cons_putstr0(struct CONSOLE *cons, char *s)
 {
@@ -423,7 +423,7 @@ void cons_putstr0(struct CONSOLE *cons, char *s)
 }
 
 /**
- * consoleï¿½É?ï¿½ï¿½ï¿½ï¿½ï¿?sï¿½ï¿½ï¿?Aï¿½ï¿½ï¿½ï¿½lenï¿½Ü???oï¿½Í?ï¿½ï¿½ï¿?
+ * consoleï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½?sï¿½ï¿½ï¿½?Aï¿½ï¿½ï¿½ï¿½lenï¿½ï¿½???oï¿½ï¿½?ï¿½ï¿½ï¿½?
  */
 void cons_putstr1(struct CONSOLE *cons, char *s, int len)
 {
@@ -434,8 +434,8 @@ void cons_putstr1(struct CONSOLE *cons, char *s, int len)
 	return;
 }
 
-/* ï¿½ï¿½ï¿½Ý???fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½ï¿½Ì?ï¿½ï¿½Pathï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
- * @return pathnameï¿½Ì?ï¿½ï¿½ï¿½ï¿½ï¿½Ì?ï¿½ï¿½ï¿½ï¿½ï¿½Ô?ï¿?(ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½ï¿½ï¿?Cï¿½ï¿½ï¿½Ì?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿?Zï¿½ï¿½ï¿½é?½ï¿½ï¿?)
+/* ï¿½ï¿½ï¿½ï¿½???fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½Pathï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+ * @return pathnameï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?(ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½ï¿½?Cï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½?Zï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½?)
  */
 int cons_putdir(struct CONSOLE *cons){
 	struct MYDIRINFO *dinfo = cons->current_dir;
@@ -443,10 +443,10 @@ int cons_putdir(struct CONSOLE *cons){
 	int i;
 	int pathname_length = 0;
 
-	get_pathname(pathname, dinfo);	// ï¿?pï¿?Xï¿½ï¿½ï¿½ï¿½Tï¿½ï¿½ï¿½ï¿½ï¿?Apathnameï¿½É?iï¿?[ï¿½ï¿½ï¿½ï¿½
+	get_pathname(pathname, dinfo);	// ï¿½?pï¿½?Xï¿½ï¿½ï¿½ï¿½Tï¿½ï¿½ï¿½ï¿½ï¿½?Apathnameï¿½ï¿½?iï¿½?[ï¿½ï¿½ï¿½ï¿½
 	for(i=0; pathname[i]!='\0';i++) pathname_length++;
 
-	/* pathï¿½ï¿½ï¿?Rï¿½ï¿½ï¿?\ï¿?[ï¿½ï¿½ï¿½É?\ï¿½ï¿½ (ï¿½ï¿½ï¿½Ó?Fï¿½ï¿½ï¿½Ì???ï¿½ï¿½??ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½È?ï¿?)*/
+	/* pathï¿½ï¿½ï¿½?Rï¿½ï¿½ï¿½?\ï¿½?[ï¿½ï¿½ï¿½ï¿½?\ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½?Fï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½??ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?)*/
 	cons_putstr(cons, pathname);
 	return pathname_length;
 }
@@ -559,10 +559,13 @@ void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal)
 	{
 		cmd_guess(cons, cmdline);
 	}
+		else if (strcmp(cmdline, "calendar") == 0 && cons->sht != 0) {
+		cmd_calendar(cons, cmdline);
+	}
 	
 	else if (cmdline[0] != 0) {
 		if (cmd_app(cons, fat, cmdline) == 0) {
-			/* ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½Å?????ï¿½ï¿½Aï¿?Aï¿?vï¿½ï¿½ï¿½Å?ï¿½ï¿½??ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½??ï¿?sï¿½Å?ï¿½ï¿½??ï¿? */
+			/* ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½?????ï¿½ï¿½Aï¿½?Aï¿½?vï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½??ï¿½?sï¿½ï¿½?ï¿½ï¿½??ï¿½? */
 			cons_putstr0(cons, "Bad command.\n\n");
 		}
 	}
@@ -582,14 +585,14 @@ void cmd_cd(struct CONSOLE *cons, char *cmdline){
 	dest_dinfo = parse_cdline(cons, cdline);
 
 	if(dest_dinfo != 0){
-		/* ï¿?\ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿?Aï¿½Ú?Iï¿?nï¿½É???ï¿½ï¿½ï¿½ï¿½ï¿? */
+		/* ï¿½?\ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½?Aï¿½ï¿½?Iï¿½?nï¿½ï¿½???ï¿½ï¿½ï¿½ï¿½ï¿½? */
 		cons->current_dir = dest_dinfo;
 	}
 	return;
 }
 
 /**
- * cdï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½É?^ï¿½ï¿½ï¿½ï¿½??½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í?ï¿½ï¿½ï¿?(ï¿½ï¿½ï¿½Ý?Jï¿½ï¿½ï¿½ï¿½)
+ * cdï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½?^ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½?(ï¿½ï¿½ï¿½ï¿½?Jï¿½ï¿½ï¿½ï¿½)
  * @param cons: console addr
  * @param cdline: characters given to cd command
  */
@@ -609,7 +612,7 @@ void get_dirname(char *dirname, char *cdline){
 	return;
 }
 
-/* cdï¿½Ì?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í?ï¿½ï¿½ï¿½Ö?ï¿?*/
+/* cdï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½?*/
 struct MYDIRINFO *parse_cdline(struct CONSOLE *cons, char *cdline){
 	struct MYDIRINFO *dinfo;
 	char s[100];
@@ -634,7 +637,7 @@ struct MYDIRINFO *parse_cdline(struct CONSOLE *cons, char *cdline){
 		if(isFILENAME()){
 			if(cp == 0){
 				debug_print("filename has found.\n");
-				/*ï¿½ï¿½ï¿½Î?pï¿?Xï¿½Æ?ï¿½ï¿½??ï¿½ï¿½ï¿?*/
+				/*ï¿½ï¿½ï¿½ï¿½?pï¿½?Xï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½ï¿½?*/
 				sprintf(s, "change directory using relative path\n");
 				debug_print(s);
 				dinfo = cons->current_dir;
@@ -644,7 +647,7 @@ struct MYDIRINFO *parse_cdline(struct CONSOLE *cons, char *cdline){
 			debug_print("'/' has found.\n");
 			cp++;
 			if(cp == 1){
-				/*ï¿½ï¿½??pï¿?Xï¿½Æ?ï¿½ï¿½??ï¿½ï¿½ï¿?*/
+				/*ï¿½ï¿½??pï¿½?Xï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½ï¿½?*/
 				sprintf(s, "change directory using absolute path\n");
 				debug_print(s);
 				dinfo = (struct MYDIRINFO *)ROOT_DIR_ADDR;
@@ -653,7 +656,7 @@ struct MYDIRINFO *parse_cdline(struct CONSOLE *cons, char *cdline){
 			debug_print("\"..\" has found.\n");
 			cp += 2;
 			if(cp == 2){
-				/*ï¿½ï¿½ï¿½Î?pï¿?Xï¿½Æ?ï¿½ï¿½??ï¿½ï¿½ï¿?*/
+				/*ï¿½ï¿½ï¿½ï¿½?pï¿½?Xï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½ï¿½?*/
 				sprintf(s, "change directory using relative path\n");
 				debug_print(s);
 				dinfo = cons->current_dir;
@@ -663,30 +666,30 @@ struct MYDIRINFO *parse_cdline(struct CONSOLE *cons, char *cdline){
 			if(dinfo->parent_dir == 0){
 				cd_error(cons, "Can't move because here is ROOT directory.\n");
 				debug_print("*********************************\n");
-				return 0; // parseï¿½ï¿½ï¿?s
+				return 0; // parseï¿½ï¿½ï¿½?s
 			}
 			dinfo = dinfo->parent_dir;
 			goto PARSE_NEXT;
 		}else{
-			/*ï¿?Gï¿½ï¿½ï¿?[ï¿½ï¿½ï¿½ï¿½*/
+			/*ï¿½?Gï¿½ï¿½ï¿½?[ï¿½ï¿½ï¿½ï¿½*/
 			cd_error(cons, "Incorrect initial character.\n");
 			debug_print("*********************************\n");
-			return 0;	// parseï¿½ï¿½ï¿?s
+			return 0;	// parseï¿½ï¿½ï¿½?s
 		}
 
 		if(isDOUBLEPOINT() || cdline[cp] == '\0'){
-			// ".."ï¿½Ü?ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È???½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿?
+			// ".."ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½?
 		}else{
-			/* ï¿?wï¿½è?³ï¿½??½ï¿½fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½ï¿½ï¿½Tï¿½ï¿½ */
+			/* ï¿½?wï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½ï¿½ï¿½Tï¿½ï¿½ */
 			get_dirname(dirname, cdline);
 			finfo = myfinfo_search(dirname, dinfo, MAX_FINFO_NUM);
 			if(finfo == 0){
-				/* ï¿?Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â?ï¿½ï¿½ï¿½È?ï¿½ï¿½ï¿½ï¿½ï¿? */
+				/* ï¿½?Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½? */
 				cd_error(cons, "Can't find this directory.\n");
 				debug_print("*********************************\n");
-				return 0; // parseï¿½ï¿½ï¿?s
+				return 0; // parseï¿½ï¿½ï¿½?s
 			}else{
-				/* ï¿?Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â?ï¿½ï¿½ï¿½ï¿½ï¿? */
+				/* ï¿½?Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½? */
 				dinfo = finfo->child_dir;
 			}
 		}
@@ -702,21 +705,21 @@ struct MYDIRINFO *parse_cdline(struct CONSOLE *cons, char *cdline){
 	sprintf(s, "[RESULT]destination: %s -> %s\n", prev_pname, pname);
 	debug_print(s);
 
-	/*ï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½ï¿½Ì???ï¿?*/
+	/*ï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½ï¿½ï¿½???ï¿½?*/
 	//cons->current_dir = dinfo;
 	debug_print("*********************************\n");
 	cons_newline(cons);
 	return dinfo;
 }
 
-/* ï¿?Gï¿½ï¿½ï¿?[ï¿½Ì?oï¿½ï¿½ */
+/* ï¿½?Gï¿½ï¿½ï¿½?[ï¿½ï¿½?oï¿½ï¿½ */
 void cd_error(struct CONSOLE *cons, char *message){
 	char s[50];
 	int i, j, k;
 
 	get_pathname(s, cons->current_dir);
-	for(i=0; s[i]!='\0'; i++)s[i] = ' ';	// ï¿?pï¿?Xï¿½ï¿½ï¿½ï¿½ï¿½Ì?ï¿?
-	for(j=0; j<3; j++) s[i+j] = ' ';		// "cd "ï¿½ï¿½ï¿½Ì?ï¿?
+	for(i=0; s[i]!='\0'; i++)s[i] = ' ';	// ï¿½?pï¿½?Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?
+	for(j=0; j<3; j++) s[i+j] = ' ';		// "cd "ï¿½ï¿½ï¿½ï¿½?ï¿½?
 	for(k=0; k<MAX_CMDLINE; k++){
 		if(k<cp){
 			s[i+j+k] = ' ';
@@ -734,9 +737,9 @@ void cd_error(struct CONSOLE *cons, char *message){
 }
 
 
-/* ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½ï¿½ï¿?Cï¿½ï¿½ï¿½ï¿½????Pï¿½È?tï¿?@ï¿?Cï¿½ï¿½ï¿½Ò?Wï¿½ï¿½ï¿?sï¿½ï¿½ï¿½ï¿½??ï¿?
- * (myfopen/myfread/myfwrite/myfcloseï¿½Ö?ï¿½ï¿½??eï¿?Xï¿?gï¿?p) */
-/* ï¿½Ò?Wï¿½ï¿½ï¿?[ï¿?h */
+/* ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½ï¿½?Cï¿½ï¿½ï¿½ï¿½????Pï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½?Wï¿½ï¿½ï¿½?sï¿½ï¿½ï¿½ï¿½??ï¿½?
+ * (myfopen/myfread/myfwrite/myfcloseï¿½ï¿½?ï¿½ï¿½??eï¿½?Xï¿½?gï¿½?p) */
+/* ï¿½ï¿½?Wï¿½ï¿½ï¿½?[ï¿½?h */
 #define MODE_DEF	0x00
 #define MODE_CLS	0x01
 #define MODE_INS	0x02
@@ -744,7 +747,7 @@ void cd_error(struct CONSOLE *cons, char *message){
 #define MODE_OPEN	0x08
 #define MODE_ALL	0xFF
 void cmd_edit(struct CONSOLE *cons, char *cmdline){
-	struct MYDIRINFO *dinfo = cons->current_dir;	// open»ñÈ¡µ±Ç°Â·¾¶
+	struct MYDIRINFO *dinfo = cons->current_dir;	// openï¿½ï¿½È¡ï¿½ï¿½Ç°Â·ï¿½ï¿½
 	struct MYFILEDATA *fdata;	
 	int i, p;
 	char s[BODY_SIZE + BODY_SIZE_OFFSET];
@@ -765,7 +768,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 
 	/* command line parser */
 	p = 5;
-	while(cmdline[p] == ' ') p++; // »ñÈ¡ºóÃæµÄ¿ÚÁî
+	while(cmdline[p] == ' ') p++; // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½
 
 	if(cmdline[p] == '-'){
 		/* option*/
@@ -791,13 +794,13 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 
 		/* OPEN MODE */
 		if(strcmp(option, "open") == 0){
-			/*´ò¿ªÎÄ¼þ */
+			/*ï¿½ï¿½ï¿½Ä¼ï¿½ */
 			debug_print("EDIT:open mode\n");
 			mode = MODE_OPEN;
 		}
 
 		if(setfdata == 0 && mode != MODE_OPEN){
-			/* µ±Ç°»¹Ã»ÓÐÎÄ¼þ±»´ò¿ª */
+			/* ï¿½ï¿½Ç°ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ */
 			sprintf(s, "can't edit: There is no file being opened.\n");
 			cons_putstr(cons, s);
 			cons_newline(cons);
@@ -805,16 +808,16 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 		}
 
 		if(strcmp(option, "cls") == 0){
-			/* Çå³ýÄ£Ê½ */
+			/* ï¿½ï¿½ï¿½Ä£Ê½ */
 			debug_print("EDIT:clear mode\n");
 			mode = MODE_CLS;
-			myfwrite(setfdata, "");	// ¸³Öµ¿ÕµÄ×Ö·û´®
+			myfwrite(setfdata, "");	// ï¿½ï¿½Öµï¿½Õµï¿½ï¿½Ö·ï¿½ï¿½ï¿½
 		}else if(strcmp(option, "ins") == 0){
-			/* ´ÓÍ·²åÈë×Ö·û´®*/
+			/* ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½*/
 			debug_print("EDIT:insert mode\n");
 			mode = MODE_INS;
 		}else if(strcmp(option, "add") == 0){
-			/* ×·¼Ó×Ö·û´®*/
+			/* ×·ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½*/
 			debug_print("EDIT:add mode\n");
 			mode = MODE_ADD;
 		}else if(strcmp(option, "show") == 0){
@@ -851,7 +854,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 		}else if(strcmp(option, "open") == 0){
 			
 		}else{
-			/*ÃüÁîÊäÈë´íÎó*/
+			/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 			sprintf(s, "invalid option.\n");
 			cons_putstr(cons, s);
 			cons_newline(cons);
@@ -871,7 +874,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 	temp_p = 0;
 	while(cmdline[p] != 0 && cmdline[p] != '\0'){
 		if(temp_p >=48){
-			/*editºóÃæÊäÈëµÄ×Ö·û´®Ì«³¤*/
+			/*editï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ì«ï¿½ï¿½*/
 			sprintf(s, "edit line is too long.");
 			cons_putstr(cons, s);
 			cons_newline(cons);
@@ -887,7 +890,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 
 	char temp[1024];	
 	if(mode == MODE_DEF || mode == MODE_ADD){
-		/* Èô²»ÊäÈë-ins»ò-add£¬Ä¬ÈÏÎª×·¼ÓÄ£Ê½ */
+		/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-insï¿½ï¿½-addï¿½ï¿½Ä¬ï¿½ï¿½Îª×·ï¿½ï¿½Ä£Ê½ */
 		myfread(s, setfdata);
 		strcat(s, editline);
 		debug_print("char *s out of myfwrite() is shown below.\n");
@@ -921,7 +924,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 		myfwrite(setfdata, temp);
 
 	}else if(mode == MODE_OPEN){
-		/*´ò¿ªÎÄ¼þ*/
+		/*ï¿½ï¿½ï¿½Ä¼ï¿½*/
 		if(setfdata != 0){
 			sprintf(s, "can't open: There is a file being opened.\n");
 			cons_putstr(cons, s);
@@ -949,7 +952,7 @@ void cmd_edit(struct CONSOLE *cons, char *cmdline){
 	sprintf(s, "edit result:\n%s[EOF]\n", temp_body);
 	cons_putstr(cons, s);
 
-	/* »ñÈ¡ÎÄ¼þ´óÐ¡*/
+	/* ï¿½ï¿½È¡ï¿½Ä¼ï¿½ï¿½ï¿½Ð¡*/
 	file_size = get_size_myfdata(setfdata);
 	sprintf(s, "size: %d[byte]\n", file_size);
 	cons_putstr(cons, s);
@@ -985,38 +988,38 @@ void cmd_mkdir(struct CONSOLE *cons, char *cmdline){
 		return;
 	}
 
-	/* ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½Ì???ï¿½ï¿½ï¿½Ü?ï¿?iï¿½ï¿½iï¿½ß?ï¿? */
+	/* ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½ï¿½?ï¿½?iï¿½ï¿½iï¿½ï¿½?ï¿½? */
 	for (i = 0; i < MAX_FINFO_NUM; i++) {
-		/* ï¿½ï¿½ï¿½ï¿½Fileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????¶ï¿½??ï¿½ï¿½??ï¿½ï¿½???, breakï¿½ï¿½ï¿½ï¿½ */
+		/* ï¿½ï¿½ï¿½ï¿½Fileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½??ï¿½ï¿½???, breakï¿½ï¿½ï¿½ï¿½ */
 		if (dinfo->finfo[i].name[0] == 0x00) {
 			break;
 		}
 	}
 
-	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í???¶ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿? */
+	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½? */
 	for(j=0; dir_name[j] != 0; j++) {
 		if ('a' <= dir_name[j] && dir_name[j] <= 'z') {
 			dir_name[j] -= 'a'-'A';
 		}
-		// dir_nameï¿½Ì?ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??¶ï¿½ï¿½ï¿½ï¿½ï¿½??iï¿?[ï¿½ï¿½ï¿½ï¿½
+		// dir_nameï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??iï¿½?[ï¿½ï¿½ï¿½ï¿½
 		dinfo->finfo[i].name[j] = dir_name[j];
 	}
 
-	// ï¿?cï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó?????ï¿½ï¿½??ï¿?
+	// ï¿½?cï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?????ï¿½ï¿½??ï¿½?
 	for(; j<8 ;j++) dinfo->finfo[i].name[j] = ' ';
 
-	// dir_nameï¿½Ì?ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??¶ï¿½ï¿½ï¿½ï¿½ï¿½??iï¿?[ï¿½ï¿½ï¿½ï¿½
+	// dir_nameï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??iï¿½?[ï¿½ï¿½ï¿½ï¿½
 	//for(j=0; dir_name[j] != 0; j++) dinfo->finfo[i].name[j] = dir_name[j];
 
-	/* ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½Ì?Vï¿?Kï¿½ì?? */
-	dinfo->finfo[i].child_dir = get_newdinfo();	// ï¿½ï¿½ï¿½ï¿½mydirï¿½Ì????ï¿½ï¿½ï¿?iï¿?[
+	/* ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?Vï¿½?Kï¿½ï¿½?? */
+	dinfo->finfo[i].child_dir = get_newdinfo();	// ï¿½ï¿½ï¿½ï¿½mydirï¿½ï¿½????ï¿½ï¿½ï¿½?iï¿½?[
 	dinfo->finfo[i].clustno = 0;
 	dinfo->finfo[i].date = 0;
 	dinfo->finfo[i].type = 0x10;
 	dinfo->finfo[i].size = sizeof(dinfo->finfo[i]);
-	dinfo->finfo[i].fdata = 0;	// ï¿?Oï¿?Fï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?fï¿?[ï¿?^ï¿½ï¿½ï¿½ï¿½ï¿½Ý?ï¿½ï¿½??ï¿?
+	dinfo->finfo[i].fdata = 0;	// ï¿½?Oï¿½?Fï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?fï¿½?[ï¿½?^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½??ï¿½?
 
-	/* ï¿½ì??ï¿½ï¿½ï¿½ï¿½ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½Ì?oï¿½ï¿½ */
+	/* ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?oï¿½ï¿½ */
 	sprintf(s, "created directory: name = %s\n", dinfo->finfo[i].name);
 	cons_putstr(cons, s);
 	sprintf(s, "\tchild dir address = 0x%08x\n", dinfo->finfo[i].child_dir);
@@ -1024,13 +1027,13 @@ void cmd_mkdir(struct CONSOLE *cons, char *cmdline){
 	sprintf(s, "\ttype=0x%02x\n", dinfo->finfo[i].type);
 	debug_print(s);
 
-	/* ï¿?qï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½ï¿½ï¿½MYDIRINFOï¿½Å?}ï¿?Eï¿½ï¿½ï¿?gï¿½ï¿½ï¿½ï¿½B(dinfoï¿½ï¿½child_dinfoï¿½Ì?eï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½) */
+	/* ï¿½?qï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½ï¿½ï¿½MYDIRINFOï¿½ï¿½?}ï¿½?Eï¿½ï¿½ï¿½?gï¿½ï¿½ï¿½ï¿½B(dinfoï¿½ï¿½child_dinfoï¿½ï¿½?eï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½) */
 	struct MYDIRINFO *child_dinfo = (struct MYDIRINFO *)dinfo->finfo[i].child_dir;
-	child_dinfo->this_dir = dinfo->finfo[i].child_dir; // ï¿?qï¿½ï¿½addr ï¿½ï¿½ ï¿?eï¿½ï¿½dir addr
-	sprintf(child_dinfo->name, dir_name); // ï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?iï¿?[
-	child_dinfo->parent_dir = dinfo->this_dir; // ï¿?qï¿½Ì?eaddr ï¿½ï¿½ ï¿?eaddr
+	child_dinfo->this_dir = dinfo->finfo[i].child_dir; // ï¿½?qï¿½ï¿½addr ï¿½ï¿½ ï¿½?eï¿½ï¿½dir addr
+	sprintf(child_dinfo->name, dir_name); // ï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?iï¿½?[
+	child_dinfo->parent_dir = dinfo->this_dir; // ï¿½?qï¿½ï¿½?eaddr ï¿½ï¿½ ï¿½?eaddr
 
-	/* ï¿?qï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½ï¿½ï¿½ï¿½Ì?oï¿½ï¿½(ï¿?fï¿?oï¿?bï¿?Oï¿?p) */
+	/* ï¿½?qï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?oï¿½ï¿½(ï¿½?fï¿½?oï¿½?bï¿½?Oï¿½?p) */
 	sprintf(s, "\tchild dinfo addr = 0x%08x\n", child_dinfo->this_dir);
 	debug_print(s);
 	sprintf(s, "\tchild dinfo name = %s\n", child_dinfo->name);
@@ -1038,7 +1041,7 @@ void cmd_mkdir(struct CONSOLE *cons, char *cmdline){
 	sprintf(s, "\tchild dinfo parent addr = 0x%08x\n", child_dinfo->parent_dir);
 	debug_print(s);
 
-	cons_newline(cons);	// ï¿½ï¿½ï¿?s
+	cons_newline(cons);	// ï¿½ï¿½ï¿½?s
 	return;
 }
 
@@ -1046,7 +1049,7 @@ void cmd_mkdir(struct CONSOLE *cons, char *cmdline){
  * make file in my filesystem
  */
 void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
-	/* (0x0010 + 0x0026)ÊÇÎÄ¼þÄ¿Â¼ÆðÊ¼Î»ÖÃ*/
+	/* (0x0010 + 0x0026)ï¿½ï¿½ï¿½Ä¼ï¿½Ä¿Â¼ï¿½ï¿½Ê¼Î»ï¿½ï¿½*/
 	struct MYDIRINFO *dinfo = cons->current_dir;
 	int i, j;
 	char s[50];
@@ -1073,7 +1076,7 @@ void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
 		} else {
 			filename[j] = name[i];
 			if ('a' <= filename[j] && filename[j] <= 'z') {
-				/*×ª»»³É´óÐ´ */
+				/*×ªï¿½ï¿½ï¿½É´ï¿½Ð´ */
 				filename[j] -= 'a'-'A';
 			}
 			j++;
@@ -1092,7 +1095,7 @@ void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
 		return;
 	}
 
-	/***** ³õÊ¼»¯ *****/
+	/***** ï¿½ï¿½Ê¼ï¿½ï¿½ *****/
 	for (i = 0; i < MAX_FINFO_NUM; i++) {
 		if (dinfo->finfo[i].name[0] == 0x00) {
 			break;
@@ -1103,12 +1106,12 @@ void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
 	for(j=0; j<3; j++) dinfo->finfo[i].ext[j] = filename[8+j];
 	dinfo->finfo[i].clustno = 0;
 	dinfo->finfo[i].date = 0;
-	dinfo->finfo[i].type = 0x20;	/*ÎÄ¼þÀàÐÍÊÇ0x20ËµÃ÷ÎªÕý³£ÎÄ¼þ*/
+	dinfo->finfo[i].type = 0x20;	/*ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0x20Ëµï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½*/
 	dinfo->finfo[i].size = 0;
 
-	struct MYFILEDATA test;	//ÐÂ½¨Ò»¸öÎÄ¼þtest
+	struct MYFILEDATA test;	//ï¿½Â½ï¿½Ò»ï¿½ï¿½ï¿½Ä¼ï¿½test
 	test.head.stat = STAT_ALL;	
-	test.head.this_dir = dinfo->this_dir;//»ñÈ¡µ±Ç°Â·¾¶
+	test.head.this_dir = dinfo->this_dir;//ï¿½ï¿½È¡ï¿½ï¿½Ç°Â·ï¿½ï¿½
 	struct MYFILEDATA *fdata = get_newfdata(&test);
 	strcpy(fdata->head.name, name);	
 
@@ -1121,10 +1124,10 @@ void cmd_mkfile(struct CONSOLE *cons, char *cmdline){
 	sprintf(s, "test(should not be 0) = %d\n", debug);
 	debug_print(s);
 	/*****************/
-	fdata->head.stat = 0x01;	// valid bitï¿½ð?????ï¿?
-	fdata->head.this_fdata = fdata; // ï¿?fï¿?[ï¿?^ï¿½Ì?ï¿½Ì?ï¿½Ô?????mï¿½Û?ï¿½ï¿½ï¿?
+	fdata->head.stat = 0x01;	// valid bitï¿½ï¿½?????ï¿½?
+	fdata->head.this_fdata = fdata; // ï¿½?fï¿½?[ï¿½?^ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?????mï¿½ï¿½?ï¿½ï¿½ï¿½?
 	fdata->head.this_dir = dinfo->this_dir;
-	dinfo->finfo[i].fdata = fdata;	// ï¿?fï¿?tï¿?Hï¿½ï¿½ï¿?gï¿½Í?O(ï¿?vï¿½ï¿½ï¿½ï¿½ï¿?I)
+	dinfo->finfo[i].fdata = fdata;	// ï¿½?fï¿½?tï¿½?Hï¿½ï¿½ï¿½?gï¿½ï¿½?O(ï¿½?vï¿½ï¿½ï¿½ï¿½ï¿½?I)
 
 	// debug code: Viewing status of created file.
 	sprintf(s, "created file name = %s[EOF]\n", filename);
@@ -1279,7 +1282,7 @@ void cmd_test(struct CONSOLE *cons){
 }
 
 /**
- * ?¼¨»ØÄêÊ¸·ïÅª¾õ?.
+ * ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½Åªï¿½ï¿½?.
  * "show [file name]"
  */
 void cmd_show(struct CONSOLE *cons, char *cmdline){
@@ -1314,7 +1317,7 @@ void cmd_show(struct CONSOLE *cons, char *cmdline){
 		cons_putstr(cons, s);
 	}
 	/* show the strings in char s[100] */
-	// show detail file type info(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½Ì?oï¿½Í?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿?iï¿?mï¿?Fï¿½Ï???j)
+	// show detail file type info(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½?oï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½?iï¿½?mï¿½?Fï¿½ï¿½???j)
 	unsigned char filetype = finfo->type;
 	sprintf(s, "\tdetail file type: ");
 	if((filetype & FTYPE_DIR) != 0x00)	sprintf(s, "%s directory/readonly ", s);
@@ -1353,7 +1356,7 @@ void cmd_fview(struct CONSOLE *cons, char *cmdline){
 		/* if finfo was found */
 	}else{
 		if(finfo->fdata != 0){
-			/* ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?fï¿?[ï¿?^ï¿½ï¿½ï¿½ï¿½ï¿½Ý?ï¿½ï¿½ï¿½ï¿½??? */
+			/* ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?fï¿½?[ï¿½?^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½??? */
 			sprintf(s, "fdata addr = 0x%08x\n", finfo->fdata);
 			debug_print(s);
 			sprintf(s, "head.data_addr=0x%08x\n", finfo->fdata->head.this_fdata);
@@ -1365,12 +1368,12 @@ void cmd_fview(struct CONSOLE *cons, char *cmdline){
 
 			myfread(s, finfo->fdata);
 			cons_putstr(cons, s);
-			cons_putstr(cons, "[EOF]\n");	// bodyï¿½ï¿½ï¿½Ì???ï¿½É???ï¿½ï¿½sï¿½ï¿½ï¿½È?ï¿½ï¿½????}ï¿½ï¿½
+			cons_putstr(cons, "[EOF]\n");	// bodyï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½???ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½????}ï¿½ï¿½
 			sprintf(s, "size: %d\n", get_size_myfdata(finfo->fdata));
 			cons_putstr(cons, s);
 			cons_newline(cons);
 		}else{
-			/* ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?fï¿?[ï¿?^ï¿½ï¿½ï¿½È?ï¿½ï¿½???(Ex. ï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½) */
+			/* ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?fï¿½?[ï¿½?^ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½???(Ex. ï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½) */
 			sprintf(s, "\tthis is not file.\n");
 			cons_putstr(cons, s);
 			cons_newline(cons);
@@ -1382,10 +1385,10 @@ void cmd_fview(struct CONSOLE *cons, char *cmdline){
 }
 
 
-/* FDï¿½É?iï¿?[ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿?Sï¿½Ä???tï¿?@ï¿?Cï¿½ï¿½ï¿½ð???ï¿?, ï¿?\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿? */
+/* FDï¿½ï¿½?iï¿½?[ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½?Sï¿½ï¿½???tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½???ï¿½?, ï¿½?\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½? */
 void cmd_mkfs(struct CONSOLE * cons){
 	struct MYDIRINFO dinfo;
-	/* (0x0010 + 0x0026)Ê¸·ïÌÜ?µ¯»Ï°ÌÃÖ. */
+	/* (0x0010 + 0x0026)Ê¸ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½Ï°ï¿½ï¿½ï¿½. */
 	struct FILEINFO *finfo = (struct FILEINFO *) (ADR_DISKIMG + 0x002600);
 	int i, j;
 	char s[30];
@@ -1395,26 +1398,26 @@ void cmd_mkfs(struct CONSOLE * cons){
 	dinfo.this_dir = (struct MYDIRINFO *)ROOT_DIR_ADDR;
 	cons->current_dir = (struct MYDIRINFO *)dinfo.this_dir;
 
-	/* ï¿½Æ????ï¿½ï¿½ï¿½ï¿½10ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?Rï¿?sï¿?[ï¿½ï¿½ï¿½Ä???ï¿? */
+	/* ï¿½ï¿½????ï¿½ï¿½ï¿½ï¿½10ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?Rï¿½?sï¿½?[ï¿½ï¿½ï¿½ï¿½???ï¿½? */
 	for (i = 0; i < 10; i++) {
-		/* ï¿½ï¿½ï¿½ï¿½Fileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????¶ï¿½??ï¿½ï¿½??ï¿½ï¿½???, breakï¿½ï¿½ï¿½ï¿½ */
+		/* ï¿½ï¿½ï¿½ï¿½Fileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½??ï¿½ï¿½???, breakï¿½ï¿½ï¿½ï¿½ */
 		if (finfo[i].name[0] == 0x00) {
 			break;
 		}
-		/* 0xe5:ï¿½ï¿½ï¿½É?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??½ï¿½tï¿?@ï¿?Cï¿½ï¿½ */
+		/* 0xe5:ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½tï¿½?@ï¿½?Cï¿½ï¿½ */
 		if (finfo[i].name[0] != 0xe5) {
 			/* 0x18 = 0x10 + 0x18
-			 * 0x10:ï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½
-			 * 0x08:ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½Å?????ï¿½ï¿½ï¿½ï¿½(ï¿?fï¿?Bï¿?Xï¿?Nï¿½Ì?ï¿½ï¿½Oï¿½Æ?ï¿?)
-			 * ï¿½ï¿½ï¿½ï¿½??AFile Typeï¿½ï¿½"ï¿?tï¿?@ï¿?Cï¿½ï¿½"ï¿½Å?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??? */
+			 * 0x10:ï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½
+			 * 0x08:ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½?????ï¿½ï¿½ï¿½ï¿½(ï¿½?fï¿½?Bï¿½?Xï¿½?Nï¿½ï¿½?ï¿½ï¿½Oï¿½ï¿½?ï¿½?)
+			 * ï¿½ï¿½ï¿½ï¿½??AFile Typeï¿½ï¿½"ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½"ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??? */
 			if ((finfo[i].type & 0x18) == 0) {
 				sprintf(s, "filename.ext   %7d\n", finfo[i].size);
 				for (j = 0; j < 8; j++) {
-					s[j] = finfo[i].name[j]; /* "filename"ï¿½ï¿½ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?lï¿?[ï¿½ï¿½ï¿½Å????ï¿½ï¿½ */
+					s[j] = finfo[i].name[j]; /* "filename"ï¿½ï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?lï¿½?[ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½ */
 				}
-				s[ 9] = finfo[i].ext[0];	/* "e"ï¿½ï¿½ï¿½ã??ï¿½ï¿½ */
-				s[10] = finfo[i].ext[1];	/* "x"ï¿½ï¿½ï¿½ã??ï¿½ï¿½ */
-				s[11] = finfo[i].ext[2];	/* "t"ï¿½ï¿½ï¿½ã??ï¿½ï¿½ */
+				s[ 9] = finfo[i].ext[0];	/* "e"ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ */
+				s[10] = finfo[i].ext[1];	/* "x"ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ */
+				s[11] = finfo[i].ext[2];	/* "t"ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ */
 
 				dinfo.finfo[i].clustno = finfo[i].clustno;
 				dinfo.finfo[i].date = finfo[i].date;
@@ -1441,7 +1444,7 @@ void cmd_mkfs(struct CONSOLE * cons){
  * show files information in new filesystem
  */
 void cmd_dir(struct CONSOLE *cons){
-	/* (0x0010 + 0x0026)ï¿½Ì????ï¿½É?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, FILEINFOï¿½Ì?fï¿?[ï¿?^ï¿?\ï¿½ï¿½ï¿½Æ?ï¿½ï¿½ï¿?, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??Rï¿?sï¿?[ï¿½ï¿½ï¿½ï¿½. */
+	/* (0x0010 + 0x0026)ï¿½ï¿½????ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, FILEINFOï¿½ï¿½?fï¿½?[ï¿½?^ï¿½?\ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½?, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??Rï¿½?sï¿½?[ï¿½ï¿½ï¿½ï¿½. */
 	struct MYDIRINFO *dinfo = cons->current_dir;
 	int i, j;
 	char s[50];
@@ -1456,41 +1459,41 @@ void cmd_dir(struct CONSOLE *cons){
 
 	// search present my directory
 	// int dir_num;
-	// dir_num = get_newdinfo(cons);	// ï¿?fï¿?oï¿?bï¿?Oï¿½Ì?ï¿½ï¿½??ï¿?&consï¿½ï¿½ï¿½ï¿½ï¿½Ä?ï¿½ï¿½ï¿?B
+	// dir_num = get_newdinfo(cons);	// ï¿½?fï¿½?oï¿½?bï¿½?Oï¿½ï¿½?ï¿½ï¿½??ï¿½?&consï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½?B
 
-	// debug code: ï¿½ï¿½ï¿½É?}ï¿?Eï¿½ï¿½ï¿?gï¿½ï¿½ï¿½ï¿½MYDIRINFOï¿½Ì???ï¿½ï¿½ï¿?\ï¿½ï¿½
+	// debug code: ï¿½ï¿½ï¿½ï¿½?}ï¿½?Eï¿½ï¿½ï¿½?gï¿½ï¿½ï¿½ï¿½MYDIRINFOï¿½ï¿½???ï¿½ï¿½ï¿½?\ï¿½ï¿½
 	//sprintf(s, "dinfo number = %d\n", dir_num);
 	//cons_putstr(cons, s);
 
 	//display files in current dir
 	for (i = 0; i < MAX_FINFO_NUM; i++) {
-		/* ï¿½ï¿½ï¿½ï¿½Fileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????¶ï¿½??ï¿½ï¿½??ï¿½ï¿½???, breakï¿½ï¿½ï¿½ï¿½ */
+		/* ï¿½ï¿½ï¿½ï¿½Fileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½??ï¿½ï¿½???, breakï¿½ï¿½ï¿½ï¿½ */
 		if (dinfo->finfo[i].name[0] == 0x00) {
 			break;
 		}
 
-		/* 0xe5:ï¿½ï¿½ï¿½É?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??½ï¿½tï¿?@ï¿?Cï¿½ï¿½ */
+		/* 0xe5:ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½tï¿½?@ï¿½?Cï¿½ï¿½ */
 		if (dinfo->finfo[i].name[0] != 0xe5) {
 			/* 0x18 = 0x10 + 0x18
-			 * 0x10:ï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½
-			 * 0x08:ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½Å?????ï¿½ï¿½ï¿½ï¿½(ï¿?fï¿?Bï¿?Xï¿?Nï¿½Ì?ï¿½ï¿½Oï¿½Æ?ï¿?)
+			 * 0x10:ï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½
+			 * 0x08:ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½?????ï¿½ï¿½ï¿½ï¿½(ï¿½?fï¿½?Bï¿½?Xï¿½?Nï¿½ï¿½?ï¿½ï¿½Oï¿½ï¿½?ï¿½?)
 			 */
-			/* File Typeï¿½ï¿½"ï¿?tï¿?@ï¿?Cï¿½ï¿½"ï¿½Ì???? */
+			/* File Typeï¿½ï¿½"ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½"ï¿½ï¿½???? */
 			if ((dinfo->finfo[i].type & 0x18) == 0) {
 				sprintf(s, "filename.ext\t%7d [FILE]\n", dinfo->finfo[i].size);
 				for (j = 0; j < 8; j++) {
-					s[j] = dinfo->finfo[i].name[j]; /* "filename"ï¿½ï¿½ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?lï¿?[ï¿½ï¿½ï¿½Å????ï¿½ï¿½ */
+					s[j] = dinfo->finfo[i].name[j]; /* "filename"ï¿½ï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?lï¿½?[ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½ */
 				}
-				s[ 9] = dinfo->finfo[i].ext[0];	/* "e"ï¿½ï¿½ï¿½ã??ï¿½ï¿½ */
-				s[10] = dinfo->finfo[i].ext[1];	/* "x"ï¿½ï¿½ï¿½ã??ï¿½ï¿½ */
-				s[11] = dinfo->finfo[i].ext[2];	/* "t"ï¿½ï¿½ï¿½ã??ï¿½ï¿½ */
+				s[ 9] = dinfo->finfo[i].ext[0];	/* "e"ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ */
+				s[10] = dinfo->finfo[i].ext[1];	/* "x"ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ */
+				s[11] = dinfo->finfo[i].ext[2];	/* "t"ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ */
 				cons_putstr(cons, s);
 
-				/* File Typeï¿½ï¿½"ï¿?fï¿?Bï¿½ï¿½ï¿?Nï¿?gï¿½ï¿½"ï¿½Ì???? */
+				/* File Typeï¿½ï¿½"ï¿½?fï¿½?Bï¿½ï¿½ï¿½?Nï¿½?gï¿½ï¿½"ï¿½ï¿½???? */
 			}else if((dinfo->finfo[i].type & 0x10) == 0x10){
 				sprintf(s, "filename    \t%7d [DIR]\n", dinfo->finfo[i].size);
 				for (j = 0; j < 8; j++) {
-					s[j] = dinfo->finfo[i].name[j]; /* "filename"ï¿½ï¿½ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?lï¿?[ï¿½ï¿½ï¿½Å????ï¿½ï¿½ */
+					s[j] = dinfo->finfo[i].name[j]; /* "filename"ï¿½ï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?lï¿½?[ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½ */
 				}
 				cons_putstr(cons, s);
 				//sprintf(s, "test %s\t%d\t[DIR]",dinfo->finfo[i].name, dinfo->finfo[i].size);
@@ -1499,7 +1502,7 @@ void cmd_dir(struct CONSOLE *cons){
 		}
 	}
 
-	/* ï¿½Ð?????ï¿½ï¿½tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â?ï¿½ï¿½ï¿½È?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿? */
+	/* ï¿½ï¿½?????ï¿½ï¿½tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½? */
 	if(i == 0){
 		sprintf(s, "this directory has no file...\n");
 		cons_putstr(cons, s);
@@ -1509,7 +1512,7 @@ void cmd_dir(struct CONSOLE *cons){
 }
 
 /**
- * ??§æ??ä»¶ç³»ç»????å±?ç¤ºå½¢å¼?
+ * ??ï¿½ï¿½??ä»¶ç³»ï¿½????ï¿½?ç¤ºå½¢ï¿½?
  */
 void cmd_fddir(struct CONSOLE *cons)
 {
@@ -1522,18 +1525,18 @@ void cmd_fddir(struct CONSOLE *cons)
 			break;
 		}
 
-		/* 0xe5:Ç¡²ÌÊ¸·ïÌ¾ÅªÂè°ìÐ¤»ú??0xe5¡¤ÂåÉ½?Ð¤Ê¸·ïÖá?Èï?½üÎ» */
+		/* 0xe5:Ç¡ï¿½ï¿½Ê¸ï¿½ï¿½Ì¾Åªï¿½ï¿½ï¿½Ð¤ï¿½ï¿½??0xe5ï¿½ï¿½ï¿½ï¿½É½?Ð¤Ê¸ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½Î» */
 		if (finfo[i].name[0] != 0xe5) {
 			/* 0x18 = 0x10 + 0x18
-			 * 0x10:ÌÜ?
-			 * 0x08:¡ÄÈóÊ¸·ï¿®Â©¡ÊÈæÇ¡¼§?Ì¾¾ÎÅù¡Ë
+			 * 0x10:ï¿½ï¿½?
+			 * 0x08:ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿®Â©ï¿½ï¿½ï¿½ï¿½Ç¡ï¿½ï¿½?Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			 * */
 			if ((finfo[i].type & 0x18) == 0) {
 				sprintf(s, "filename.ext   %7d\n", finfo[i].size);
 				for (j = 0; j < 8; j++) {
 					s[j] = finfo[i].name[j]; 
 				}
-				s[ 9] = finfo[i].ext[0];	//?½¼¹¡?
+				s[ 9] = finfo[i].ext[0];	//?ï¿½ï¿½ï¿½ï¿½?
 				s[10] = finfo[i].ext[1];	
 				s[11] = finfo[i].ext[2];	
 				cons_putstr0(cons, s);
@@ -1547,7 +1550,7 @@ void cmd_fddir(struct CONSOLE *cons)
 }
 
 /**
- * ?½ü¹µÀ©Âæ
+ * ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 void cmd_exit(struct CONSOLE *cons, int *fat)
 {
@@ -1558,7 +1561,7 @@ void cmd_exit(struct CONSOLE *cons, int *fat)
 	if (cons->sht != 0) {
 		timer_cancel(cons->timer);
 	}
-	//¾­?·ú?ãÙ¸ý?½êÀêÍÑ ÅªÆâÂ¸¶õ?Á´Éô?Êü½ÐÍè¡¤Á³¹¡?¼ûÍ×?ÊüãÙ¸ýÅª??ÏÂÇ¤??Ã?
+	//ï¿½ï¿½?ï¿½ï¿½?ï¿½Ù¸ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Åªï¿½ï¿½Â¸ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½è¡¤ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½Ù¸ï¿½Åª??ï¿½ï¿½Ç¤??ï¿½ï¿½?
 	memman_free_4k(memman, (int) fat, 4 * 2880);
 	io_cli();
 	if (cons->sht != 0) {
@@ -1568,7 +1571,7 @@ void cmd_exit(struct CONSOLE *cons, int *fat)
 	}
 	io_sti();
 	for (;;) {
-		//Ç¤?µÙÌ²
+		//Ç¤?ï¿½ï¿½Ì²
 		task_sleep(task);
 	}
 }
@@ -1584,7 +1587,7 @@ void cmd_start(struct CONSOLE *cons, char *cmdline, int memtotal)
 	int i;
 	sheet_slide(sht, 32, 4);
 	sheet_updown(sht, shtctl->top);
-	/*¾­Ì¿Îá¹Ô?ÆþÅª»úÉä¶úÃà»ú?À©Åþ¿·ÅªÌ¿Îá¹ÔãÙ¸ýÃæ*/
+	/*ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½?ï¿½ï¿½Åªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÅªÌ¿ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½*/
 	for (i = 6; cmdline[i] != 0; i++) {
 		fifo32_put(fifo, cmdline[i] + 256);
 	}
@@ -1633,8 +1636,8 @@ void cmd_langmode(struct CONSOLE *cons, char *cmdline)
 }
 
 /**
- * ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½ï¿½ï¿?Cï¿½ï¿½ï¿½Ì?ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿?
- * APIï¿½É?ï¿½ï¿½Rï¿?[ï¿½ï¿½ï¿½Å?ï¿½ï¿½???ï¿½Ç?ï¿½ï¿½ï¿½ï¿½??????ï¿½Ö?ï¿?
+ * ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½ï¿½?Cï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½?
+ * APIï¿½ï¿½?ï¿½ï¿½Rï¿½?[ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½???ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½??????ï¿½ï¿½?ï¿½?
  */
 int cmd_app(struct CONSOLE *cons, int *fat, char *cmdline)
 {
@@ -1646,19 +1649,19 @@ int cmd_app(struct CONSOLE *cons, int *fat, char *cmdline)
 	struct SHTCTL *shtctl;
 	struct SHEET *sht;
 
-	/* ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½ï¿½ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½ð???ï¿? */
+	/* ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½???ï¿½? */
 	for (i = 0; i < 13; i++) {
 		if (cmdline[i] <= ' ') {
 			break;
 		}
 		name[i] = cmdline[i];
 	}
-	name[i] = 0; /* ï¿½Æ????ï¿½ï¿½ï¿½ï¿½ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½Ì?ï¿½ï¿½ï¿?0ï¿½É?ï¿½ï¿½ï¿? */
+	name[i] = 0; /* ï¿½ï¿½????ï¿½ï¿½ï¿½ï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½?0ï¿½ï¿½?ï¿½ï¿½ï¿½? */
 
-	/* ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½Tï¿½ï¿½ */
+	/* ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½Tï¿½ï¿½ */
 	finfo = file_search(name, (struct FILEINFO *) (ADR_DISKIMG + 0x002600), 224);
 	if (finfo == 0 && name[i - 1] != '.') {
-		/* ï¿½ï¿½ï¿½Â?ï¿½ï¿½ï¿½È?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½ï¿?".HRB"ï¿½ï¿½ï¿½Â?ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿?xï¿?Tï¿½ï¿½ï¿½Ä???ï¿? */
+		/* ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½ï¿½?".HRB"ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½?xï¿½?Tï¿½ï¿½ï¿½ï¿½???ï¿½? */
 		name[i    ] = '.';
 		name[i + 1] = 'H';
 		name[i + 2] = 'R';
@@ -1668,16 +1671,16 @@ int cmd_app(struct CONSOLE *cons, int *fat, char *cmdline)
 	}
 
 	if (finfo != 0) {
-		/* ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??? */
-		appsiz = finfo->size;	// ï¿?Aï¿?vï¿½ï¿½ï¿?Pï¿?[ï¿?Vï¿½ï¿½ï¿½ï¿½ï¿½Ì?Tï¿?Cï¿?Yï¿½ï¿½ï¿½æ??
+		/* ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??? */
+		appsiz = finfo->size;	// ï¿½?Aï¿½?vï¿½ï¿½ï¿½?Pï¿½?[ï¿½?Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?Tï¿½?Cï¿½?Yï¿½ï¿½ï¿½ï¿½??
 		p = file_loadfile2(finfo->clustno, &appsiz, fat);
 		if (appsiz >= 36 && strncmp(p + 4, "Hari", 4) == 0 && *p == 0x00) {
-			/* ï¿?Tï¿?Cï¿?Yï¿½ï¿½36byteï¿½È?ï¿? && Header == "Hari" && ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½Ì?ï¿½ï¿½[ï¿?hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê?? */
-			segsiz = *((int *) (p + 0x0000));	// ï¿?Zï¿?Oï¿½ï¿½ï¿½ï¿½ï¿?gï¿½Ì?Tï¿?Cï¿?Yï¿½ï¿½ï¿½æ??
-			esp    = *((int *) (p + 0x000c));	// ï¿½ï¿½ï¿?Wï¿?Xï¿?^ESPï¿½ï¿½ï¿½æ??
-			datsiz = *((int *) (p + 0x0010));	// ï¿?fï¿?[ï¿?^ï¿?Tï¿?Cï¿?Yï¿½ï¿½ï¿½æ??
-			dathrb = *((int *) (p + 0x0014));	// ï¿?fï¿?[ï¿?^ï¿½Ì?ï¿½ï¿½eï¿½ï¿½ï¿½æ??
-			q = (char *) memman_alloc_4k(memman, segsiz);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì?ï¿½ï¿½ï¿?mï¿½ï¿½
+			/* ï¿½?Tï¿½?Cï¿½?Yï¿½ï¿½36byteï¿½ï¿½?ï¿½? && Header == "Hari" && ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½[ï¿½?hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?? */
+			segsiz = *((int *) (p + 0x0000));	// ï¿½?Zï¿½?Oï¿½ï¿½ï¿½ï¿½ï¿½?gï¿½ï¿½?Tï¿½?Cï¿½?Yï¿½ï¿½ï¿½ï¿½??
+			esp    = *((int *) (p + 0x000c));	// ï¿½ï¿½ï¿½?Wï¿½?Xï¿½?^ESPï¿½ï¿½ï¿½ï¿½??
+			datsiz = *((int *) (p + 0x0010));	// ï¿½?fï¿½?[ï¿½?^ï¿½?Tï¿½?Cï¿½?Yï¿½ï¿½ï¿½ï¿½??
+			dathrb = *((int *) (p + 0x0014));	// ï¿½?fï¿½?[ï¿½?^ï¿½ï¿½?ï¿½ï¿½eï¿½ï¿½ï¿½ï¿½??
+			q = (char *) memman_alloc_4k(memman, segsiz);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½?mï¿½ï¿½
 			task->ds_base = (int) q;	// task
 			set_segmdesc(task->ldt + 0, appsiz - 1, (int) p, AR_CODE32_ER + 0x60);
 			set_segmdesc(task->ldt + 1, segsiz - 1, (int) q, AR_DATA32_RW + 0x60);
@@ -1689,11 +1692,11 @@ int cmd_app(struct CONSOLE *cons, int *fat, char *cmdline)
 			for (i = 0; i < MAX_SHEETS; i++) {
 				sht = &(shtctl->sheets0[i]);
 				if ((sht->flags & 0x11) == 0x11 && sht->task == task) {
-					/* ï¿?Aï¿?vï¿½ï¿½ï¿½ï¿½ï¿?Jï¿½ï¿½ï¿½ï¿½ï¿½Ï???ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿? */
-					sheet_free(sht);	/* ï¿½Â?ï¿½ï¿½ï¿? */
+					/* ï¿½?Aï¿½?vï¿½ï¿½ï¿½ï¿½ï¿½?Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿½? */
+					sheet_free(sht);	/* ï¿½ï¿½?ï¿½ï¿½ï¿½? */
 				}
 			}
-			for (i = 0; i < 8; i++) {	/* ï¿?Nï¿½ï¿½ï¿?[ï¿?Yï¿½ï¿½ï¿½Ä???ï¿½ï¿½tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿?Nï¿½ï¿½ï¿?[ï¿?Y */
+			for (i = 0; i < 8; i++) {	/* ï¿½?Nï¿½ï¿½ï¿½?[ï¿½?Yï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½?Nï¿½ï¿½ï¿½?[ï¿½?Y */
 				if (task->fhandle[i].buf != 0) {
 					memman_free_4k(memman, (int) task->fhandle[i].buf, task->fhandle[i].size);
 					task->fhandle[i].buf = 0;
@@ -1709,7 +1712,7 @@ int cmd_app(struct CONSOLE *cons, int *fat, char *cmdline)
 		cons_newline(cons);
 		return 1;
 	}
-	/* ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â?ï¿½ï¿½ï¿½È?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??? */
+	/* ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??? */
 	return 0;
 }
 
@@ -1725,8 +1728,8 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 	struct SHTCTL *shtctl = (struct SHTCTL *) *((int *) 0x0fe4);
 	struct SHEET *sht;
 	struct FIFO32 *sys_fifo = (struct FIFO32 *) *((int *) 0x0fec);
-	int *reg = &eax + 1;	/* eaxï¿½Ì?ï¿½ï¿½????n */
-	/* ï¿½Û?ï¿½ï¿½??ï¿½ï¿½??ï¿?PUSHADï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿? */
+	int *reg = &eax + 1;	/* eaxï¿½ï¿½?ï¿½ï¿½????n */
+	/* ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½??ï¿½?PUSHADï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½? */
 	/* reg[0] : EDI,   reg[1] : ESI,   reg[2] : EBP,   reg[3] : ESP */
 	/* reg[4] : EBX,   reg[5] : EDX,   reg[6] : ECX,   reg[7] : EAX */
 	int i;
@@ -1754,7 +1757,7 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		sheet_setbuf(sht, (char *) ebx + ds_base, esi, edi, eax);
 		make_window8((char *) ebx + ds_base, esi, edi, (char *) ecx + ds_base, 0);
 		sheet_slide(sht, ((shtctl->xsize - esi) / 2) & ~3, (shtctl->ysize - edi) / 2);
-		sheet_updown(sht, shtctl->top); /* ï¿½ï¿½ï¿½Ì?}ï¿?Eï¿?Xï¿½Æ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿½æ?¤ï¿½??wï¿½ï¿½F ï¿?}ï¿?Eï¿?Xï¿½Í?ï¿½ï¿½??ï¿½É???ï¿? */
+		sheet_updown(sht, shtctl->top); /* ï¿½ï¿½ï¿½ï¿½?}ï¿½?Eï¿½?Xï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½?ï¿½ï¿½??wï¿½ï¿½F ï¿½?}ï¿½?Eï¿½?Xï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½???ï¿½? */
 		reg[7] = (int) sht;
 		break;
 	case 6:
@@ -1773,15 +1776,15 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		break;
 	case 8:
 		memman_init((struct MEMMAN *) (ebx + ds_base));
-		ecx &= 0xfffffff0;	/* 16ï¿?oï¿?Cï¿?gï¿?Pï¿½Ê?ï¿? */
+		ecx &= 0xfffffff0;	/* 16ï¿½?oï¿½?Cï¿½?gï¿½?Pï¿½ï¿½?ï¿½? */
 		memman_free((struct MEMMAN *) (ebx + ds_base), eax, ecx);
 		break;
 	case 9:
-		ecx = (ecx + 0x0f) & 0xfffffff0; /* 16ï¿?oï¿?Cï¿?gï¿?Pï¿½Ê?????ï¿½ã?? */
+		ecx = (ecx + 0x0f) & 0xfffffff0; /* 16ï¿½?oï¿½?Cï¿½?gï¿½?Pï¿½ï¿½?????ï¿½ï¿½?? */
 		reg[7] = memman_alloc((struct MEMMAN *) (ebx + ds_base), ecx);
 		break;
 	case 10:
-		ecx = (ecx + 0x0f) & 0xfffffff0; /* 16ï¿?oï¿?Cï¿?gï¿?Pï¿½Ê?????ï¿½ã?? */
+		ecx = (ecx + 0x0f) & 0xfffffff0; /* 16ï¿½?oï¿½?Cï¿½?gï¿½?Pï¿½ï¿½?????ï¿½ï¿½?? */
 		memman_free((struct MEMMAN *) (ebx + ds_base), eax, ecx);
 		break;
 	case 11:
@@ -1820,7 +1823,7 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 			io_cli();
 			if (fifo32_status(&task->fifo) == 0) {
 				if (eax != 0) {
-					task_sleep(task);	/* FIFOï¿½ï¿½ï¿½ï¿½??????Qï¿½Ä???ï¿? */
+					task_sleep(task);	/* FIFOï¿½ï¿½ï¿½ï¿½??????Qï¿½ï¿½???ï¿½? */
 				} else {
 					io_sti();
 					reg[7] = -1;
@@ -1829,25 +1832,25 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 			}
 			i = fifo32_get(&task->fifo);
 			io_sti();
-			if (i <= 1 && cons->sht != 0) { /* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿?pï¿?^ï¿?Cï¿?} */
-				/* ï¿?Aï¿?vï¿½ï¿½ï¿½ï¿½ï¿?sï¿½ï¿½ï¿½Í?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½ï¿?oï¿½È?ï¿½ï¿½????Aï¿½ï¿½ï¿½Â?ï¿½ï¿½ï¿½ï¿½??\ï¿½ï¿½ï¿?pï¿½ï¿½1ï¿½ð???ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿? */
+			if (i <= 1 && cons->sht != 0) { /* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½?pï¿½?^ï¿½?Cï¿½?} */
+				/* ï¿½?Aï¿½?vï¿½ï¿½ï¿½ï¿½ï¿½?sï¿½ï¿½ï¿½ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½ï¿½?oï¿½ï¿½?ï¿½ï¿½????Aï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½??\ï¿½ï¿½ï¿½?pï¿½ï¿½1ï¿½ï¿½???ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½? */
 				timer_init(cons->timer, &task->fifo, 1); /* ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ */
 				timer_settime(cons->timer, 50);
 			}
-			if (i == 2) {	/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ON */
+			if (i == 2) {	/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ON */
 				cons->cur_c = COL8_FFFFFF;
 			}
-			if (i == 3) {	/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½OFF */
+			if (i == 3) {	/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½OFF */
 				cons->cur_c = -1;
 			}
-			if (i == 4) {	/* ï¿?Rï¿½ï¿½ï¿?\ï¿?[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿? */
+			if (i == 4) {	/* ï¿½?Rï¿½ï¿½ï¿½?\ï¿½?[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½? */
 				timer_cancel(cons->timer);
 				io_cli();
-				fifo32_put(sys_fifo, cons->sht - shtctl->sheets0 + 2024);	/* 2024ï¿?`2279 */
+				fifo32_put(sys_fifo, cons->sht - shtctl->sheets0 + 2024);	/* 2024ï¿½?`2279 */
 				cons->sht = 0;
 				io_sti();
 			}
-			if (i >= 256) { /* ï¿?Lï¿?[ï¿?{ï¿?[ï¿?hï¿?fï¿?[ï¿?^ï¿?iï¿?^ï¿?Xï¿?NAï¿?oï¿?Rï¿?jï¿½È?ï¿? */
+			if (i >= 256) { /* ï¿½?Lï¿½?[ï¿½?{ï¿½?[ï¿½?hï¿½?fï¿½?[ï¿½?^ï¿½?iï¿½?^ï¿½?Xï¿½?NAï¿½?oï¿½?Rï¿½?jï¿½ï¿½?ï¿½? */
 				reg[7] = i - 256;
 				return 0;
 			}
@@ -1855,7 +1858,7 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		break;
 	case 16:
 		reg[7] = (int) timer_alloc();
-		((struct TIMER *) reg[7])->flags2 = 1;	/* ï¿½ï¿½ï¿½ï¿½ï¿?Lï¿½ï¿½ï¿½ï¿½ï¿?Zï¿½ï¿½ï¿?Lï¿½ï¿½ */
+		((struct TIMER *) reg[7])->flags2 = 1;	/* ï¿½ï¿½ï¿½ï¿½ï¿½?Lï¿½ï¿½ï¿½ï¿½ï¿½?Zï¿½ï¿½ï¿½?Lï¿½ï¿½ */
 		break;
 	case 17:
 		timer_init((struct TIMER *) ebx, &task->fifo, eax + 256);
@@ -1882,7 +1885,7 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		break;
 
 	case 21:
-		/* int api_fopen(char *fname):ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½Ì?Iï¿?[ï¿?vï¿½ï¿½
+		/* int api_fopen(char *fname):ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½?Iï¿½?[ï¿½?vï¿½ï¿½
 		 * EDX = 21
 		 * EBX = file name
 		 * EAX = file handle (return 0 if file open failed.)
@@ -1906,7 +1909,7 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		}
 		break;
 	case 22:
-		/* void api_fclose(int fhandle): ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½Ì?Nï¿½ï¿½ï¿?[ï¿?Y
+		/* void api_fclose(int fhandle): ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½?Nï¿½ï¿½ï¿½?[ï¿½?Y
 		 * EDX = 22
 		 * EAX = file handle
 		 */
@@ -1915,14 +1918,14 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		fh->buf = 0;
 		break;
 	case 23:
-		/* api_fseek(int fhandle, int offset, int mode):ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿½Ì?Vï¿?[ï¿?N
+		/* api_fseek(int fhandle, int offset, int mode):ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½?Vï¿½?[ï¿½?N
 		 * EDX = 23
 		 * EAX = file handle
 		 * ECX = seek mode
-		 * 		0:ï¿?Vï¿?[ï¿?Nï¿½Ì?ï¿½ï¿½_ï¿½Í?tï¿?@ï¿?Cï¿½ï¿½ï¿½Ì????
-		 * 		1:ï¿?Vï¿?[ï¿?Nï¿½Ì?ï¿½ï¿½_ï¿½Í?ï¿½ï¿½????Aï¿?Nï¿?Zï¿?Xï¿½Ê?u
-		 * 		2:ï¿?Vï¿?[ï¿?Nï¿½Ì?ï¿½ï¿½_ï¿½Í?tï¿?@ï¿?Cï¿½ï¿½ï¿½ï¿½sï¿?Iï¿?[
-		 * EBX = ï¿?Vï¿?[ï¿?Nï¿½ï¿½
+		 * 		0:ï¿½?Vï¿½?[ï¿½?Nï¿½ï¿½?ï¿½ï¿½_ï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½????
+		 * 		1:ï¿½?Vï¿½?[ï¿½?Nï¿½ï¿½?ï¿½ï¿½_ï¿½ï¿½?ï¿½ï¿½????Aï¿½?Nï¿½?Zï¿½?Xï¿½ï¿½?u
+		 * 		2:ï¿½?Vï¿½?[ï¿½?Nï¿½ï¿½?ï¿½ï¿½_ï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½sï¿½?Iï¿½?[
+		 * EBX = ï¿½?Vï¿½?[ï¿½?Nï¿½ï¿½
 		 */
 		fh = (struct FILEHANDLE *) eax;
 		if (ecx == 0) {
@@ -1940,13 +1943,13 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		}
 		break;
 	case 24:
-		/* int api_fsize(int fhandle, int mode): ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?Tï¿?Cï¿?Yï¿½Ì????
+		/* int api_fsize(int fhandle, int mode): ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?Tï¿½?Cï¿½?Yï¿½ï¿½????
 		 * EDX = 24
 		 * EAX = filehandle
-		 * ECX = ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?Tï¿?Cï¿?Yï¿½æ?¾ï¿½ï¿½ï¿½[ï¿?h
-		 * 		0:ï¿½ï¿½ï¿½Ê???tï¿?@ï¿?Cï¿½ï¿½ï¿?Tï¿?Cï¿?Y
-		 * 		1:ï¿½ï¿½ï¿½Ý???????ï¿½ï¿½????uï¿½Í?tï¿?@ï¿?Cï¿½ï¿½ï¿½í??ï¿½ï¿½ï¿½ç?½ï¿½oï¿?Cï¿?gï¿½Ú?ï¿?
-		 * 		2:ï¿?tï¿?@ï¿?Cï¿½ï¿½ï¿?Iï¿?[ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½????uï¿½Ü?????oï¿?Cï¿?gï¿½ï¿½
+		 * ECX = ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?Tï¿½?Cï¿½?Yï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½[ï¿½?h
+		 * 		0:ï¿½ï¿½ï¿½ï¿½???tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?Tï¿½?Cï¿½?Y
+		 * 		1:ï¿½ï¿½ï¿½ï¿½???????ï¿½ï¿½????uï¿½ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½oï¿½?Cï¿½?gï¿½ï¿½?ï¿½?
+		 * 		2:ï¿½?tï¿½?@ï¿½?Cï¿½ï¿½ï¿½?Iï¿½?[ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½????uï¿½ï¿½?????oï¿½?Cï¿½?gï¿½ï¿½
 		 * EAX = return file size
 		 */
 		fh = (struct FILEHANDLE *) eax;
@@ -1962,9 +1965,9 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		/* int api_fread():
 		 * EDX = 25
 		 * EAX = file handle
-		 * EBX = ï¿?oï¿?bï¿?tï¿?@ï¿½Ì???n
-		 * ECX = ï¿½Å?ï¿½Ç???ï¿½ï¿½??oï¿?Cï¿?gï¿½ï¿½
-		 * EAX = return ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½oï¿?Cï¿?gï¿½ï¿½ */
+		 * EBX = ï¿½?oï¿½?bï¿½?tï¿½?@ï¿½ï¿½???n
+		 * ECX = ï¿½ï¿½?ï¿½ï¿½???ï¿½ï¿½??oï¿½?Cï¿½?gï¿½ï¿½
+		 * EAX = return ï¿½ï¿½ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½oï¿½?Cï¿½?gï¿½ï¿½ */
 		fh = (struct FILEHANDLE *) eax;
 		for (i = 0; i < ecx; i++) {
 			if (fh->pos == fh->size) {
@@ -1976,11 +1979,11 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		reg[7] = i;
 		break;
 	case 26:
-		/* int api_cmdline(char *buf, int maxsize):ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½ï¿½ï¿?Cï¿½ï¿½ï¿½Ì????
+		/* int api_cmdline(char *buf, int maxsize):ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½ï¿½?Cï¿½ï¿½ï¿½ï¿½????
 		 * EDX = 26
-		 * EBX = ï¿?Rï¿?}ï¿½ï¿½ï¿?hï¿½ï¿½ï¿?Cï¿½ï¿½ï¿½ï¿½ï¿?iï¿?[ï¿½ï¿½ï¿½ï¿½??n
-		 * ECX = ï¿½ï¿½ï¿?oï¿?Cï¿?gï¿½Ü???iï¿?[ï¿½Å?ï¿½ï¿½???
-		 * EAX = return ï¿½ï¿½ï¿?oï¿?Cï¿?gï¿?iï¿?[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+		 * EBX = ï¿½?Rï¿½?}ï¿½ï¿½ï¿½?hï¿½ï¿½ï¿½?Cï¿½ï¿½ï¿½ï¿½ï¿½?iï¿½?[ï¿½ï¿½ï¿½ï¿½??n
+		 * ECX = ï¿½ï¿½ï¿½?oï¿½?Cï¿½?gï¿½ï¿½???iï¿½?[ï¿½ï¿½?ï¿½ï¿½???
+		 * EAX = return ï¿½ï¿½ï¿½?oï¿½?Cï¿½?gï¿½?iï¿½?[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 		i = 0;
 		for (;;) {
 			*((char *) ebx + ds_base + i) =  task->cmdline[i];
@@ -1995,7 +1998,7 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		reg[7] = i;
 		break;
 	case 27:
-		/* inr api_getlang(void): langmodeï¿½Ì????
+		/* inr api_getlang(void): langmodeï¿½ï¿½????
 		 * EDX = 27
 		 * EAX = return langmode;
 		 */
@@ -2095,7 +2098,7 @@ int *inthandler0c(int *esp)
 	cons_putstr0(cons, "\nINT 0C :\n Stack Exception.\n");
 	sprintf(s, "EIP = %08X\n", esp[11]);
 	cons_putstr0(cons, s);
-	return &(task->tss.esp0);	/* ï¿½Ù?ï¿?Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+	return &(task->tss.esp0);	/* ï¿½ï¿½?ï¿½?Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 }
 
 /**
@@ -2109,7 +2112,7 @@ int *inthandler0d(int *esp)
 	cons_putstr0(cons, "\nINT 0D :\n General Protected Exception.\n");
 	sprintf(s, "EIP = %08X\n", esp[11]);
 	cons_putstr0(cons, s);
-	return &(task->tss.esp0);	/* ï¿½Ù?ï¿?Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+	return &(task->tss.esp0);	/* ï¿½ï¿½?ï¿½?Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 }
 
 /**
@@ -2170,7 +2173,7 @@ void cmd_clearline(struct CONSOLE *cons, char *cmdline)
 	return;
 	else
 	{for(;*cmdline!=0;cmdline++)
-		*cmdline=0;  //æ¸?ç©?
+		*cmdline=0;  //ï¿½?ï¿½?
 	return;}
 
 }
@@ -2180,8 +2183,8 @@ void cmd_stamp(struct CONSOLE *cons1, char *cmdline)
 	struct TASK *task = task_now();
 	cons_putstr0(cons1,"input 4 stamp values:");
 	cons_newline(cons1);
-	cmd_clearline(cons1,cmdline);//?????½æ??ç©?
-	cmd_clearline(cons1,task->cmdline);//?????½æ??ç©?
+	cmd_clearline(cons1,cmdline);//?????ï¿½ï¿½??ï¿½?
+	cmd_clearline(cons1,task->cmdline);//?????ï¿½ï¿½??ï¿½?
 	struct CONSOLE cons=*cons1;
 	//cons_newline(&cons);
 	char *str;
@@ -2194,13 +2197,13 @@ void cmd_stamp(struct CONSOLE *cons1, char *cmdline)
      char result[20], * cmd_str;
     int i, j, k, l, p, q;
     int a[4];
-    static int s[1000];  /*ï¿??ï¿??*/
-    int x, y, r = 0, count = 0; //r?????¥å??ç§»å????????å·¥ï¿½?,x????????°å??å¼?å¤´ï??y??????è¿?ç»???°å??ç»?å°?
-    for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	/* ï¿?Xï¿?yï¿?[ï¿?Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????????ï¿½Î?ï¿? */
+    static int s[1000];  /*ï¿½??ï¿½??*/
+    int x, y, r = 0, count = 0; //r?????ï¿½ï¿½??ç§»ï¿½????????å·¥ï¿½?,x????????ï¿½ï¿½??ï¿½?å¤´ï¿½??y??????ï¿½?ï¿½???ï¿½ï¿½??ï¿½?ï¿½?
+    for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	/* ï¿½?Xï¿½?yï¿½?[ï¿½?Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½????????ï¿½ï¿½?ï¿½? */
     for (; cmd_str[r]!=0; )
     {
 
-        if ('0' <= cmd_str[r] && cmd_str[r] <= '9')//ï¿????°å??
+        if ('0' <= cmd_str[r] && cmd_str[r] <= '9')//ï¿½????ï¿½ï¿½??
         {
             p = r;
             q = r + 1;
@@ -2210,18 +2213,18 @@ void cmd_stamp(struct CONSOLE *cons1, char *cmdline)
                 a[count] = 10 * a[count] + (cmd_str[q] - '0');
                 q++;
             }
-            r = q;  //??°èµ·ï¿??
-            count++; //countåº?ï¿??ï¿½ä¸º4
+            r = q;  //??ï¿½èµ·ï¿½??
+            count++; //countï¿½?ï¿½??ï¿½ä¸º4
 
         }
         else r++;
 
     }
-    //scanf("%d %d %d %d", &a, &b, &c, &d);  /*è¾???¥å??ï¿??ï¿½é?¢å?¼é??ï¿??*/
-    for(i=0; i<=5; i++)  /*ï¿??ï¿????????i???äº??Ž§???a?????¢å?¼é??ç¥????å¼???°ï?????ï¿??5ï¿??*/
-        for(j=0; i+j<=5; j++)  /*ï¿??ï¿????????j???äº??Ž§???b?????¢å?¼é??ç¥????å¼???°ï??a??????ï¿??+b??????ç¥????ï¿??5ï¿??*/
-            for(k=0; k+i+j<=5; k++)  /*ï¿??ï¿????????k???äº??Ž§???c?????¢å?¼é??ç¥????å¼???°ï??a??????ï¿??+b??????ï¿??+c??????ç¥????ï¿??5ï¿??*/
-                for(l=0; k+i+j+l<=5; l++)  /*ï¿??ï¿????????l???äº??Ž§???d?????¢å?¼é??ç¥????å¼????,a??????ï¿??+b??????ï¿??+c??????ï¿??+d??????ç¥????ï¿??5ï¿??*/
+    //scanf("%d %d %d %d", &a, &b, &c, &d);  /*ï¿½???ï¿½ï¿½??ï¿½??ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½??ï¿½??*/
+    for(i=0; i<=5; i++)  /*ï¿½??ï¿½????????i???ï¿½??ï¿½ï¿½???a?????ï¿½ï¿½?ï¿½ï¿½??ï¿½????ï¿½???ï¿½ï¿½?????ï¿½??5ï¿½??*/
+        for(j=0; i+j<=5; j++)  /*ï¿½??ï¿½????????j???ï¿½??ï¿½ï¿½???b?????ï¿½ï¿½?ï¿½ï¿½??ï¿½????ï¿½???ï¿½ï¿½??a??????ï¿½??+b??????ï¿½????ï¿½??5ï¿½??*/
+            for(k=0; k+i+j<=5; k++)  /*ï¿½??ï¿½????????k???ï¿½??ï¿½ï¿½???c?????ï¿½ï¿½?ï¿½ï¿½??ï¿½????ï¿½???ï¿½ï¿½??a??????ï¿½??+b??????ï¿½??+c??????ï¿½????ï¿½??5ï¿½??*/
+                for(l=0; k+i+j+l<=5; l++)  /*ï¿½??ï¿½????????l???ï¿½??ï¿½ï¿½???d?????ï¿½ï¿½?ï¿½ï¿½??ï¿½????ï¿½????,a??????ï¿½??+b??????ï¿½??+c??????ï¿½??+d??????ï¿½????ï¿½??5ï¿½??*/
                     if( a[0]*i+a[1]*j+a[2]*k+a[3]*l )
                         s[a[0]*i+a[1]*j+a[2]*k+a[3]*l]++;
     for(i=1; i<=1000; i++)
@@ -2253,7 +2256,7 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 		} else {
 			i = fifo32_get(&task->fifo);
 			io_sti();
-			if (i <= 1 && cons.sht != 0) { /* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿?pï¿?^ï¿?Cï¿?} */
+			if (i <= 1 && cons.sht != 0) { /* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½?pï¿½?^ï¿½?Cï¿½?} */
 				if (i != 0) {
 					timer_init(cons.timer, &task->fifo, 0); /* ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ */
 					if (cons.cur_c >= 0) {
@@ -2267,51 +2270,51 @@ char *get_1_line(struct CONSOLE cons, char *cmdline)
 				}
 				timer_settime(cons.timer, 50);
 			}
-			if (i == 2) {	/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ON */
+			if (i == 2) {	/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ON */
 				cons.cur_c = COL8_FFFFFF;
 			}
-			if (i == 3) {	/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½OFF */
+			if (i == 3) {	/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½OFF */
 				if (cons.sht != 0) {
 					boxfill8(cons.sht->buf, cons.sht->bxsize, COL8_000000,
 						cons.cur_x, cons.cur_y, cons.cur_x + 7, cons.cur_y + 15);
 				}
 				cons.cur_c = -1;
 			}
-			if (i == 4) {	/* ï¿?Rï¿½ï¿½ï¿?\ï¿?[ï¿½ï¿½ï¿½Ì?uï¿?~ï¿?vï¿?{ï¿?^ï¿½ï¿½ï¿?Nï¿½ï¿½ï¿?bï¿?N */
+			if (i == 4) {	/* ï¿½?Rï¿½ï¿½ï¿½?\ï¿½?[ï¿½ï¿½ï¿½ï¿½?uï¿½?~ï¿½?vï¿½?{ï¿½?^ï¿½ï¿½ï¿½?Nï¿½ï¿½ï¿½?bï¿½?N */
 				cmd_exit(&cons, task->fat);
 			}
-			if (256 <= i && i <= 511) { /* ï¿?Lï¿?[ï¿?{ï¿?[ï¿?hï¿?fï¿?[ï¿?^ï¿?iï¿?^ï¿?Xï¿?NAï¿?oï¿?Rï¿?j */
+			if (256 <= i && i <= 511) { /* ï¿½?Lï¿½?[ï¿½?{ï¿½?[ï¿½?hï¿½?fï¿½?[ï¿½?^ï¿½?iï¿½?^ï¿½?Xï¿½?NAï¿½?oï¿½?Rï¿½?j */
 				if (i == 8 + 256) {
-					/* ï¿?oï¿?bï¿?Nï¿?Xï¿?yï¿?[ï¿?X */
+					/* ï¿½?oï¿½?bï¿½?Nï¿½?Xï¿½?yï¿½?[ï¿½?X */
 					if (cons.cur_x > 16 + path_length * 8) {
-						/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½ï¿?Xï¿?yï¿?[ï¿?Xï¿½Å?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿?Aï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½1ï¿½Â???ï¿? */
+						/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½ï¿½?Xï¿½?yï¿½?[ï¿½?Xï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½?Aï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½???ï¿½? */
 						cons_putchar(&cons, ' ', 0);
 						cons.cur_x -= 8;
 					}
 				} else if (i == 10 + 256) {
 					/* Enter */
-					/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½ï¿?Xï¿?yï¿?[ï¿?Xï¿½Å?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿?sï¿½ï¿½ï¿½ï¿½ */
+					/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½ï¿½?Xï¿½?yï¿½?[ï¿½?Xï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½?sï¿½ï¿½ï¿½ï¿½ */
 					cons_putchar(&cons, ' ', 0);
 					cmdline[cons.cur_x / 8 - (path_length) - 2] = 0;
 					cons_newline(&cons);
 					if (cons.sht == 0) {
 						cmd_exit(&cons, task->fat);
 					}
-					/* ï¿?vï¿½ï¿½ï¿½ï¿½ï¿?vï¿?gï¿?\ï¿½ï¿½ */
+					/* ï¿½?vï¿½ï¿½ï¿½ï¿½ï¿½?vï¿½?gï¿½?\ï¿½ï¿½ */
 					//cons_putchar(&cons, '>', 1);
 					//cons_putstr0(&cons, cmdline);
 					return cmdline;
 					//break;
 				} else {
-					/* ï¿½ï¿½??ï¿½ï¿½ï¿?? */
+					/* ï¿½ï¿½??ï¿½ï¿½ï¿½?? */
 					if (cons.cur_x < 272) {
-						/* ï¿½ê?¶ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½Ä?ï¿½ï¿½ï¿?Aï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½ï¿½1ï¿½Â?iï¿½ß?ï¿? */
+						/* ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½?Aï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½?iï¿½ï¿½?ï¿½? */
 						cmdline[cons.cur_x / 8 - (path_length) - 2] = i - 256;
 						cons_putchar(&cons, i - 256, 1);
 					}
 				}
 			}
-			/* ï¿?Jï¿?[ï¿?\ï¿½ï¿½ï¿½Ä?\ï¿½ï¿½ */
+			/* ï¿½?Jï¿½?[ï¿½?\ï¿½ï¿½ï¿½ï¿½?\ï¿½ï¿½ */
 			if (cons.sht != 0) {
 				if (cons.cur_c >= 0) {
 					boxfill8(cons.sht->buf, cons.sht->bxsize, cons.cur_c, 
@@ -2329,24 +2332,24 @@ void cmd_rps(struct CONSOLE *cons, char *cmdline)
 	struct TASK *task = task_now();
 	// cons_putstr0(cons,"input 4 stamp values:");
 	// cons_newline(cons);
-	// cmd_clearline(cons,cmdline);//?????½æ??ç©?
-	// cmd_clearline(cons,task->cmdline);//?????½æ??ç©?
+	// cmd_clearline(cons,cmdline);//?????ï¿½ï¿½??ï¿½?
+	// cmd_clearline(cons,task->cmdline);//?????ï¿½ï¿½??ï¿½?
 	// //cons_newline(&cons);
 	// char *str;
 	// str = get_1_line(cons,cmdline);
-	int gamer;  // ?Ž©å®¶å?ºæ??
-    int computer;  // ??µè????ºæ??
-    int result;  // æ¯?èµ?ç»????
+	int gamer;  // ?ï¿½ï¿½å®¶ï¿½?ï¿½ï¿½??
+    int computer;  // ??ï¿½ï¿½????ï¿½ï¿½??
+    int result;  // ï¿½?ï¿½?ï¿½????
 
-	 // ä¸ºä????¿å???Ž©ä¸?æ¬¡æ¸¸??å°±?????ºç??åº?ï¼????ä»¥å??ä»£ç????¾å??å¾??Ž¯ä¸?
+	 // ä¸ºï¿½????ï¿½ï¿½???ï¿½ï¿½ï¿½?æ¬¡æ¸¸??ï¿½å°±?????ï¿½ï¿½??ï¿½?ï¿½????ä»¥ï¿½??ä»£ï¿½????ï¿½ï¿½??ï¿½??ï¿½ï¿½ï¿½?
     while (1){
         cons_putstr0(cons,"Welcome to Rock-paper-scissors! Please choose your choice:\n");
         cons_putstr0(cons,"A:scissors\nB:Rock\nC:paper\nD:Exit\n");
-		cmd_clearline(cons,cmdline);//?????½æ??ç©?
-		cmd_clearline(cons,task->cmdline);//?????½æ??ç©?
+		cmd_clearline(cons,cmdline);//?????ï¿½ï¿½??ï¿½?
+		cmd_clearline(cons,task->cmdline);//?????ï¿½ï¿½??ï¿½?
 		cons_newline(&cons);
 		char *str;
-		str = get_1_line(*cons,cmdline);  //?Ž·å¾??Ž©å®¶ç??è¾???¥æ?????
+		str = get_1_line(*cons,cmdline);  //?ï¿½ï¿½ï¿½??ï¿½ï¿½å®¶ï¿½??ï¿½???ï¿½ï¿½?????
 		char  result_str[40],* cmd_str;
 		for (cmd_str = str; *cmd_str <= ' ' || *cmd_str == 0; cmd_str++) {}	
 		//gamer = cmd_str[0];
@@ -2379,9 +2382,9 @@ void cmd_rps(struct CONSOLE *cons, char *cmdline)
 		// cons_putstr0(cons,result_str);
 
       
-        my_srand(get_sec_hex());  // ?????ºæ?°ç??å­?
-        computer=my_rand()%3;  // äº§ç???????ºæ?°å¹¶???ä½?ï¼?å¾???°ç?µè????ºæ??
-        result=gamer+computer;  // gamer ä¸? char ç±»å??ï¼???°å?¦è??ç®???¶è??å¼ºå?¶è½¬??¢ç±»???
+        my_srand(get_sec_hex());  // ?????ï¿½ï¿½?ï¿½ï¿½??ï¿½?
+        computer=my_rand()%3;  // äº§ï¿½???????ï¿½ï¿½?ï¿½å¹¶???ï¿½?ï¿½?ï¿½???ï¿½ï¿½?ï¿½ï¿½????ï¿½ï¿½??
+        result=gamer+computer;  // gamer ï¿½? char ç±»ï¿½??ï¿½???ï¿½ï¿½?ï¿½ï¿½??ï¿½???ï¿½ï¿½??å¼ºï¿½?ï¿½è½¬??ï¿½ç±»???
         cons_putstr0(cons,"Computer:");
         switch (computer)
         {
@@ -2398,34 +2401,34 @@ void cmd_rps(struct CONSOLE *cons, char *cmdline)
         }
         if (result==6||result==7||result==11) cons_putstr0(cons,"You win!");
         else if (result==5||result==9||result==10) cons_putstr0(cons,"Computer win!");
-        else cons_putstr0(cons,"Tie");  //å¹³å??
+        else cons_putstr0(cons,"Tie");  //å¹³ï¿½??
      }
     return 0;
 }
 
 void cmd_guess(struct CONSOLE *cons, char *cmdline)
 {
-	int  a, z, t, i, c, m, g, s, j, k, l[4],r,p,q;  /*j:Êý×ÖÕýÈ·µÄÎ»Êý k:Î»ÖÃÕýÈ·µÄÎ»Êý*/
+	int  a, z, t, i, c, m, g, s, j, k, l[4],r,p,q;  /*j:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½Î»ï¿½ï¿½ k:Î»ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½Î»ï¿½ï¿½*/
 	char *cmd_str,result[30];
 	struct TASK *task = task_now();
     my_srand(get_sec_hex());
     if( (my_rand()%10000) >= 1000 && (my_rand()%10000) <= 9999 )
-        z=my_rand()%10000;  /*¼ÆËã»úÏëÒ»¸öËæ»úÊý*/
-    cons_putstr0(cons,"»úÆ÷ÊäÈëËÄÎ»Êý****\n");
-     for(c=1; ; c++) /*c: ²ÂÊý´ÎÊý¼ÆÊýÆ÷*/
+        z=my_rand()%10000;  /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+    cons_putstr0(cons,"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½****\n");
+     for(c=1; ; c++) /*c: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
      {
 		 g=0;
 		 r=0;
-        cons_putstr0(cons,"ÇëÊäÈëÄã²ÂµÄËÄÎ»Êý:\n");
+        cons_putstr0(cons,"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½Î»ï¿½ï¿½:\n");
 
-        //scanf("%d", &g); /*ÇëÈË²Â*/
+        //scanf("%d", &g); /*ï¿½ï¿½ï¿½Ë²ï¿½*/
 		cmdline=0;
-		cmd_clearline(cons,cmdline);//?????½æ??ç©?
-		cmd_clearline(cons,task->cmdline);//?????½æ??ç©?
+		cmd_clearline(cons,cmdline);//?????ï¿½ï¿½??ï¿½?
+		cmd_clearline(cons,task->cmdline);//?????ï¿½ï¿½??ï¿½?
 		cons_newline(&cons);
 		char *str=0;
 
-		str = get_1_line(*cons,cmdline);  //?Ž·å¾??Ž©å®¶ç??è¾???¥æ?????
+		str = get_1_line(*cons,cmdline);  //?ï¿½ï¿½ï¿½??ï¿½ï¿½å®¶ï¿½??ï¿½???ï¿½ï¿½?????
 		//cons_putstr0(cons,str);
 		cons_newline(&cons);
 		cons->cur_y +=16;
@@ -2444,7 +2447,7 @@ void cmd_guess(struct CONSOLE *cons, char *cmdline)
                 g = 10 * g + (cmd_str[q] - '0');
                 q++;
             }
-            r = q;  //??°èµ·ï¿??
+            r = q;  //??ï¿½èµ·ï¿½??
 
         }
 	}
@@ -2454,40 +2457,144 @@ void cmd_guess(struct CONSOLE *cons, char *cmdline)
         j=0;
         k=0;
         l[0]=l[1]=l[2]=l[3]=0;
-        for(i=1; i<5; i++) /*i:Ô­ÊýÖÐµÄµÚiÎ»Êý¡£¸öÎ»ÎªµÚÒ»Î»£¬Ç§Î»ÎªµÚ4Î»*/
+        for(i=1; i<5; i++) /*i:Ô­ï¿½ï¿½ï¿½ÐµÄµï¿½iÎ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»Îªï¿½ï¿½Ò»Î»ï¿½ï¿½Ç§Î»Îªï¿½ï¿½4Î»*/
         {
             s=g;
             m=1;
-            for(t=1; t<5; t++)  /*ÈËËù²ÂÏëµÄÊý*/
+            for(t=1; t<5; t++)  /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
             {
-                if(a%10 == s%10)  /*ÈôµÚiÎ»ÓëÈË²ÂµÄµÚtÎ»ÏàÍ¬*/
+                if(a%10 == s%10)  /*ï¿½ï¿½ï¿½ï¿½iÎ»ï¿½ï¿½ï¿½Ë²ÂµÄµï¿½tÎ»ï¿½ï¿½Í¬*/
                 {
                     if(m && t!=l[0] && t!=l[1] && t!=l[2] && t!=l[3])
                     {
                         j++;
                         m=0;
-                        l[j-1]=t;  /*Èô¸ÃÎ»ÖÃÉÏµÄÊý×ÖÉÐÎ´ÓëÆäËüÊý×Ö"ÏàÍ¬"*/
-                    }  /*¼ÇÂ¼ÏàÍ¬Êý×ÖÊ±£¬¸ÃÊý×ÖÔÚËù²ÂÊý×ÖÖÐµÄÎ»ÖÃ*/
+                        l[j-1]=t;  /*ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½Í¬"*/
+                    }  /*ï¿½ï¿½Â¼ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Î»ï¿½ï¿½*/
                     if(i==t)
-                        k++; /*ÈôÎ»ÖÃÒ²ÏàÍ¬£¬Ôò¼ÆÊýÆ÷k¼Ó1*/
+                        k++; /*ï¿½ï¿½Î»ï¿½ï¿½Ò²ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½1*/
                 }
                 s/=10;
             }
             a/=10;
         }
-        cons_putstr0(cons,"Äã²ÂµÄ½á¹ûÊÇ");
+        cons_putstr0(cons,"ï¿½ï¿½ÂµÄ½ï¿½ï¿½ï¿½ï¿½");
         sprintf(result,"%dA%dB\n", j, k);
 		cons_putstr0(cons,result);
         if(k == 4)
         {
-            cons_putstr0(cons,"****ÄãÓ®ÁË*****\n");
+            cons_putstr0(cons,"****ï¿½ï¿½Ó®ï¿½ï¿½*****\n");
             cons_putstr0(cons,"\n~~********~~\n");
-            break;  /*ÈôÎ»ÖÃÈ«²¿ÕýÈ·£¬ÔòÈË²Â¶ÔÁË£¬ÍË³ö*/
+            break;  /*ï¿½ï¿½Î»ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½Ë²Â¶ï¿½ï¿½Ë£ï¿½ï¿½Ë³ï¿½*/
         }
     }
-    sprintf(result,"Äã×Ü¹²²ÂÁË %d ´Î.\n",c);
+    sprintf(result,"ï¿½ï¿½ï¿½Ü¹ï¿½ï¿½ï¿½ï¿½ï¿½ %d ï¿½ï¿½.\n",c);
 	cons_putstr0(cons,result);
     return 0;
+}
+
+int Isleap(int year)
+{
+	if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
+		return 1;
+	else
+		return 0;
+}
+int Max_day(int year, int month)
+{
+	int Day[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+	if (Isleap(year) == 1)
+		Day[1] = 29;
+	return Day[month - 1];
+}
+
+int Weekday(int year, int month)
+{
+	int w;
+	w = year / 100 + (year / 100) / 4 - (year % 100) / 4 - 2 * (year % 100) + (26 * (month + 1) / 10);//è”¡å‹’å…¬å¼
+	w = w  % 7;
+	return w;
+}
+
+
+void cmd_calendar(struct CONSOLE* cons, char* cmdline)
+{
+	struct TASK* task = task_now();
+	cons_putstr0(cons, "Enter the month!(eg:2021.8)\n");
+	cmd_clearline(cons, cmdline);//å…¨éƒ½æ¸…ç©º
+	cmd_clearline(cons, task->cmdline);//å…¨éƒ½æ¸…ç©º
+	cons_newline(&cons);
+	char* str;
+	str = get_1_line(*cons, cmdline);  //èŽ·å¾—è¾“å…¥çš„æœˆä»½
+	char result[30];
+    int year_s[5], month_s[3];
+
+	int i=0, j = 0;
+	for (i = 0; str[i] != '.'; ++i)
+	{
+		if (str[i] == '.')break;
+		year_s[i] = str[i] - '0';
+	}
+	i++;
+	for (j = 0; str[i]!='\0'; ++i)
+	{
+		month_s[j] = str[i] - '0';
+		j++;
+	}
+	int year=0, month=0;
+	for (i = 0; i < 4; ++i)
+	{
+		int temp=1;
+		for (j = 0; j < 3 - i; ++j)
+		{
+			temp = temp * 10;
+		}
+		year = year + year_s[i] * temp;
+	}
+	if (0 <= month_s[1] && month_s[1] <= 9)month = month_s[0] * 10 + month_s[1];
+	else month = month_s[0];
+	//display_month
+	int maxday;
+	int w, y, c;
+	y = year % 100;
+//	sprintf(result, "y=%d\n", y);
+//	cons_putstr0(cons, result);
+	c = year / 100;
+//	sprintf(result, "c=%d\n", c);
+//	cons_putstr0(cons, result);
+	int m=month;
+	if (month == 1 || month == 2)
+	{
+		m = month + 12;  //æ¯å¹´çš„1ï¼Œ2æœˆè¦çœ‹æˆä¸Šä¸€å¹´13ã€14æœˆè®¡ç®—
+		y = y - 1;
+	}
+	w = y + y / 4 + c / 4 - 2 * c + (26 * (m + 1) / 10);//è”¡å‹’å…¬å¼
+//	sprintf(result, "w=%d\n", w);
+//	cons_putstr0(cons, result);
+	w = (w+70) % 7;  // å‘¨æ—¥åˆ™0 å‘¨ä¸€åˆ™1 å‘¨äºŒåˆ™2 +70é˜²æ­¢è´Ÿæ•°
+//	sprintf(result, "w2=%d\n", w);
+//	cons_putstr0(cons, result);
+	maxday = Max_day(year, month);
+	sprintf(result, "\n %d/%d\n", year, month);
+	cons_putstr0(cons, result);
+	cons_putstr0(cons, "Sun Mon Tue Wed Thu Fri Sat\n");
+
+	for (i = 0; i < w; i++) {
+		cons_putstr0(cons, "    ");
+	}
+	for (j = 1; j <= maxday; j++)
+	{
+		sprintf(result, "%d  ", j);
+		cons_putstr0(cons, result);
+		if (j < 10)
+			cons_putstr0(cons, " ");
+		if (i % 7 == 6)
+			cons_putstr0(cons, "\n");
+		i++;
+	}
+	cons_putstr0(cons, "\n");
+	//é™¤äº†2021ä»¥å¤–å…¶ä½™éƒ½æœ‰é—®é¢˜ æ€€ç–‘æ˜¯y/4æœ‰é—®é¢˜
+	
 }
 
 void wait(struct S *s,struct process *this_process,char * which_s){
@@ -2617,7 +2724,7 @@ unsigned int char2int(char *cSize){//ï¿½ï¿½charï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªintï¿½ï¿½ï¿
 	}
 	return iSize;
 }
-void cmd_mymem(char *cmdline){//Ä£Äâ·ÖÅäÄÚ´æ
+void cmd_mymem(char *cmdline){//Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 	char cSize[10];
 
 	unsigned int iSize;
@@ -2632,9 +2739,9 @@ void cmd_mymem(char *cmdline){//Ä£Äâ·ÖÅäÄÚ´æ
 	for(i=0;cmdline[i]!=' ';i++);
 
 
-	strcpy(cSize,&cmdline[i]);//°Ñ·ÖÅäµÄÄÚ´æ´óÐ¡¸³Öµ¸øcSize
+	strcpy(cSize,&cmdline[i]);//ï¿½Ñ·ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ð¡ï¿½ï¿½Öµï¿½ï¿½cSize
 	iSize=char2int(cSize);
-	//allocÇ°ÄÚ´æÇé¿ö
+	//allocÇ°ï¿½Ú´ï¿½ï¿½ï¿½ï¿½
 	sprintf(memsizebuf,"before alloc %d:\n",iSize);
 	cons_putstr0(task->cons,memsizebuf);
 	for (i = 0; i < memman->frees; i++) {
@@ -2647,7 +2754,7 @@ void cmd_mymem(char *cmdline){//Ä£Äâ·ÖÅäÄÚ´æ
 	addrlist[num]=addr;
 	sizelist[num]=iSize;
 	num++;
-	//allocÖ®ºóÄÚ´æÇé¿ö
+	//allocÖ®ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½
 	cons_putstr0(task->cons,"\nafter alloc:\n");
 	for (i = 0; i < memman->frees; i++) {
 		sprintf(memsizebuf,"NO.%d-size=%d  ",i,memman->free[i].size);
@@ -2657,7 +2764,7 @@ void cmd_mymem(char *cmdline){//Ä£Äâ·ÖÅäÄÚ´æ
 	//memman_free((struct MEMMAN *) MEMMAN_ADDR, addr,iSize);
 }
 
-void cmd_free(){//freeËùÓÐ·ÖÅäµÄÄÚ´æ
+void cmd_free(){//freeï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 	int i;
 	for(i=0;i<num;i++){
 		memman_free((struct MEMMAN *) MEMMAN_ADDR, addrlist[i],sizelist[i]);
@@ -2767,7 +2874,7 @@ void consume(struct CONSOLE *cons)
 	return ;
 }
 
-//petersonç®?æ³????è¿???¥å?ºå???????ºå?ºï??è¿?2ä¸????ä»¥å?????äº???¥é????¥ä½¿???ï¼?ä½?ä»???½ç??äº?2ä¸?è¿?ç¨?ä¹????
+//petersonï¿½?ï¿½????ï¿½???ï¿½ï¿½?ï¿½ï¿½???????ï¿½ï¿½?ï¿½ï¿½??ï¿½?2ï¿½????ä»¥ï¿½?????ï¿½???ï¿½ï¿½????ï¿½ä½¿???ï¿½?ï¿½?ï¿½???ï¿½ï¿½??ï¿½?2ï¿½?ï¿½?ï¿½?ï¿½????
 void entrance(int x)
 {
 	if(x==1)
@@ -2798,7 +2905,7 @@ void exiting(int x)
 	 }
 }
 
-//cè¯????äº§ç???????ºæ?°ç??ä»£ç??
+//cï¿½????äº§ï¿½???????ï¿½ï¿½?ï¿½ï¿½??ä»£ï¿½??
 #define RANDOM_MAX 0x7FFFFFFF
 
 static long my_do_rand(unsigned long *value)
