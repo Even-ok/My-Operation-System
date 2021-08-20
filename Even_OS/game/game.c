@@ -21,26 +21,26 @@ void HariMain(void)
 	win = api_openwin(buf, 336, 261, -1, "bingo");
 	win = api_openwin(buf, 336, 261, -1, "bingo");
 	api_boxfilwin(win, 6, 27, 329, 254, 0);
-	/* »¶Ó­½çÃæ */
-	sprintf(note, "´ÆÐÛÕù°Ô\0");
+
+	sprintf(note, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\0");
 	api_putstrwin(win, 6 + 16 * 8, 27 + 1 * 16, 7, 8, note);
-	sprintf(note, "¡ð:ÆÕÍ¨¸ñ\0");
+	sprintf(note, "ï¿½ï¿½:ï¿½ï¿½Í¨ï¿½ï¿½\0");
 	api_putstrwin(win, 6, 27 + 2 * 16, 7, 10, note);
-	sprintf(note, "¡ø£ºÕ¨µ¯-ºóÍË5¸ñ\0");
+	sprintf(note, "ï¿½ï¿½ï¿½ï¿½Õ¨ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½5ï¿½ï¿½\0");
 	api_putstrwin(win, 6, 27 + 3 * 16, 7, 18, note);
-	sprintf(note, "¡ô£º×êÊ¯-ºóÍË5¸ñ\0");
+	sprintf(note, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¯-ï¿½ï¿½ï¿½ï¿½5ï¿½ï¿½\0");
 	api_putstrwin(win, 6, 27 + 4 * 16, 7, 18, note);
-	sprintf(note, "¡ï£ºÄ§·¨-»¥»»Î»ÖÃ\0");
+	sprintf(note, "ï¿½ï£ºÄ§ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½\0");
 	api_putstrwin(win, 6, 27 + 5 * 16, 7, 18, note);
-	sprintf(note, "¡â£ºÅ®Íæ¼Ò\0");
+	sprintf(note, "ï¿½â£ºÅ®ï¿½ï¿½ï¿½\0");
 	api_putstrwin(win, 6, 27 + 6 * 16, 7, 10, note);
-	sprintf(note, "¡á£ºÄÐÍæ¼Ò\0");
+	sprintf(note, "ï¿½á£ºï¿½ï¿½ï¿½ï¿½ï¿½\0");
 	api_putstrwin(win, 6, 27 + 7 * 16, 7, 10, note);
-	sprintf(note, "¡Ç£ºÍæ¼Ò»ãºÏ\0");
+	sprintf(note, "ï¿½Ç£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½\0");
 	api_putstrwin(win, 6, 27 + 8 * 16, 7, 12, note);
-	sprintf(note, "¡ò£ºÖÕµã\0");
+	sprintf(note, "ï¿½ï¿½ï¿½Õµï¿½\0");
 	api_putstrwin(win, 6, 27 + 9 * 16, 7, 8, note);
-	sprintf(note, "°´»Ø³µ¼ü¿ªÊ¼ÓÎÏ·\0");
+	sprintf(note, "ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ï·\0");
 	api_putstrwin(win, 6, 27 + 10 * 16, 7, 16, note);
 	for (;;) {
 		key = api_getkey(1);
@@ -49,7 +49,6 @@ void HariMain(void)
 		}
 	}
 
-	/* ³õÊ¼»¯µØÍ¼ */
 	api_boxfilwin(win, 6, 27, 329, 254, 0);
 	for (i = 0; i < 66; i++) {
 		if (i == 10 || i == 20 || i == 30) {
@@ -93,7 +92,7 @@ check:
 		temp2 = theOne;
 		theOne = theOther;
 		theOther = temp2;
-		sprintf(note, "»¥»»Î»ÖÃ£¡°´»Ø³µ¼ü¼ÌÐø\0");
+		sprintf(note, "ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\0");
 		break;
 	case 3:
 	case 12:
@@ -104,7 +103,7 @@ check:
 		if (theOne >= 65) {
 			theOne = 65;
 		}
-		sprintf(note, "Ç°½ø5¸ñ£¡°´»Ø³µ¼ü¼ÌÐø\0");
+		sprintf(note, "Ç°ï¿½ï¿½5ï¿½ñ£¡°ï¿½ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\0");
 		break;
 	case 6:
 	case 33:
@@ -115,10 +114,10 @@ check:
 		if (theOne <= 0) {
 			theOne = 0;
 		}
-		sprintf(note, "ºóÍË5¸ñ£¡°´»Ø³µ¼ü¼ÌÐø\0");
+		sprintf(note, "ï¿½ï¿½ï¿½ï¿½5ï¿½ñ£¡°ï¿½ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\0");
 		break;
 	default:
-		sprintf(note, "Ç°½ø%d¸ñ£¡°´»Ø³µ¼ü¼ÌÐø\0", temp1);
+		sprintf(note, "Ç°ï¿½ï¿½%dï¿½ñ£¡°ï¿½ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\0", temp1);
 		break;
 	}
 
@@ -185,10 +184,10 @@ check:
 	}
 win:
 	if (flag == 1) {
-		sprintf(note, "Å®ÉúÊ¤Àû£¡°´»Ø³µ¼ü¼ÌÐø\0");
+		sprintf(note, "Å®ï¿½ï¿½Ê¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\0");
 	}
 	else {
-		sprintf(note, "ÄÐÉúÊ¤Àû£¡°´»Ø³µ¼ü¼ÌÐø\0");
+		sprintf(note, "ï¿½ï¿½ï¿½ï¿½Ê¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\0");
 	}
 
 	noteinfo(win, note);
@@ -259,42 +258,34 @@ void trans(unsigned char* s1, char* s2) {
 			switch (s1[temp]) {
 
 			case 0:
-				/* ÆÕÍ¨£º¡ð */
 				s2[i * 2] = 0xa1;
 				s2[i * 2 + 1] = 0xf0;
 				break;
 			case 1:
-				/* Õ¨µ¯£º¡ø */
 				s2[i * 2] = 0xa1;
 				s2[i * 2 + 1] = 0xf8;
 				break;
 			case 2:
-				/* ×êÊ¯£º¡ô */
 				s2[i * 2] = 0xa1;
 				s2[i * 2 + 1] = 0xf4;
 				break;
 			case 3:
-				/* Ä§·¨£º¡ï */
 				s2[i * 2] = 0xa1;
 				s2[i * 2 + 1] = 0xef;
 				break;
 			case 4:
-				/* A£º¡â */
 				s2[i * 2] = 0xa1;
 				s2[i * 2 + 1] = 0xe2;
 				break;
 			case 5:
-				/* B£º¡á */
 				s2[i * 2] = 0xa1;
 				s2[i * 2 + 1] = 0xe1;
 				break;
 			case 6:
-				/* AB: ¡Ç */
 				s2[i * 2] = 0xa1;
 				s2[i * 2 + 1] = 0xc7;
 				break;
 			default:
-				/* ÖÕµã£º¡ò */
 				s2[i * 2] = 0xa1;
 				s2[i * 2 + 1] = 0xf2;
 				break;

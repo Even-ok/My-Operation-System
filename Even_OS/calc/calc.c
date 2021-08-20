@@ -3,7 +3,7 @@
 
 #define INVALID		-0x7fffffff
 
-int strtol(char *s, char **endp, int base);	/* 標準関数（stdlib.h） */
+int strtol(char *s, char **endp, int base);
 
 char *skipspace(char *p);
 int getnum(char **pp, int priority);
@@ -14,7 +14,7 @@ void HariMain(void)
 	char s[30], *p;
 
 	api_cmdline(s, 30);
-	for (p = s; *p > ' '; p++) { }	/* スペースが来るまで読み飛ばす */
+	for (p = s; *p > ' '; p++) { }
 	i = getnum(&p, 9);
 	if (i == INVALID) {
 		api_putstr0("error!\n");
@@ -27,7 +27,7 @@ void HariMain(void)
 
 char *skipspace(char *p)
 {
-	for (; *p == ' '; p++) { }	/* スペースを読み飛ばす */
+	for (; *p == ' '; p++) { }
 	return p;
 }
 
@@ -37,7 +37,6 @@ int getnum(char **pp, int priority)
 	int i = INVALID, j;
 	p = skipspace(p);
 
-	/* 単項演算子 */
 	if (*p == '+') {
 		p = skipspace(p + 1);
 		i = getnum(&p, 0);
@@ -53,7 +52,7 @@ int getnum(char **pp, int priority)
 		if (i != INVALID) {
 			i = ~i;
 		}
-	} else if (*p == '(') {	/* かっこ */
+	} else if (*p == '(') {
 		p = skipspace(p + 1);
 		i = getnum(&p, 9);
 		if (*p == ')') {
@@ -61,13 +60,12 @@ int getnum(char **pp, int priority)
 		} else {
 			i = INVALID;
 		}
-	} else if ('0' <= *p && *p <= '9') { /* 数値 */
+	} else if ('0' <= *p && *p <= '9') {
 		i = strtol(p, &p, 0);
-	} else { /* エラー */
+	} else {
 		i = INVALID;
 	}
 
-	/* 二項演算子 */
 	for (;;) {
 		if (i == INVALID) {
 			break;

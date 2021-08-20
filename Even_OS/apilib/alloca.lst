@@ -10,4 +10,4 @@
     10 00000000                                 __alloca:
     11 00000000 83 C0 FC                        		ADD		EAX,-4
     12 00000003 29 C4                           		SUB		ESP,EAX
-    13 00000005 FF 24 04                        		JMP		DWORD [ESP+EAX]		; RET‚Ì‘ã‚í‚è
+    13 00000005 FF 24 04                        		JMP		DWORD [ESP+EAX]

@@ -49,10 +49,10 @@ void HariMain(void)
     if (langmode == 2) {
         api_putstr0(s2);
     }
-    if (langmode == 3) {//增加这个表示对汉字的支持
-        api_putstr0("Chinese 中文！   我   !\n");
-        api_putstr0("博客园 www.cnblogs.com/wunaozai \n");
-        api_putstr0("无脑仔的小明");
+    if (langmode == 3) {
+        api_putstr0("Chinese 锟斤拷锟斤拷\n");
+        api_putstr0("锟斤拷锟斤拷锟斤拷Even_OS \n");
+        api_putstr0("锟斤拷英锟斤拷锟斤拷示模式锟斤拷锟街凤拷锟斤拷锟斤拷");
         api_putstr0(s3);
         for (i = 0xa1; i < 0xcc; i++)
         {

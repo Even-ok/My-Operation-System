@@ -12,10 +12,8 @@
     12 00000000                                 [FILE "type.c"]
     13                                          [SECTION .data]
     14 00000000                                 LC0:
-    15 00000000 0A 20 CE B4 EF BF BD D2 B5 EF   	DB	0x0A," ",0xCE,0xB4,0xEF,0xBF,0xBD,0xD2,0xB5,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xC4,0xBC,0xEF,0xBF,0xBD,0x0A," File not found.",0x0A,0x00
-       0000000A BF BD EF BF BD C4 BC EF BF BD 
-       00000014 0A 20 46 69 6C 65 20 6E 6F 74 
-       0000001E 20 66 6F 75 6E 64 2E 0A 00 
+    15 00000000 46 69 6C 65 20 6E 6F 74 20 66   	DB	"File not found.",0x0A,0x00
+       0000000A 6F 75 6E 64 2E 0A 00 
     16                                          [SECTION .text]
     17 00000000                                 	GLOBAL	_HariMain
     18 00000000                                 _HariMain:

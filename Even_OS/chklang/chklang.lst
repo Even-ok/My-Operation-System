@@ -67,20 +67,23 @@
     67 00000032 00                              	DB	0
     68 00000033 00 00 00 00 00 00 00 00 00      	RESB	9
     69 0000003C                                 LC1:
-    70 0000003C 43 68 69 6E 65 73 65 20 D6 D0   	DB	"Chinese ",0xD6,0xD0,0xCE,0xC4,0xA3,0xA1,"   ",0xCE,0xD2,"   !",0x0A,0x00
-       00000046 CE C4 A3 A1 20 20 20 CE D2 20 
-       00000050 20 20 21 0A 00 
-    71 00000055                                 LC2:
-    72 00000055 B2 A9 BF CD D4 B0 20 77 77 77   	DB	0xB2,0xA9,0xBF,0xCD,0xD4,0xB0," www.cnblogs.com/wunaozai ",0x0A,0x00
-       0000005F 2E 63 6E 62 6C 6F 67 73 2E 63 
-       00000069 6F 6D 2F 77 75 6E 61 6F 7A 61 
-       00000073 69 20 0A 00 
-    73 00000077                                 LC3:
-    74 00000077 CE DE C4 D4 D7 D0 B5 C4 D0 A1   	DB	0xCE,0xDE,0xC4,0xD4,0xD7,0xD0,0xB5,0xC4,0xD0,0xA1,0xC3,0xF7,0x00
-       00000081 C3 F7 00 
-    75 00000084                                 LC0:
-    76 00000084 45 6E 67 6C 69 73 68 20 41 53   	DB	"English ASCII mode",0x0A,0x00
-       0000008E 43 49 49 20 6D 6F 64 65 0A 00 
+    70 0000003C 43 68 69 6E 65 73 65 20 EF BF   	DB	"Chinese ",0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0x0A,0x00
+       00000046 BD EF BF BD EF BF BD EF BF BD 
+       00000050 0A 00 
+    71 00000052                                 LC2:
+    72 00000052 EF BF BD EF BF BD EF BF BD EF   	DB	0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,"Even_OS ",0x0A,0x00
+       0000005C BF BD EF BF BD EF BF BD 45 76 
+       00000066 65 6E 5F 4F 53 20 0A 00 
+    73 0000006E                                 LC3:
+    74 0000006E EF BF BD EF BF BD D3 A2 EF BF   	DB	0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xD3,0xA2,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xCA,0xBE,0xC4,0xA3,0xCA,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xD6,0xB7,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,0x00
+       00000078 BD EF BF BD EF BF BD EF BF BD 
+       00000082 CA BE C4 A3 CA BD EF BF BD EF 
+       0000008C BF BD EF BF BD D6 B7 EF BF BD 
+       00000096 EF BF BD EF BF BD EF BF BD EF 
+       000000A0 BF BD 00 
+    75 000000A3                                 LC0:
+    76 000000A3 45 6E 67 6C 69 73 68 20 41 53   	DB	"English ASCII mode",0x0A,0x00
+       000000AD 43 49 49 20 6D 6F 64 65 0A 00 
     77                                          [SECTION .text]
     78 00000000                                 	GLOBAL	_HariMain
     79 00000000                                 _HariMain:
@@ -108,9 +111,9 @@
    101 0000002B 68 [0000003C]                   	PUSH	LC1
    102 00000030 BB 000000A1                     	MOV	EBX,161
    103 00000035 E8 [00000000]                   	CALL	_api_putstr0
-   104 0000003A 68 [00000055]                   	PUSH	LC2
+   104 0000003A 68 [00000052]                   	PUSH	LC2
    105 0000003F E8 [00000000]                   	CALL	_api_putstr0
-   106 00000044 68 [00000077]                   	PUSH	LC3
+   106 00000044 68 [0000006E]                   	PUSH	LC3
    107 00000049 E8 [00000000]                   	CALL	_api_putstr0
    108 0000004E 68 [00000028]                   	PUSH	_s3.2
    109 00000053 E8 [00000000]                   	CALL	_api_putstr0
@@ -137,7 +140,7 @@
    130 0000009C 59                              	POP	ECX
    131 0000009D E9 FFFFFF76                     	JMP	L3
    132 000000A2                                 L12:
-   133 000000A2 68 [00000084]                   	PUSH	LC0
+   133 000000A2 68 [000000A3]                   	PUSH	LC0
    134 000000A7 E8 [00000000]                   	CALL	_api_putstr0
    135 000000AC 58                              	POP	EAX
    136 000000AD E9 FFFFFF61                     	JMP	L2

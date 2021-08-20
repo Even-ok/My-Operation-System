@@ -1,28 +1,30 @@
-/* �O���t�B�b�N�����֌W */
+/* graphic.c, 将像素点阵转换为显存中的画面信息(调色板色号)的程序接口 */
 
 #include "bootpack.h"
 
+/* init_palette,
+ * 为DAC调色板指定RGB颜色。*/
 void init_palette(void)
 {
 	static unsigned char table_rgb[18 * 3] = {
-		0x00, 0x00, 0x00,	/*  0:�� */
-		0xff, 0x00, 0x00,	/*  1:���邢�� */
-		0x00, 0xff, 0x00,	/*  2:���邢�� */
-		0xff, 0xcc, 0x33,	/*  3:���邢���F */
-		0x00, 0x00, 0xff,	/*  4:���邢�� */
-		0xff, 0x00, 0xff,	/*  5:���邢�� */
-		0x00, 0xff, 0xff,	/*  6:���邢���F */
-		0xff, 0xff, 0xff,	/*  7:�� */
-		0xc6, 0xc6, 0xc6,	/*  8:���邢�D�F */
-		0x42, 0x73, 0xBF,	/*  9:�Â���4273BF */
-		0x00, 0x84, 0x00,	/* 10:�Â��� */
-		0x84, 0x84, 0x00,	/* 11:�Â����F */
-		0x00, 0x00, 0x84,	/* 12:�Â��� */
-		0x84, 0x00, 0x84,	/* 13:�Â��� */
-		0x00, 0x84, 0x84,	/* 14:�Â����F */
-		0x84, 0x84, 0x84,	/* 15:�Â��D�F */
-		0xFD, 0x5B, 0x46,	/* 16: */
-		0x43, 0x73, 0xBF	/* 17: */
+		0x00, 0x00, 0x00,
+		0xff, 0x00, 0x00,
+		0x00, 0xff, 0x00,
+		0xff, 0xcc, 0x33,
+		0x00, 0x00, 0xff,
+		0xff, 0x00, 0xff,
+		0x00, 0xff, 0xff,
+		0xff, 0xff, 0xff,
+		0xc6, 0xc6, 0xc6,
+		0x42, 0x73, 0xBF,
+		0x00, 0x84, 0x00,
+		0x84, 0x84, 0x00,
+		0x00, 0x00, 0x84,
+		0x84, 0x00, 0x84,
+		0x00, 0x84, 0x84,
+		0x84, 0x84, 0x84,
+		0xFD, 0x5B, 0x46,
+		0x43, 0x73, 0xBF
 	};
 	unsigned char table2[216 * 3];
 	int r, g, b;
@@ -40,11 +42,13 @@ void init_palette(void)
 	return;
 }
 
+/* set_palette,
+ * 用rgb所指内存中包含的RGB颜色依次设置在调色板号[start, end]中。*/
 void set_palette(int start, int end, unsigned char *rgb)
 {
 	int i, eflags;
-	eflags = io_load_eflags();	/* ���荞�݋��t���O�̒l���L�^���� */
-	io_cli(); 					/* ���t���O��0�ɂ��Ċ��荞�݋֎~�ɂ��� */
+	eflags = io_load_eflags();
+	io_cli(); 
 	io_out8(0x03c8, start);
 	for (i = start; i <= end; i++) {
 		io_out8(0x03c9, rgb[0] / 4);
@@ -52,10 +56,18 @@ void set_palette(int start, int end, unsigned char *rgb)
 		io_out8(0x03c9, rgb[2] / 4);
 		rgb += 3;
 	}
-	io_store_eflags(eflags);	/* ���荞�݋��t���O�����ɖ߂� */
+	io_store_eflags(eflags);	
 	return;
 }
 
+/* boxfill8,
+ * 用色号c充当窗口[(x0,y0),(x1,y1)]区域画面信息,窗口x方向像素点数为xsize。
+ * 
+ * vram, 用于缓存窗口的画面信息;
+ * [(x0,y0),(x1,y1)], 基于窗口左上角的窗口区域;
+ * c, 填充窗口[(x0,y0),(x1,y1)]区域的色号。
+ *
+ * 当vram为显存基址,xsize为屏幕x箱数点时,屏幕[(x0,y0),(x1,y1)]区域将会直接显示色号c对应的RGB颜色。*/
 void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
 {
 	int x, y;
@@ -66,6 +78,9 @@ void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, i
 	return;
 }
 
+/* init_screen8,
+ * 将自制屏幕背景窗口画面信息缓存到vram所指内存中。
+ * x,y分别为屏幕横向(x)和纵向(y)的像素点数。*/
 void init_screen8(char *vram, int x, int y)
 {
 	
@@ -137,6 +152,14 @@ int set_picture(unsigned char *vram, int x, int y)
 	return 0;
 }
 
+/* putfont8,
+ * 将font所指像素点阵用c充当画面信息,
+ * 并将画面信息从vram所指画面的(x,y)像素点位置处开始缓存。
+ * 
+ * font所指向的16字节是一个字符的像素点阵。
+ * 
+ * putfont8依次遍历font中的每一位,当遍历到bit位为1时,
+ * 则将指定颜色号c写入vram所指内存的对应字节上。*/
 void putfont8(char *vram, int xsize, int x, int y, char c, char *font)
 {
 	int i;
@@ -156,9 +179,12 @@ void putfont8(char *vram, int xsize, int x, int y, char c, char *font)
 	return;
 }
 
-/**
-* putfonts8_asc put font with 8 data.
- */
+/* putfonts8_asc,
+ * 按照当前进程的语言模式(英文,日文等),根据s所指字符编码值
+ * 从相应字库中取出字符的像素点阵, 将其转换为画面信息并从
+ * vram所指画面(x,y)像素点处开始缓存;直到s所指字符编码值为0时结束。
+ * 首先根据字符编码在字库中找到字符的像素点阵,然后根据字符像素点阵得到字符
+ * 画面信息(色号c),最后将字符画面信息从vram所指画面(x,y)像素点处开始缓存。*/
 void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s)
 {
 	extern char hankaku[4096];
@@ -196,8 +222,8 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 				}
 				task->langbyte1 = 0;
 				font = nihongo + 256 * 16 + (k * 94 + t) * 32;
-				putfont8(vram, xsize, x - 8, y, c, font     );	/* ������ */
-				putfont8(vram, xsize, x    , y, c, font + 16);	/* �E���� */
+				putfont8(vram, xsize, x - 8, y, c, font     );
+				putfont8(vram, xsize, x    , y, c, font + 16);
 			}
 			x += 8;
 		}
@@ -215,8 +241,8 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 				t = *s - 0xa1;
 				task->langbyte1 = 0;
 				font = nihongo + 256 * 16 + (k * 94 + t) * 32;
-				putfont8(vram, xsize, x - 8, y, c, font     );	/* ������ */
-				putfont8(vram, xsize, x    , y, c, font + 16);	/* �E���� */
+				putfont8(vram, xsize, x - 8, y, c, font     );
+				putfont8(vram, xsize, x    , y, c, font + 16);
 			}
 			x += 8;
 		}
@@ -243,8 +269,11 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 	}
 	return;
 }
+
+/* init_mouse_cursor8,
+ * 将鼠标画面信息(色号)缓存在mouse所指内存段中,
+ * bc为鼠标所在背景的背景色号。*/
 void init_mouse_cursor8(char *mouse, char bc)
-/* �}�E�X�J�[�\���������i16x16�j */
 {
 	static char cursor[16][16] = {
 		"**..............",
@@ -282,6 +311,10 @@ void init_mouse_cursor8(char *mouse, char bc)
 	return;
 }
 
+
+/* putblock8_8,
+ * 将buf所指内存段中的画面信息(如鼠标图标的色号)
+ * 缓存在vram所指画面的[(px0, py0),(px0+pxsize, py0+pysize)]区域。*/
 void putblock8_8(char *vram, int vxsize, int pxsize,
 	int pysize, int px0, int py0, char *buf, int bxsize)
 {
@@ -300,7 +333,7 @@ unsigned short rgb2pal(int r, int g, int b, int x, int y, int cb)
 	if (cb == 8) {
 	static int table[4] = { 3, 1, 0, 2 };
 	int i;
-	x &= 1; /* ��ż�����������أ� */
+	x &= 1; 
 	y &= 1;
 	i = table[x + y * 2];
 	r = (r * 21) / 256;

@@ -21,7 +21,7 @@ void HariMain(void)
 			api_putchar(content);
 		}
 	} else {
-		api_putstr0("\n δ�ҵ��ļ�\n File not found.\n");
+		api_putstr0("File not found.\n");
 	}
 	api_end();
 }

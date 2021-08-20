@@ -1,23 +1,3 @@
-/* ---------------------------------
-
-	HELO OS 系统专用源程序
-
------------------------------------ */
-
-
-/*
- * JPEG decoding engine for DCT-baseline
- *
- *      copyrights 2003 by nikq | nikq::club.
- *
- * history::
- * 2003/04/28 | added OSASK-GUI ( by H.Kawai )
- * 2003/05/12 | optimized DCT ( 20-bits fixed point, etc...) -> line 407-464 ( by I.Tak. )
- * 2003/09/27 | PICTURE0.BIN(DLL)梡偵夵憿 ( by 偔乕傒傫 )
- * 2003/09/28 | 奺庬僶僌僼傿僋僗仌懡彮偺嵟揔壔 ( by H.Kawai )
- *
- */
-
 
 typedef unsigned char UCHAR;
 
@@ -25,7 +5,7 @@ struct DLL_STRPICENV { int work[16384]; };
 
 typedef struct
 {
-    int elem; //梫慺悢
+    int elem; 
     unsigned short code[256];
     unsigned char  size[256];
     unsigned char  value[256];
@@ -53,14 +33,14 @@ typedef struct
     int scan_id[3];
     int scan_ac[3];
     int scan_dc[3];
-    int scan_h[3];  // 僒儞僾儕儞僌梫慺悢
-    int scan_v[3];  // 僒儞僾儕儞僌梫慺悢
-    int scan_qt[3]; // 検巕壔僥乕僽儖僀儞僨僋僗
+    int scan_h[3]; 
+    int scan_v[3];
+    int scan_qt[3]; 
     
     // DRI
     int interval;
 
-    int mcu_buf[32*32*4]; //僶僢僼傽
+    int mcu_buf[32*32*4];
     int *mcu_yuv[4];
     int mcu_preDC[3];
     
@@ -78,7 +58,7 @@ typedef struct
     int bit_remain;
     int width_buf;
 
-	int base_img[64][64]; // 婎掙夋憸 ( [墶廃攇悢u兾][廲廃攇悢v兾][墶埵憡(M/8)][廲埵憡(N/8)]
+	int base_img[64][64]; 
 
     /* for dll 
     
@@ -141,7 +121,6 @@ int decode0_JPEG(struct DLL_STRPICENV *env,int size, UCHAR *fp0, int b_type, UCH
 
 //	if (jpeg->width == 0)
 //		return 8;
-	/* decode0偱偼info偟偰偐傜屇偽傟傞偺偱丄偙傟偼側偄 */
 
 	jpeg->width_buf = skip / (b_type & 0x7f) + jpeg->width;
     jpeg_decode(jpeg, buf, b_type);
@@ -168,12 +147,12 @@ unsigned short get_bits(JPEG *jpeg, int bit)
 			goto fin;
 		}
 		c = *jpeg->fp++;
-		if (c == 0xff) { // 儅乕僇僄儔乕傪杊偖偨傔丄FF -> FF 00 偵僄僗働乕僾偝傟偰傞
+		if (c == 0xff) { 
 			if (jpeg->fp >= jpeg->fp1) {
 				ret = 0;
 				goto fin;
 			}
-			jpeg->fp++; /* 00傪skip */
+			jpeg->fp++;
 		}
 		buff = (buff << 8) | c;
 		remain += 8;
@@ -187,7 +166,7 @@ fin:
 	return ret;
 }
 
-// ------------------------ JPEG 僙僌儊儞僩幚憰 -----------------
+// ------------------------ JPEG  -----------------
 
 // start of frame
 int jpeg_sof(JPEG *jpeg)
@@ -197,7 +176,6 @@ int jpeg_sof(JPEG *jpeg)
 
 	if (jpeg->fp + 8 > jpeg->fp1)
 		goto err;
-	/* fp[2] 偼 bpp */
 	jpeg->height = jpeg->fp[3] << 8 | jpeg->fp[4];
 	jpeg->width  = jpeg->fp[5] << 8 | jpeg->fp[6];
 	n = jpeg->compo_count = jpeg->fp[7]; // Num of compo, nf
@@ -249,7 +227,7 @@ int jpeg_dqt(JPEG *jpeg)
  		if (c & 0xf8) {
 			// 16 bit DQT
 			for (i = 0; i < 64; i++) {
-				jpeg->dqt[j][i] = jpeg->fp[0]; /* 壓埵偼撉傒幪偰偰偄傞 */
+				jpeg->dqt[j][i] = jpeg->fp[0]; 
 				jpeg->fp += 2;
 			}
 			size += -64 * 2;
@@ -286,8 +264,8 @@ int jpeg_dht(JPEG *jpeg)
 			goto err;
 		val = jpeg->fp[0];
 
-		tc = (val >> 4) & 0x0f; // 僥乕僽儖僋儔僗(DC/AC惉暘僙儗僋僞)
-		th =  val       & 0x0f; // 僥乕僽儖僿僢僟(壗枃栚偺僾儗乕儞偐)
+		tc = (val >> 4) & 0x0f; 
+		th =  val       & 0x0f; 
 		table = &(jpeg->huff[tc][th]);
 
 		num = 0;
@@ -342,7 +320,6 @@ int jpeg_init(JPEG *jpeg)
 	jpeg->max_v = 0;
 	jpeg->bit_remain = 0;
 	jpeg->bit_buff   = 0;
-	// DRI儕僙僢僩柍偟
 	jpeg->interval = 0;
 //	return;
 //}
@@ -391,7 +368,6 @@ int jpeg_init(JPEG *jpeg)
 			jpeg->fp += 3; /* 3bytes skip */
             goto fin;
 		} else {
-			/* 枹懳墳 */
 			if (jpeg->fp + 2 > jpeg->fp1)
 				goto err;
 			jpeg->fp += jpeg->fp[0] << 8 | jpeg->fp[1];
@@ -407,7 +383,6 @@ fin:
 
 // MCU decode
 
-// 僨僐乕僪
 void jpeg_decode_init(JPEG *jpeg)
 {
 	int i, j;
@@ -437,7 +412,6 @@ void jpeg_decode_init(JPEG *jpeg)
 	return;
 }
 
-// 僴僼儅儞 1僔儞儃儖暅崋
 int jpeg_huff_decode(JPEG *jpeg,int tc,int th)
 {
     HUFF *h = &(jpeg->huff[tc][th]);
@@ -480,7 +454,7 @@ void jpeg_idct_init(int base_img[64][64])
             if (d == 0)
                 i = 4;
             for (m = 0; m < 8; m++){
-                tmpm[m] = cost[i]; // 墶偺Cos攇宍
+                tmpm[m] = cost[i];
                 i=(i+d)&31;
             }
         }
@@ -490,11 +464,10 @@ void jpeg_idct_init(int base_img[64][64])
                 if (d == 0)
                     i=4;
                 for (n = 0; n < 8; n++){
-                    tmpn[n] = cost[i]; // 廲偺Cos攇宍
+                    tmpn[n] = cost[i]; 
                     i=(i+d)&31;
                 }
             }
-            // 妡偗嶼偟偰婎掙夋憸偵
             for (m = 0; m < 8; m++) {
                 for (n = 0; n < 8; n++) {
                     base_img[u * 8 + v][m * 8 + n] = (tmpm[m] * tmpn[n])>>15;
@@ -514,19 +487,17 @@ void jpeg_idct(int *block, int *dest, int base_img[64][64])
 
     for (i = 0; i < 64; i++) {
         k = block[i];
-        if(k) { //0學悢偼僗僥
+        if(k) {
             for (j = 0; j < 64; j++) {
                 dest[j] += k * base_img[i][j];
             }
         }
     }
-    // 屌掕彫悢揰傪尦偵栠偡+ 4偱妱傞
     for (i = 0; i < 64; i++)
         dest[i] >>= 17;
     return;
 }
 
-// 晞崋壔偝傟偨悢抣傪尦偵栠偡
 int jpeg_get_value(JPEG *jpeg,int size)
 {
 	int val = 0;
@@ -540,8 +511,6 @@ int jpeg_get_value(JPEG *jpeg,int size)
     return val;
 }
 
-// ---- 僽儘僢僋偺僨僐乕僪 ---
-// 僴僼儅儞僨僐乕僪亄媡検巕壔亄媡僕僌僓僌
 int jpeg_decode_huff(JPEG *jpeg,int scan,int *block, UCHAR *zigzag_table)
 {
     int size, len, val, run, index;
@@ -555,7 +524,6 @@ int jpeg_decode_huff(JPEG *jpeg,int scan,int *block, UCHAR *zigzag_table)
     jpeg->mcu_preDC[scan] += val;
     block[0] = jpeg->mcu_preDC[scan] * pQt[0];
 
-    //AC暅崋
     index = 1;
     while(index<64)
     {
@@ -572,7 +540,6 @@ int jpeg_decode_huff(JPEG *jpeg,int scan,int *block, UCHAR *zigzag_table)
         
         val = jpeg_get_value(jpeg,size);
         if(val>=0x10000) {
-            //儅乕僇敪尒
             return val;
         }
 
@@ -588,8 +555,6 @@ int jpeg_decode_huff(JPEG *jpeg,int scan,int *block, UCHAR *zigzag_table)
     return 0;
 }
 
-// 僽儘僢僋 (曗娫偐偗傞偵偼丄偙偙偱)
-// 儕僒儞僾儕儞僌
 void jpeg_mcu_bitblt(int *src, int *dest, int width,
                      int x0, int y0, int x1, int y1)
 {
@@ -608,7 +573,6 @@ void jpeg_mcu_bitblt(int *src, int *dest, int width,
 	}
 }
 
-// MCU堦屄曄姺
 int jpeg_decode_mcu(JPEG *jpeg, UCHAR *zigzag_table)
 {
 	int scan, val;
@@ -616,26 +580,21 @@ int jpeg_decode_mcu(JPEG *jpeg, UCHAR *zigzag_table)
 	int *p, hh, vv;
 	int block[64], dest[64];
 
-	// mcu_width x mcu_height僒僀僘偺僽儘僢僋傪揥奐
+	// mcu_width x mcu_height
 	for (scan = 0; scan < jpeg->scan_count; scan++) {
 		hh = jpeg->scan_h[scan];
 		vv = jpeg->scan_v[scan];
 		for (v = 0; v < vv; v++) {
             for (h = 0; h < hh; h++) {
-				// 僽儘僢僋(8x8)偺僨僐乕僪
 				val = jpeg_decode_huff(jpeg, scan, block, zigzag_table);
 			//	if(val>=0x10000){
 			//		printf("marker found:%02x\n",val);
 			//	}
 
-				// 媡DCT
 				jpeg_idct(block, dest, jpeg->base_img);
-				// 儕僒儞僾儕儞僌
 
-				// 彂偒崬傒僶僢僼傽
 				p = jpeg->mcu_buf + (scan << 10);
 
-                // 奼戝揮憲
 				jpeg_mcu_bitblt(dest, p, jpeg->mcu_width,
 					jpeg->mcu_width * h / hh, jpeg->mcu_height * v / vv,
 					jpeg->mcu_width * (h + 1) / hh, jpeg->mcu_height * (v + 1) / vv);
@@ -732,13 +691,11 @@ void jpeg_decode(JPEG *jpeg, UCHAR *rgb, int b_type)
 	INIT_ZTABLE(48, 58, 59, 52, 45); INIT_ZTABLE(52, 38, 31, 39, 46);
 	INIT_ZTABLE(56, 53, 60, 61, 54); INIT_ZTABLE(60, 47, 55, 62, 63);
 
-	// MCU僒僀僘寁嶼
 	jpeg_decode_init(jpeg);
 
 	h_unit = (jpeg->width + jpeg->mcu_width - 1) / jpeg->mcu_width;
 	v_unit = (jpeg->height + jpeg->mcu_height - 1) / jpeg->mcu_height;
 
-	// 1僽儘僢僋揥奐偡傞偐傕偟傟側偄
 	mcu_count = 0;
 	for (v = 0; v < v_unit; v++) {
 		for (h = 0; h < h_unit; h++) {
@@ -746,8 +703,6 @@ void jpeg_decode(JPEG *jpeg, UCHAR *rgb, int b_type)
 			jpeg_decode_mcu(jpeg, zigzag_table);
 			jpeg_decode_yuv(jpeg, h, v, rgb, b_type & 0x7fff);
 			if (jpeg->interval > 0 && mcu_count >= jpeg->interval) {
-				// RSTm儅乕僇傪偡偭旘偽偡(FF hoge)
-				// hoge偼撉傒旘偽偟偰傞偺偱丄FF傕旘偽偡
 				jpeg->bit_remain -= (jpeg->bit_remain & 7);
 				jpeg->bit_remain -= 8;
 				jpeg->mcu_preDC[0] = 0;

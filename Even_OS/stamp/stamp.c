@@ -13,7 +13,7 @@ void HariMain(void)
     api_cmdline(cmd,40);
 
     api_putstr0(cmd);
-//     for (cmd_str = cmd; *cmd_str > ' '; cmd_str++) { }	/* �X�y�[�X������܂œǂݔ�΂� */
+//     for (cmd_str = cmd; *cmd_str > ' '; cmd_str++) { }	
 //     for (; *cmd_str != 0; )
 // {
 

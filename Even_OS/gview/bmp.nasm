@@ -50,16 +50,16 @@ section .text align=1
 
 %if 0
 int info_BMP(struct DLL_STRPICENV *env, int *info, int size, UCHAR *fp);
-/* À®¸ù¤·¤¿¤é1 (Èó0?), ¼ºÇÔ¤·¤¿¤é0 */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1 (ï¿½ï¿½0?), ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½0 */
 int decode0_BMP(struct DLL_STRPICENV *env, int size, UCHAR *fp,
                 int b_type, UCHAR *buf, int skip);
-/* ¥¨¥é¡¼¥³¡¼¥É¤òÊÖ¤¹¡£¤È¤ê¤¢¤¨¤ºÈó0¤Ë¤·¤Æ¤ë¤À¤± */
-env¤Ï64KB¤Î¥ï¡¼¥¯¥¨¥ê¥¢¤Ç¤¢¤ë¡£ÀèÆ¬8dw¤ÏÊÖ¤êÃÍÍÑ¤Ë¤Ê¤Ã¤Æ¤¤¤ë¡£
-´øÈ¯À­¤é¤·¤¯, ¥¤¥ó¥¹¥¿¥ó¥¹ÊÑ¿ôÅª¤Ë¤Ï»È¤¨¤Ê¤¤¤è¤¦¤À¡£JPEG_init¤Ç
-base_img¤òºî¤ë¤Î¤Ïdecode¤Î¤È¤­¤À¤±¤Ç¤¤¤¤¤È»×¤¦¡£
+/* ï¿½ï¿½ï¿½é¡¼ï¿½ï¿½ï¿½ï¿½ï¿½É¤ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½È¤ê¤¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½Ë¤ï¿½ï¿½Æ¤ï¿½ï¿½ï¿½ï¿½ */
+envï¿½ï¿½64KBï¿½Î¥ï¡¼ï¿½ï¿½ï¿½ï¿½ï¿½ê¥¢ï¿½Ç¤ï¿½ï¿½ë¡£ï¿½ï¿½Æ¬8dwï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½Ñ¤Ë¤Ê¤Ã¤Æ¤ï¿½ï¿½ë¡£
+ï¿½ï¿½È¯ï¿½ï¿½ï¿½é¤·ï¿½ï¿½, ï¿½ï¿½ï¿½ó¥¹¥ï¿½ï¿½ï¿½ï¿½Ñ¿ï¿½Åªï¿½Ë¤Ï»È¤ï¿½ï¿½Ê¤ï¿½ï¿½è¤¦ï¿½ï¿½ï¿½ï¿½JPEG_initï¿½ï¿½
+base_imgï¿½ï¿½ï¿½ï¿½Î¤ï¿½decodeï¿½Î¤È¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¤ï¿½ï¿½ï¿½ï¿½È»×¤ï¿½ï¿½ï¿½
 %endif
 
-[absolute 0]	;nask¤Ê¤é[section .bss] org 0 ¤«¤Ê win32¤À¤«¤é¥À¥á¤«
+[absolute 0]	;
 bmpinfo:
 .regs:		resd 4
 .reteip:	resd 1
@@ -109,7 +109,7 @@ bmpHeader:
 	xor edx, edx
 
 	cmp eax, byte BMP.iSize+4
-	jbe ..@ret			;Ãæ·Ñ¤·¤Æ¤·¤Þ¤¦
+	jbe ..@ret			;
 	cmp word[esi],'BM'
 	je .notMAC
 	sub esi, byte -128
@@ -121,12 +121,12 @@ bmpHeader:
 	cmp word[esi], 'BM'
 	jne .ret
 .notMAC:
-	;;MS,OS/2 ¥Õ¥©¡¼¥Þ¥Ã¥È³ÎÇ§
+	;;MS,OS/2 
 	mov ecx, [esi +BMP.iSize]
 	cmp ecx, byte 12			;OS/2 format.
 	jne .MS
 	  cmp eax, byte BMPOS2_size
-	  jbe .ret				;core¥Ø¥Ã¥À¤Ê¤·
+	  jbe .ret				;
 	  lea ebx, [esi+ecx+14]			;palette
 	  movzx eax, word[esi+BMPOS2.iWidth]	;width
 	  movzx ecx, word[esi+BMPOS2.iHeight]	;height
@@ -134,7 +134,7 @@ bmpHeader:
 	  mov dl, 3				;paletteSize
 	jmp short .endif
 .MS:	  cmp eax, byte BMP_size
-	  jbe .ret				;info¥Ø¥Ã¥À¤Ê¤·
+	  jbe .ret				;
 	  lea ebx, [esi+ecx+14]
 	  sub ecx,byte 40
 	  jne .ret				;unknownFormat
@@ -147,22 +147,22 @@ bmpHeader:
 .endif:
 	add esi, [esi +BMP.fOffBits]
 
-	;size¤¬¾®¤µ¤¤¾ì¹çheight¤òºï¤Ã¤Æ¤Ç¤ 
-	;ÆÉ¤á¤ë¤ÈÅú¤¨¤ë¤Ù¤­¤À¤í¤¦¡£º£¤Ï¥¨¥é¡¼
+	;size
+	;
 	push edx
 	push eax
 	mul ebp				;eax=width*bpp
 	add eax, byte 7
 	shr eax, 3			;lineSizeWithoutPudding
 	mov edx, eax
-	add eax, byte 3			;size<1GB¤ò²¾Äê¤·¤Æedx¤òÌµ» 
+	add eax, byte 3			;size<1GB
 	and al, -4			;lineSizeWithPudding
 	sub edx, eax			;-puddingSize
 	push edx
 	mul ecx
 	pop edx
 	add esi, eax
-	add esi, edx			;ºÇ½ª¹Ô¤ÎºÇ¸å¤Ë¤Ïpudding¤¬¤Ê¤¤¤È¸«¤ë¤Ù¤­
+	add esi, edx			;
 	cmp esi, [esp+8]		;endOfModule
 	pop eax
 	ja .ret2
@@ -173,8 +173,6 @@ bmpHeader:
 	ret
 
 ;***************************************************************
-; ¾®¤µ¤µÍ¥Àè¤Çºî¤Ã¤Æ¤¤¤ë¤¬, Â®¤µÍ¥Àè¤Çºî¤Ã¤¿ÀÎ¤Î¤è¤ê¤¤¤¤¤«¤â¡£
-; ÉÊ¼ÁºÇÄã¤Î¹âÂ®¥â¡¼¥É¤Î¤ßºî¤Ã¤Æ¤¤¤ 
 
 [absolute 0]
 decode:
@@ -228,7 +226,7 @@ _decode0_BMP:
 
 [absolute -4*2]
 bb:
-.col0:		resd 1	;bpp1¤Ç»È¤¦
+.col0:		resd 1	;bpp1
 .reteip:	resd 1
 .sw:		resd 1	;byte
 .paletteSize:	resd 1	;byte
@@ -303,7 +301,7 @@ buf32:
 	;ecx=height, edx=0, ebx=palette
 	;esi=endOfImage, edi=destinationBuffer
 
-	;palleteÊÑ´¹
+	;palleteï¿½Ñ´ï¿½
 	mov dl, 255
 	mov eax, [ebp+bb.paletteSize]
 	sub ebx, eax
@@ -347,7 +345,7 @@ buf32:
 	;ecx=height, edx=0, ebx=palette
 	;esi=endOfImage, edi=destinationBuffer
 
-	;palleteÊÑ´¹
+	;palleteï¿½Ñ´ï¿½
 	mov dl, 16
 	mov eax, [ebp+bb.paletteSize]
 	sub ebx, eax
@@ -398,7 +396,7 @@ buf32:
 	;ecx=height, edx=0, ebx=palette
 	;esi=endOfImage, edi=destinationBuffer
 
-	;palleteÊÑ´¹
+	;palleteï¿½Ñ´ï¿½
 	mov eax, [ebx]
 	add ebx, [ebp+bb.paletteSize]
 	and eax, 0x00ffffff
@@ -471,15 +469,13 @@ buf16:
 	    shl eax, 16
 	    mov ax, [esi]
 	     add esi, byte 3
-	    ;¸º¿§½èÍý eax=24bitColor, edx=work, ecx=counter, ebx=work
-	    ;Àî¹ç¤µ¤ó¤Î¼ñÌ£¤ÇË×¤Ã¤¿¥ë¡¼¥Á¥ó¤ò»ý¤Ã¤Æ¤¯¤ë¤â¤è¤·(¤©
-	    ;¸íº¹³È»¶¥ë¡¼¥Á¥ó¤ò»ý¤Ã¤Æ¤¯¤ë¤â¤è¤·
-	    shr ah, 2		;???????? RRRRRrrr 00GGGGGG BBBBBbbb 
+	    ;eax=24bitColor, edx=work, ecx=counter, ebx=work
+	    shr ah, 2		;
 	     inc edi
-	    shr eax, 3		;000????? ???RRRRR rrr00GGG GGGBBBBB
-	    shl ax, 5		;000????? ???RRRRR GGGGGGBB BBB00000
+	    shr eax, 3		;
+	    shl ax, 5		;
 	     inc edi
-	    shr eax, 5		;00000000 ???????? RRRRRGGG GGGBBBBB
+	    shr eax, 5		;
 	     dec ecx
 	    mov [edi-2], ax
 	  jnz .do24.2
@@ -497,7 +493,7 @@ buf16:
 	;ecx=height, edx=0, ebx=palette
 	;esi=endOfImage, edi=destinationBuffer
 
-	;palleteÊÑ´¹
+	;pallete
 	mov dl, 255
 	mov eax, [ebp+bb.paletteSize]
 	sub ebx, eax
@@ -541,7 +537,7 @@ buf16:
 	;ecx=height, edx=0, ebx=palette
 	;esi=endOfImage, edi=destinationBuffer
 
-	;palleteÊÑ´¹
+	;pallete
 	mov dl, 16
 	mov eax, [ebp+bb.paletteSize]
 	sub ebx, eax
@@ -592,7 +588,7 @@ buf16:
 	;ecx=height, edx=0, ebx=palette
 	;esi=endOfImage, edi=destinationBuffer
 
-	;palleteÊÑ´¹
+	;pallete
 	mov eax, [ebx]
 	add ebx, [ebp+bb.paletteSize]
 	call .paletteConv

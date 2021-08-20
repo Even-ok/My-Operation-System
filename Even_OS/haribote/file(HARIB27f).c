@@ -1,9 +1,8 @@
-/* ファイル関係 */
+
 
 #include "bootpack.h"
 
 void file_readfat(int *fat, unsigned char *img)
-/* ディスクイメージ内のFATの圧縮をとく */
 {
 	int i, j = 0;
 	for (i = 0; i < 2880; i += 2) {
@@ -43,13 +42,12 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 	}
 	j = 0;
 	for (i = 0; name[i] != 0; i++) {
-		if (j >= 11) { return 0; /* 見つからなかった */ }
+		if (j >= 11) { return 0; }
 		if (name[i] == '.' && j <= 8) {
 			j = 8;
 		} else {
 			s[j] = name[i];
 			if ('a' <= s[j] && s[j] <= 'z') {
-				/* 小文字は大文字に直す */
 				s[j] -= 0x20;
 			} 
 			j++;
@@ -65,12 +63,12 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 					goto next;
 				}
 			}
-			return finfo + i; /* ファイルが見つかった */
+			return finfo + i; 
 		}
 next:
 		i++;
 	}
-	return 0; /* 見つからなかった */
+	return 0;
 }
 
 char *file_loadfile2(int clustno, int *psize, int *fat)
@@ -82,7 +80,7 @@ char *file_loadfile2(int clustno, int *psize, int *fat)
 	file_loadfile(clustno, size, buf, fat, (char *) (ADR_DISKIMG + 0x003e00));
 	if (size >= 17) {
 		size2 = tek_getsize(buf);
-		if (size2 > 0) {	/* tek圧縮がかかっていた */
+		if (size2 > 0) {	
 			buf2 = (char *) memman_alloc_4k(memman, size2);
 			tek_decomp(buf, buf2, size2);
 			memman_free_4k(memman, (int) buf, size);

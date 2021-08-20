@@ -1,4 +1,4 @@
-/* bootpack�̃��C�� */
+/* bootpack.c,haribote os C主程序入口 && haribote 主任务程序 */
 
 #include "bootpack.h"
 #include <stdio.h>
@@ -16,14 +16,18 @@ void keywin_on(struct SHEET *key_win);
 void close_console(struct SHEET *sht);
 void close_constask(struct TASK *task);
 
+/* HariMain,
+ * haribote OS C主程序入口,从asmhead.nas中跳转而来。*/
 void HariMain(void)
 {
+	/* 以 struct BOOTINFO 类型访问 ADR_BOOTINFO 
+     * 内存段即获取显卡信息参数所在内存段基址。*/
    struct BOOTINFO *binfo = (struct BOOTINFO *) ADR_BOOTINFO;
     struct SHTCTL *shtctl;
     char s[40],clock[40];
     struct FIFO32 fifo, keycmd;
     int fifobuf[128], keycmd_buf[32];
-    struct TIMER *timer, *timer2, *timer3 , *timer4,*second;  //��ʱ��
+    struct TIMER *timer, *timer2, *timer3 , *timer4,*second;  
     int mx, my, i, new_mx = -1, new_my = 0, new_wx = 0x7fffffff, new_wy = 0,cursor_x, cursor_c, task_b_esp;
     int color=0,z=4;
 	int maxmx=0,maxmy=0,minmx=binfo->scrnx ,minmy= binfo->scrny; //800 600
@@ -40,6 +44,8 @@ void HariMain(void)
 	unsigned char *buf_menu1, *buf_menu2[3];
 	struct SHEET *sht_menu1, *sht_menu2[3];
     struct TASK *task_a, *task_b[3],*task;
+	/* keytable0,keytable1 分别是没有按下和按下shift键时键盘按键扫描码与键盘按
+     * 键编码值的映射表,即用键盘输入扫描码作为数组下标即得到键盘按键的编码值。*/
     static char keytable0[0x80] = {
         0,   0,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '^', 0x08, 0,
         'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '@', '[', 0x0a, 0, 'A', 'S',
@@ -90,21 +96,37 @@ void HariMain(void)
     int key_shift = 0, key_leds = (binfo->leds >> 4) & 7, keycmd_wait = -1;
     int j, x, y, mmx = -1, mmy = -1, mmx2 = 0;
 	struct SHEET *sht = 0, *key_win, *sht2, *win;
-	int *fat, select = -1;  //select Ϊѡ��ִ�еĳ���� 
+	int *fat, select = -1;
     unsigned char *nihongo;
     struct FILEINFO *finfo;
+	/* hankaku.txt中包含的符号信息被转换为字库后与haribote OS
+     * 链接在一起,在链接层面的起始标号为hankaku。*/
     extern char hankaku[4096];
 
-    init_gdtidt();
+    /* init_gdtidt,初始化GDT和IDT;
+     * init_pic,初始化可编程中断控制器(PIC);
+     * io_sti,在初始化GDT,IDT以及中断控制器后,允许CPU处理
+     * 中断, asmhead.nas在进入保护模式前曾禁止CPU处理中断。*/
+	init_gdtidt();
     init_pic();
-    io_sti(); /* IDT/PIC??????????I????????CPU????��???~?????? */
+    io_sti(); 
+
+	/* HarMain主程序(task_a所管理任务)循环队列:fifobuf 所指内存块为
+     * 队列缓冲区,长度为128, 该循环队列将在后续与 task_a 所管理任务
+     * 关联。将主程序循环队列结构体的内存基址存储在内存0x0fec处, 以
+     * 供其他任务可间接通过该地址访问 fifobuf 循环队列。*/
     fifo32_init(&fifo, 128, fifobuf, 0);
     *((int *) 0x0fec) = (int) &fifo;
+	/* 初始化定时器控制器及管理系统定时的数据结构体 */
     init_pit();
     init_keyboard(&fifo, 256);
     enable_mouse(&fifo, 512, &mdec);
-    io_out8(PIC0_IMR, 0xf8); /* PIT??PIC1??L?[?{?[?h??????(11111000) */
-    io_out8(PIC1_IMR, 0xef); /* ?}?E?X??????(11101111) */
+	/* 配置主PIC,允许日时钟(定时器),键盘,从PIC中断;
+     * 配置从PIC允许实时钟(CMOS ROM)中断。*/
+    io_out8(PIC0_IMR, 0xf8);
+    io_out8(PIC1_IMR, 0xef); 
+	/* 设置键盘命令循环队列:keycmd_buf 所指内存段为键盘命令循环队列缓冲区,
+     * 长度为32。键盘命令循环队列用于缓存主程序向键盘控制器发送的命令数据。*/
     fifo32_init(&keycmd, 32, keycmd_buf, 0);
 
     timer = timer_alloc();
@@ -120,30 +142,37 @@ void HariMain(void)
 
 	unsigned int start_addr = START_MEMORY;
 	unsigned int end_addr	= END_MEMORY;
-	memtotal = memtest(start_addr, end_addr);	/* ?g?p????��?????????m?F */
+	memtotal = memtest(start_addr, end_addr);
 	memman_init(memman);
     memman_free(memman, 0x00001000, 0x0009e000); /* 0x00001000 - 0x0009efff */
-	memman_free(memman, start_addr, memtotal - start_addr);	/* ???????}?l?[?W????n??????????? */
+	memman_free(memman, start_addr, memtotal - start_addr);
     // memtotal = memtest(0x00400000, 0xbfffffff);
     // memman_init(memman);
     // memman_free(memman, 0x00001000, 0x0009e000); /* 0x00001000 - 0x0009efff */
     // memman_free(memman, 0x00400000, memtotal - 0x00400000);
 
-    init_palette();
+    /* 初始化调色板 */
+	init_palette();
+	/* 初始化屏幕窗口管理结构体,参数中的显存基址和分辨率由BIOS获得。*/
     shtctl = shtctl_init(memman, binfo->vram, binfo->scrnx, binfo->scrny);
+	/* 初始化任务管理。
+     * task_a 将管理当前主程序任务, 将 task_a 与 fifo关联。
+     * 调整当前任务任务层级(0->1), 当再次发生任务调度时会调度任务层1中的任务(任务层0已无任务),
+     * 即约20ms后,内核程序HariMain将由 task_a 所指结构体管理。*/
     task_a = task_init(memman);
     fifo.task = task_a;
     task_run(task_a, 1, 2);
 	task_a->TaskName="console";
+	/*将系统窗口管理结构体内存基址存储在0x0fe4处,其他任务可通过0x0fe4访问到 shtctl。*/
     *((int *) 0x0fe4) = (int) shtctl;
     task_a->langmode = 0;
 
-    /* sht_back */
+	/* sht_back */
     sht_back  = sheet_alloc(shtctl);
     buf_back  = (unsigned char *) memman_alloc_4k(memman, binfo->scrnx * binfo->scrny);
-    sheet_setbuf(sht_back, buf_back, binfo->scrnx, binfo->scrny, -1); /* ?????F??? */
+    sheet_setbuf(sht_back, buf_back, binfo->scrnx, binfo->scrny, -1); 
     init_screen8(buf_back, binfo->scrnx, binfo->scrny);
-	putfonts8_asc_sht(sht_back, 8, binfo->scrny -20, COL8_000000, COL8_C6C6C6, "menu", 5);//����һ���˵��� 
+	putfonts8_asc_sht(sht_back, 8, binfo->scrny -20, COL8_000000, COL8_C6C6C6, "menu", 5);
 
 		/* log window */
 	key_win = open_log(shtctl, memtotal);
@@ -151,37 +180,37 @@ void HariMain(void)
 //sht_menu
 	sht_menu1 = sheet_alloc(shtctl);
 	buf_menu1  = (unsigned char *) memman_alloc_4k(memman, 100 * 200);
-	sheet_setbuf(sht_menu1, buf_menu1, 90, 126, -1);  //�趨�ߴ��С 
+	sheet_setbuf(sht_menu1, buf_menu1, 90, 126, -1);  
 	make_menu(sht_menu1, 1);
-	sht_menu1->flags = -1;  //��־����
+	sht_menu1->flags = -1; 
 	
 	sht_menu2[0] = sheet_alloc(shtctl);
 	buf_menu2[0]  = (unsigned char *) memman_alloc_4k(memman, 100 * 180);
-	sheet_setbuf(sht_menu2[0], buf_menu2[0], 90, 90, -1);  //�趨�ߴ��С 
+	sheet_setbuf(sht_menu2[0], buf_menu2[0], 90, 90, -1);  
 	make_menu(sht_menu2[0], 2);
-	sht_menu2[0]->flags = -2;  //��־����  +2��-2�����ڶ��� 
+	sht_menu2[0]->flags = -2; 
 	
 	sht_menu2[1] = sheet_alloc(shtctl);
 	buf_menu2[1]  = (unsigned char *) memman_alloc_4k(memman, 100 * 180);
-	sheet_setbuf(sht_menu2[1], buf_menu2[1], 90, 72, -1);  //�趨�ߴ��С 
+	sheet_setbuf(sht_menu2[1], buf_menu2[1], 90, 72, -1); 
 	make_menu(sht_menu2[1], 3);
-	sht_menu2[1]->flags = -3;  //��־����
+	sht_menu2[1]->flags = -3; 
 	
-	sht_menu2[2] = sheet_alloc(shtctl);  //��ֽ�˵�ͼ�� 
+	sht_menu2[2] = sheet_alloc(shtctl); 
 	buf_menu2[2]  = (unsigned char *) memman_alloc_4k(memman, 100 * 180);
-	sheet_setbuf(sht_menu2[2], buf_menu2[2], 90, 36, -1);  //�趨�ߴ��С 
+	sheet_setbuf(sht_menu2[2], buf_menu2[2], 90, 36, -1); 
 	make_menu(sht_menu2[2], 4);
-	sht_menu2[2]->flags = -4;  //��־����
+	sht_menu2[2]->flags = -4; 
 
 
     /* sht_mouse */
     sht_mouse = sheet_alloc(shtctl);
     sheet_setbuf(sht_mouse, buf_mouse, 16, 16, 99);
     init_mouse_cursor8(buf_mouse, 99);
-    mx = (binfo->scrnx - 16) / 2; /* ??????????��????W?v?Z */
+    mx = (binfo->scrnx - 16) / 2;
     my = (binfo->scrny - 28 - 16) / 2;
 
-    // 	/* ?e?X???C?h???u??????? */
+
 	// sheet_slide(sht_back,  0,  0);
 	// sheet_slide(key_win,   512, 4);
 	// sheet_slide(sht_mouse, mx, my);
@@ -190,7 +219,6 @@ void HariMain(void)
 	// sheet_updown(sht_mouse, 2);
 
 
-    //����ҳ��
 
     sht_qidong = sheet_alloc(shtctl);
 	sht_boot = sheet_alloc(shtctl);
@@ -210,23 +238,22 @@ void HariMain(void)
 	sheet_setbuf(sht_zihao, buf_zihao, 160,52, -1);
 	sheet_setbuf(sht_color, buf_color, 160,52, -1);
     
-    //make_window8(buf_paint, 800, 600, "paint"��0);
 	make_window7(buf_zihao,160,52,"zihao");
 	make_window6(buf_color,160,52,"color");
     make_window8(buf_paint, binfo->scrnx, binfo->scrny,  "paint", 0);
-    bootpage(buf_boot, binfo->scrnx, binfo->scrny);//���봰
+    bootpage(buf_boot, binfo->scrnx, binfo->scrny);
     //qidong
 	boxfill8(buf_qidong,binfo->scrnx,7,0,0,binfo->scrnx,binfo->scrny);
 	sheet_refresh(sht_qidong,0,0,binfo->scrnx,binfo->scrny);
 
     sheet_slide(sht_back,  0,  0);
-    mx = (binfo->scrnx - 16) / 2; /* ??????????��????W?v?Z */
+    mx = (binfo->scrnx - 16) / 2; 
 	my = (binfo->scrny - 28 - 16) / 2;
     // sheet_slide(key_win,   32, 4);
-		sheet_slide(sht_menu1, 1, 614);   //��λ 
-	sheet_slide(sht_menu2[0], sht_menu1->bxsize+1, 578);   //��λ 
-	sheet_slide(sht_menu2[1], sht_menu1->bxsize+1, 614);   //��λ 
-	sheet_slide(sht_menu2[2], sht_menu1->bxsize+1, 668);   //��λ 
+		sheet_slide(sht_menu1, 1, 614);  
+	sheet_slide(sht_menu2[0], sht_menu1->bxsize+1, 578);  
+	sheet_slide(sht_menu2[1], sht_menu1->bxsize+1, 614);  
+	sheet_slide(sht_menu2[2], sht_menu1->bxsize+1, 668);  
     sheet_slide(key_win,   512, 4);
     sheet_slide(sht_mouse, mx, my);
     sheet_slide(sht_qidong, 0, 0);
@@ -249,18 +276,21 @@ void HariMain(void)
     keywin_on(key_win);
 
 
-    make_textbox8(sht_zihao, 8, 28, 144, 16, COL8_FFFFFF);//���������뱳��������ķ���λ��Ҫ��һ�£�
+    make_textbox8(sht_zihao, 8, 28, 144, 16, COL8_FFFFFF);
 	cursor_x = 8;
 	cursor_c = COL8_FFFFFF;
 
-    /* ?????L?[?{?[?h?????H??????????��??A??�X????????????? */
-    fifo32_put(&keycmd, KEYCMD_LED);
+    /* 将键盘初始状态写入键盘命令循环队列中,待 task_a 将键盘初
+     * 始状态发送给键盘控制器,以指示键盘控制器如何显示状态灯。*/
+	fifo32_put(&keycmd, KEYCMD_LED);
     fifo32_put(&keycmd, key_leds);
 
-    /* nihongo.fnt�̓ǂݍ��� */
 	nihongo = (unsigned char*)memman_alloc_4k(memman, 0x5d5d * 32);
+	/* 从软盘映像(见 asmhead.nas 中haribote内存的大体分布和 file.c)中读取FAT */
 	fat = (int*)memman_alloc_4k(memman, 4 * 2880);
 	file_readfat(fat, (unsigned char *) (ADR_DISKIMG + 0x000200));
+	/* 在FAT12文件信息区域(第20扇区)搜索 nihongo.fnt 字库文件,
+     * 若软盘映像中包含 nihongo.fnt 字库文件则将其载入内存中。*/
 	finfo = file_search("HZK16.fnt", (struct FILEINFO *) (ADR_DISKIMG + 0x002600), 224);
 	if (finfo != 0) {
 	//	i = finfo->size;
@@ -269,18 +299,20 @@ void HariMain(void)
 	} else {
 	//	nihongo = (unsigned char *) memman_alloc_4k(memman, 16 * 256 + 32 * 94 * 47);
 		for (i = 0; i < 16 * 256; i++) {
-			nihongo[i] = hankaku[i]; /* �t�H���g���Ȃ������̂Ŕ��p�������R�s�[ */
+			nihongo[i] = hankaku[i];
 		}
 		for (i = 16 * 256; i < 16 * 256 + 32 * 94 * 47; i++) {
-			nihongo[i] = 0xff; /* �t�H���g���Ȃ������̂őS�p������0xff�Ŗ��ߐs���� */
+			nihongo[i] = 0xff;
 		}
 	}
+	/* 将包含字库文件内容的内存段基址写入0x0fe8处,以供其他任务通过
+     * 0x0fe8地址能访问字库;并释放FAT所占内存(task_a 中不再使用FAT)。*/
 	*((int *) 0x0fe8) = (int) nihongo;
 	memman_free_4k(memman, (int) fat, 4 * 2880);
 
 //int b=2;
 	int qidong=0;//,flagq=0;
-	while(qidong==0){  //��������
+	while(qidong==0){
 	//flagq=1;
 		io_cli();
 		if (fifo32_status(&fifo) == 0) {
@@ -695,19 +727,18 @@ void HariMain(void)
     // sheet_updown(key_win,   1); 
     // sheet_updown(sht_mouse, 2);
 
-static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
-	int cursor_pin = 327+112; //�������봦�Ĺ��
+static char mima[6] = {'1','2','3','4','5','6'};
+	int cursor_pin = 327+112;
 	int flag_mima[10] = {0};
 	int cursor_cpin = 0;
 	int mima_count = 0;
-	flag_mima[6] = 1; //������밴�µĳ�����6λ����һλ�ͻ��Ϊ0.
+	flag_mima[6] = 1; 
 
 	int p;
 
 	timer_init(timer3, &fifo, 1);
 	timer_settime(timer3, 50);
 
-	/* �ж��Ƿ�˫���ı��� */
 	int songkai = 0, flagL = 0, time_count=0;
 
 	while(sht_boot->height >= 0) {
@@ -719,7 +750,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 			io_sti();	
 			cursor_pin = cin_pin(sht_boot, i, keytable, cursor_pin, cursor_cpin, timer3,&fifo,mima, &mima_count, flag_mima);				
 				if (i <= 1) 
-    			{ /* �����ɫ */
+    			{
 					if (i != 0) {
 						timer_init(timer3, &fifo, 0); 
 						cursor_cpin = 0;
@@ -732,7 +763,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 				sheet_refresh(sht_boot, cursor_pin-10, 403, cursor_pin-10 + 1, 419);
 				}
 				
-				if (if_right(flag_mima)) //������ȷ�ͽ�������
+				if (if_right(flag_mima))
 				{
 					sheet_updown(sht_boot,  -1);
 					//sheet_updown(sht_dong,2);
@@ -785,7 +816,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 					}
 					putfonts8_asc_sht(sht_boot, 327-10+112, 403, 7, 7,  " ", 16);
 					//boxfill8(buf_boot, sht_boot->bxsize, 21,sht_boot->vx0 + 400-71, sht_boot->vy0 + 404,sht_boot->vx0 + 400+65, sht_boot->vy0 + 418);
-					cursor_pin = 327+112;//���ָ�ԭ
+					cursor_pin = 327+112;
 					for (p=0; p<8; p++) flag_mima[p] = 0;
 					cursor_cpin = 0;
 					mima_count = 0;
@@ -804,22 +835,22 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
    sheet_free(sht_boot);
 
 
-    	/* ?e?X???C?h???u??????? */
 	sheet_slide(key_win,   512, 4);
 	sheet_updown(key_win,   1);
 
-	/* Console Window????? */
+	/* Console Window */
 	// log = key_win->task->cons;
 	key_win = open_console(shtctl, memtotal);
 	sheet_slide(key_win, 32, 4);
 	sheet_updown(key_win, shtctl->top);
-	keywin_on(key_win);	// ?J?[?\????console???????
+	keywin_on(key_win);
 
     int tcount1=0,tcount2=0,tcount3=0,boot=0;
 
 
-
-	/* I/O�ɑ΂��銄�荞�ݏ��� */
+	/* task_a 所所管理主任务的主循环程序,处理人机交互数据。
+     * 主要显式涉及键盘和鼠标输入数据队列 fifo 中的键盘和鼠标数据;
+     * 并将任务层1中无事可做的任务休眠以调度其他(任务层中)任务运行。*/
 	for (;;) {
 
         int count_pro=0;
@@ -828,15 +859,19 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
         count_pro+=taskctl->level[i].running;    //把所有在运行的进程统计出来
         // task = key_win->task;
         // cons_putstr0(task->cons, "\nBreak(key) :\n");
-        if (fifo32_status(&keycmd) > 0 && keycmd_wait < 0) {
-            /* �L�[�{�[�h�R���g���[���ɑ���f�[�^������΁A���� */
+        /* 若键盘命令缓冲循环队列中有数据且键盘可正常接收命令的标志置位则发送键盘命
+         * 令缓冲队列中的键盘命令给键盘键盘控制器以让键盘控制器正确标识状态灯状态。*/
+		if (fifo32_status(&keycmd) > 0 && keycmd_wait < 0) {
             keycmd_wait = fifo32_get(&keycmd);
             wait_KBC_sendready();
             io_out8(PORT_KEYDAT, keycmd_wait);
     	}
         io_cli();
+		/* 当前任务循环队列中无数据需处理时,再检查还有无其他事情可做,若鼠标位置
+         * 有更新则更新鼠标画面的显示,若窗口有移动则更新sht所指窗口画面信息位置,
+         * 否则表明 task_a 所管理的当前程序任务无事可做则休眠当前任务并切换到优
+         * 先级最高的任务中运行(即调度任务层2中的命令行窗口任务运行)。*/
         if (fifo32_status(&fifo) == 0) {
-            /* FIFO��������ۂɂȂ����̂ŁA�ۗ����Ă���`�悪����Ύ��s���� */
             if (new_mx >= 0) {
                 io_sti();
                 sheet_slide(sht_mouse, new_mx, new_my);
@@ -849,11 +884,14 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
                 task_sleep(task_a);
                 io_sti();
     		}
+
+		/* 若 task_a 所指任务循环队列中有需处理的数据则读取处理 */
         } else {
             i = fifo32_get(&fifo);
             io_sti();
-            if (key_win != 0 && key_win->flags == 0) {  /* �E�B���h�E������ꂽ */
-                if (shtctl->top == 1) { /* �����}�E�X�Ɣw�i�����Ȃ� */
+			/* 若 key_win 不为NULL且已没有再管理命令行窗口, */
+            if (key_win != 0 && key_win->flags == 0) { 
+                if (shtctl->top == 1) { 
                     key_win = 0;
             	} else {
                     key_win = shtctl->sheets[shtctl->top - 1];
@@ -887,8 +925,9 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 				} 
 			}
 
-            if (256 <= i && i <= 511) { /* �L�[�{�[�h�f�[�^ */
-                if (i < 0x80 + 256) { /* �L�[�R�[�h�𕶎��R�[�h�ɕϊ� */
+			/* 从 task_a 中读取到[256,511]范围数据为键盘数据,见 keyboard.c 中接口的调用 */
+            if (256 <= i && i <= 511) {
+                if (i < 0x80 + 256) {
                     if (key_shift == 0) {
                         s[0] = keytable0[i - 256];
                 	} else {
@@ -897,47 +936,56 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
             	} else {
                 	s[0] = 0;
         		}
-                if ('A' <= s[0] && s[0] <= 'Z') {   /* ���͕������A���t�@�x�b�g */
+				/* 键盘码经转换后为字母,若大写锁定键和上档键同时没有
+                 * 被按下或同时按下,则将字母编码转换为小写字母编码。*/
+                if ('A' <= s[0] && s[0] <= 'Z') {
                     if (((key_leds & 4) == 0 && key_shift == 0) ||
                             ((key_leds & 4) != 0 && key_shift != 0)) {
-                        s[0] += 0x20;   /* �啶�����������ɕϊ� */
+                        s[0] += 0x20; 
         			}
         		}
-                if (s[0] != 0 && key_win != 0) { /* �ʏ핶���A�o�b�N�X�y�[�X�AEnter */
+				/* 将键盘常规输入数据写入当前被选中命令行窗口的任务循环队列中 */
+                if (s[0] != 0 && key_win != 0) {
                     fifo32_put(&key_win->task->fifo, s[0] + 256);
         		}
+				/* 若键盘输入Tab则切换当前被选中窗口下一图层的命令行窗口高亮 */
                 if (i == 256 + 0x0f && key_win != 0) {	/* Tab */
                     keywin_off(key_win);
                     j = key_win->height - 1;
+					/* 若只有一个命令行窗口则j仍旧为该窗口图层高度 */
                     if (j == 0) {
                         j = shtctl->top - 1;
         			}
                     key_win = shtctl->sheets[j];
                     keywin_on(key_win);
         		}
-                if (i == 256 + 0x2a) {  /* ���V�t�g ON */
+				/* 标识是否按下辅助按键 */
+                if (i == 256 + 0x2a) {  /* 按下左移键 */
                     key_shift |= 1;
         		}
-                if (i == 256 + 0x36) {  /* �E�V�t�g ON */
+                if (i == 256 + 0x36) { /* 按下右移键 */
                     key_shift |= 2;
         		}
-                if (i == 256 + 0xaa) {  /* ���V�t�g OFF */
+                if (i == 256 + 0xaa) { /* 左移键放开 */
                     key_shift &= ~1;
         		}
-                if (i == 256 + 0xb6) {  /* �E�V�t�g OFF */
+                if (i == 256 + 0xb6) {  /* 右移键放开 */
                     key_shift &= ~2;
         		}
-                if (i == 256 + 0x3a) {  /* CapsLock */
+                if (i == 256 + 0x3a) {  /* 大写锁定,CapsLock */
+				/* 大写锁定状态翻转并将该状态发送给键盘指示LED灯的显示 */
                     key_leds ^= 4;
                     fifo32_put(&keycmd, KEYCMD_LED);
                     fifo32_put(&keycmd, key_leds);
         		}
-                if (i == 256 + 0x45) {  /* NumLock */
+                if (i == 256 + 0x45) { /* 数字锁定,NumLock */
+                    /* 数字锁定状态翻转并将该状态发送给键盘指示LED灯显示 */
                     key_leds ^= 2;
                     fifo32_put(&keycmd, KEYCMD_LED);
                     fifo32_put(&keycmd, key_leds);
         		}
                 if (i == 256 + 0x46) {  /* ScrollLock */
+				 /* 翻转ScrollLock按键状态并将该状态发送键盘控制器以指示LED灯显示 */
                     key_leds ^= 1;
                     fifo32_put(&keycmd, KEYCMD_LED);
                     fifo32_put(&keycmd, key_leds);
@@ -950,21 +998,20 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 					task = key_win->task;
 				if (key_win != 0) fifo32_put(&task->fifo, 20 + 256);
 				}
-
+				/* Shift+F1:终止被选中命令行窗口中的应用程序 */
                 if (i == 256 + 0x3b && key_shift != 0 && key_win != 0) {    /* Shift+F1 */ //强制结束
                     task = key_win->task;
                     if (task != 0 && task->tss.ss0 != 0) {
                         cons_putstr0(task->cons, "\nBreak(key) :\n");
-                        io_cli();   /* �����I���������Ƀ^�X�N���ς��ƍ��邩�� */
+                        io_cli(); 
                         task->tss.eax = (int) &(task->tss.esp0);
                         task->tss.eip = (int) asm_end_app;
                 		io_sti();
-                        task_run(task, -1, 0);  /* �I���������m���ɂ�点�邽�߂ɁA�Q�Ă�����N���� */
+                        task_run(task, -1, 0); 
                         count_pro-=1;
         			}
         		}
-                if (i == 256 + 0x3c && key_shift != 0) {    /* Shift+F2 */
-                    /* �V����������R���\�[������͑I����Ԃɂ���i���̂ق����e�؂���ˁH�j */
+                if (i == 256 + 0x3c && key_shift != 0) {    /* Shift+F2: 在屏幕顶层新建命令行窗口 */
                     if (key_win != 0) {
                         keywin_off(key_win); //关闭命令行光标
         			}
@@ -991,19 +1038,20 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
                     keywin_on(key_win);
                      count_pro+=1;
 				}
-                if (i == 256 + 0x57) {	/* F11 */
+                if (i == 256 + 0x57) {	/* F11: 将图层1中的窗口移到屏幕顶层窗口之下并刷新窗口显示 */
                     sheet_updown(shtctl->sheets[1], shtctl->top - 1);
         		}
-                if (i == 256 + 0xfa) {  /* �L�[�{�[�h���f�[�^�𖳎��Ɏ󂯎���� */
+                if (i == 256 + 0xfa) { /* 键盘控制器所返回此键码表示键盘控制器已正确收键盘命令 */
                     keycmd_wait = -1;
         		}
-                if (i == 256 + 0xfe) {  /* �L�[�{�[�h���f�[�^�𖳎��Ɏ󂯎��Ȃ����� */
+                if (i == 256 + 0xfe) { /* 若键盘控制器接收命令不正常则等待键盘输入缓冲器空后再向键盘发送个数据 */
                     wait_KBC_sendready();
                     io_out8(PORT_KEYDAT, keycmd_wait);
         		}
-            } else if (512 <= i && i <= 767) { /* �}�E�X�f�[�^ */
+				/* 从 task_a 中读取到[512,767]范围数据为鼠标数据,见 mouse.c 中接口的调用 */
+            } else if (512 <= i && i <= 767) {
+				/* 解析鼠标数据并刷新鼠标坐标 */
                 if (mouse_decode(&mdec, i - 512) != 0) {
-                    /* �}�E�X�J�[�\���̈ړ� */
                     mx += mdec.x;
                     my += mdec.y;
                     if (mx < 0) {
@@ -1034,44 +1082,51 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
                             	sheet_updown(sht_menu2[2],  -1); //隐藏 
 							}
 						}
-                        /* ���{�^���������Ă��� */
                     	if (mmx < 0) {
-                            /* �ʏ탂�[�h�̏ꍇ */
-                            /* ��̉��������珇�ԂɃ}�E�X���w���Ă��鉺������T�� */
+							/* 检查是否在某个窗口上按下左键, 若是则将该窗口选至窗
+                             * 口顶层并高亮窗口已被选中,top-1,top为鼠标所在图层。*/
                             for (j = shtctl->top - 1; j > 0; j--) {
                                 sht = shtctl->sheets[j];
                             	x = mx - sht->vx0;
                             	y = my - sht->vy0;
                                 if (0 <= x && x < sht->bxsize && 0 <= y && y < sht->bysize) {
-                                    if (sht->buf[y * sht->bxsize + x] != sht->col_inv) {
-                                        sheet_updown(sht, shtctl->top - 1);
-                                		if (sht != key_win) {
+                                    /* 鼠标点击的不是窗口透明区域 */
+									if (sht->buf[y * sht->bxsize + x] != sht->col_inv) {
+                                        /* 将被选中窗口移至窗口顶层显示 */
+										sheet_updown(sht, shtctl->top - 1);
+                                		/* 置灰原顶层窗口标题区域,高亮被选中窗口标题区域 */
+										if (sht != key_win) {
                                 			keywin_off(key_win);
                             				key_win = sht;
                                 			keywin_on(key_win);
             							}
+										/* 鼠标在窗口移动区按下左键 */
                                         if (3 <= x && x < sht->bxsize - 3 && 3 <= y && y < 21) {
-                                            mmx = mx;	/* �E�B���h�E�ړ����[�h�� */
+                                            mmx = mx;
                     						mmy = my;
                             				mmx2 = sht->vx0;
                                 			new_wy = sht->vy0;
             							}
+										/* 鼠标在窗口关闭按钮上按下左键 */
                                         if (sht->bxsize - 21 <= x && x < sht->bxsize - 5 && 5 <= y && y < 19) {
-                                        	/* �u�~�v�{�^���N���b�N */
-                                            if ((sht->flags & 0x10) != 0) {     /* �A�v����������E�B���h�E���H */
+                                            if ((sht->flags & 0x10) != 0) {  
                                 				task = sht->task;
                                                 cons_putstr0(task->cons, "\nBreak(mouse) :\n");
-                                                io_cli();   /* �����I���������Ƀ^�X�N���ς��ƍ��邩�� */
+                                                io_cli(); 
                                                 task->tss.eax = (int) &(task->tss.esp0);
                                                 task->tss.eip = (int) asm_end_app;
                         						io_sti();
                                     			task_run(task, -1, 0);
-                                    		} else {	/* �R���\�[�� */
+                                    		/* 若点击了内核命令行窗口关闭按钮,则暂将控制窗口隐藏不显示, 其
+                                             * 内存资源由命令行窗口任务发送[768, 2279]命令给主任务时再释放。*/
+											} else {
                                 				task = sht->task;
-                                                sheet_updown(sht, -1); /* �Ƃ肠������\���ɂ��Ă��� */
+                                                sheet_updown(sht, -1); 
+												/* 高亮下一个命令行窗口标题区域 */
                                 				keywin_off(key_win);
                                                 key_win = shtctl->sheets[shtctl->top - 1];
                                 				keywin_on(key_win);
+												/* 往控制窗口发送退出窗口命令 */
                         						io_cli();
                                         		fifo32_put(&task->fifo, 4);
                         						io_sti();
@@ -1203,28 +1258,34 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
             						}
             					}
         					}
-                		} else {
-                            /* �E�B���h�E�ړ����[�h�̏ꍇ */
-                            x = mx - mmx;   /* �}�E�X�̈ړ��ʂ��v�Z */
+                		
+						} else { /* 处理在窗口移动区域按下左键移动窗口的情况 */
+                            /* 计算移动量,并更新窗口坐标 */
+							x = mx - mmx;  
                     		y = my - mmy;
                             new_wx = (mmx2 + x + 2) & ~3;
                             new_wy = new_wy + y;
-                            mmy = my;   /* �ړ���̍��W�ɍX�V */
+                            mmy = my;  
         				}
-                	} else {
-                        /* ���{�^���������Ă��Ȃ� */
-                        mmx = -1;   /* �ʏ탂�[�h�� */
+                	} else { /* 处理没有按下左键的情况 */
+                        mmx = -1;  /* 记录鼠标没有按下左键 */
+						/* 将窗口移动到鼠标移动位置处,并标识窗口已移动过一次 */
                         if (new_wx != 0x7fffffff) {
-                            sheet_slide(sht, new_wx, new_wy);	/* ��x�m�肳���� */
+                            sheet_slide(sht, new_wx, new_wy);	
                             new_wx = 0x7fffffff;
         				}
         			}
         		}
-            } else if (768 <= i && i <= 1023) { /* �R���\�[���I������ */
+            /* task_a 任务循环队列中i=[768, 1023]范围数据段由命令行窗口发送而来, 见
+             * cmd_exit()系列函数,他们的含义为释放第(i-768)窗口及其所关联任务的资源。*/
+			} else if (768 <= i && i <= 1023) {
                 close_console(shtctl->sheets0 + (i - 768));
+			/* task_a 任务循环队列中i=[1024, 2023]范围数据段由命令行窗口发送
+             * 而来,见cmd_exit()系列函数,他们的含义为关闭第(i-1024)个任务。*/
             } else if (1024 <= i && i <= 2023) {
                 close_constask(taskctl->tasks0 + (i - 1024));
-            } else if (2024 <= i && i <= 2279) {    /* �R���\�[����������� */
+			/* 释放第(i-2024)的窗口画面信息缓冲区和管理该窗口结构体内存资源 */
+            } else if (2024 <= i && i <= 2279) {
                 sht2 = shtctl->sheets0 + (i - 2024);
                 memman_free_4k(memman, (int) sht2->buf, CONSOLE_W * CONSOLE_H);
                 sheet_free(sht2);
@@ -1232,7 +1293,6 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
   
 			sprintf(s, "DATE: %d-%d-%d", get_year(), get_mon_hex(), get_day_of_month());
             putfonts8_asc_sht(sht_back, binfo->scrnx - 180, binfo->scrny -20, COL8_000000, COL8_C6C6C6, s, 15);
-            //��ʾʱ��
             sprintf(s, "%d:%d", get_hour_hex(), get_min_hex());
             putfonts8_asc_sht(sht_back, binfo->scrnx - 45, binfo->scrny -20, COL8_000000, COL8_C6C6C6, s, 5);
             sheet_refresh(sht_back, binfo->scrnx - 130, binfo->scrny -20,binfo->scrnx - 45 + 5*8, binfo->scrny -50+16);
@@ -1240,24 +1300,33 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 	}
 }
 
+/* keywin_off,
+ * 置灰key_win所指命令行窗口标题以表其不在屏幕顶层即
+ * 当前没有被选中,并向该命令行窗口发送隐藏光标的命令。*/
 void keywin_off(struct SHEET *key_win)
 {
 	change_wtitle8(key_win, 0);
 	if ((key_win->flags & 0x20) != 0) {
-		fifo32_put(&key_win->task->fifo, 3); /* �R���\�[���̃J�[�\��OFF */
+		fifo32_put(&key_win->task->fifo, 3);
 	}
 	return;
 }
 
+/* keywin_on,
+ * 高亮key_win所指命令行窗口标题以标识其在屏幕顶层即
+ * 被选中的状态,并向该命令行窗口发送显示光标的命令。*/
 void keywin_on(struct SHEET *key_win)
 {
 	change_wtitle8(key_win, 1);
 	if ((key_win->flags & 0x20) != 0) {
-		fifo32_put(&key_win->task->fifo, 2); /* �R���\�[���̃J�[�\��ON */
+		fifo32_put(&key_win->task->fifo, 2);
 	}
 	return;
 }
 
+/* open_constask，
+ * 为sht对应内核态命令行窗口关联任务,关联循环队列。
+ * 该函数将返回管理命令行窗口任务的结构体基址,命令行窗口任务运行在内核态。*/
 struct TASK *open_constask(struct SHEET *sht, unsigned int memtotal)
 {
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
@@ -1281,17 +1350,22 @@ struct TASK *open_constask(struct SHEET *sht, unsigned int memtotal)
 	return task;
 }
 
+/* open_console,
+ * 新建内核态命令行窗口。包括
+ * 缓存命令行窗口画面信息,关联命令行窗口任务,关联窗口任务循环队列。
+ * 由 open_console() 创建的命令行窗口运行在内核态。
+ * 用户态的命令行窗口需由应用程序通过系统调用创建。 */
 struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal)
 {
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 	struct SHEET *sht = sheet_alloc(shtctl);
 	unsigned char *buf = (unsigned char *) memman_alloc_4k(memman, 256 * 165);
-	sheet_setbuf(sht, buf, 256, 165, -1); /* �����F�Ȃ� */
+	sheet_setbuf(sht, buf, 256, 165, -1);
 	make_window8(buf, 256, 165, "console", 0);
 	make_textbox8(sht, 8, 28, 240, 128, COL8_000000);
 	sht->task = open_constask(sht, memtotal);
 	sht->task->TaskName = "console";
-	sht->flags |= 0x20;	/* �J�[�\������ */
+	sht->flags |= 0x20;
 	return sht;
 }
 
@@ -1309,6 +1383,8 @@ struct SHEET *open_log(struct SHTCTL *shtctl, unsigned int memtotal)
 	return sht;
 }
 
+/* close_constask,
+ * 释放task所指结构体所管理的内存资源。*/
 void close_constask(struct TASK *task)
 {
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
@@ -1317,10 +1393,12 @@ void close_constask(struct TASK *task)
 	taskctl->runningNum--;
 	memman_free_4k(memman, task->cons_stack, 64 * 1024);
 	memman_free_4k(memman, (int) task->fifo.buf, 128 * 4);
-	task->flags = 0; /* task_free(task); �̑��� */
+	task->flags = 0; /* task_free(task);  */
 	return;
 }
 
+/* close_console,
+ * 释放sht所管理内核态窗口画面所占内存资源,释放sht所管理窗口任务内存资源。*/
 void close_console(struct SHEET *sht)
 {
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
@@ -1383,7 +1461,6 @@ void bootpage(unsigned char *buf, int xsize, int ysize){
 			}*/
 		}
 	}
-	//���������
     boxfill8(buf, xsize, 8, x0-85, 400,x0+69+30-10 , 422);
     boxfill8(buf, xsize, 7, x0-83, 402,x0+67-10 , 420);
     //boxfill8(buf, xsize, 7, x0-71, 404,x0+65, 418);
@@ -1419,21 +1496,19 @@ void bootpage(unsigned char *buf, int xsize, int ysize){
 }
 
 
-//�������룬ÿ�η��ع�������
 int cin_pin(struct SHEET *sht, int i, char keytable[],int cursor_pin, int cursor_cpin, 
-    struct TIMER *timer3, struct FIFO32 *fifo, char mima[], int *mima_count, int *flag_mima) //iΪ�жϷ���������
+    struct TIMER *timer3, struct FIFO32 *fifo, char mima[], int *mima_count, int *flag_mima)
 {
     char s[2];
     if (i >= 256 && i < 0x54 + 256) 
     {
 		if (keytable[i - 256] != 0 && cursor_pin < 455+112) 
-        { /*�������� */
+        {
 				//s[0] = keytable[i - 256];
                 s[0] = keytable[55];
 				s[1] = 0;
 				putfonts8_asc_sht(sht, cursor_pin-10, 403,COL8_000000, 7,  s, 1);
 				cursor_pin += 8;
-                //�ж������Ƿ���ȷ
                 if (*mima_count >= 6) 
                         flag_mima[6] = 0;
                 else if (keytable[i - 256] == mima[*mima_count])
@@ -1446,7 +1521,7 @@ int cin_pin(struct SHEET *sht, int i, char keytable[],int cursor_pin, int cursor
 		}
 	}
 	if (i == 256 + 0x0e && cursor_pin > 327+112) 
-    { /* ɾ���� */
+    {
 		putfonts8_asc_sht(sht, cursor_pin-10, 403, COL8_000000, 7,  " ", 1);
 		cursor_pin -= 8;
 
@@ -1461,13 +1536,13 @@ int cin_pin(struct SHEET *sht, int i, char keytable[],int cursor_pin, int cursor
     boxfill8(sht->buf, sht->bxsize, 7, cursor_pin+1-10, 403, cursor_pin + 7-10, 419);
 	sheet_refresh(sht, cursor_pin-10, 403, cursor_pin-10 + 7, 419);
 
-    if (i == 256 + 0x1c)//enter��
+    if (i == 256 + 0x1c)
     {
         flag_mima[7] = 1;
     }
     return cursor_pin;
 }
-int if_right(int *flag_mima) //�ж������Ƿ���ȷ
+int if_right(int *flag_mima)
 {
     int i;
     for (i=0; i<8; ++i)

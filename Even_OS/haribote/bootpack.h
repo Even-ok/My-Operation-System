@@ -1,10 +1,10 @@
 /* asmhead.nas */
 struct BOOTINFO { /* 0x0ff0-0x0fff */
-	char cyls; /* �u�[�g�Z�N�^�͂ǂ��܂Ńf�B�X�N��ǂ񂾂̂� */
-	char leds; /* �u�[�g���̃L�[�{�[�h��LED�̏�� */
-	char vmode; /* �r�f�I���[�h  ���r�b�g�J���[�� */
+	char cyls;
+	char leds;
+	char vmode;
 	char reserve;
-	short scrnx, scrny; /* ��ʉ𑜓x */
+	short scrnx, scrny;
 	char *vram;
 };
 #define ADR_BOOTINFO	0x00000ff0
@@ -60,7 +60,7 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 void init_mouse_cursor8(char *mouse, char bc);
 void putblock8_8(char *vram, int vxsize, int pxsize,
 	int pysize, int px0, int py0, char *buf, int bxsize);
-int read_picture(int *fat, short *vram, int x, int y); /* 锟斤拷锟斤！ */
+int read_picture(int *fat, short *vram, int x, int y);
 #define COL8_000000		0 // 黑色
 #define COL8_FF0000		1 // 红色
 #define COL8_00FF00		2 // 荧光绿
@@ -138,12 +138,12 @@ void enable_mouse(struct FIFO32 *fifo, int data0, struct MOUSE_DEC *mdec);
 int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat);
 
 /* memory.c */
-#define MEMMAN_FREES		4090	/* ����Ŗ�32KB */
-#define MEMMAN_ADDR			0x003c0000	/* Memory Manager�̃������Ԓn*/
-struct FREEINFO {	/* ������� */
+#define MEMMAN_FREES		4090
+#define MEMMAN_ADDR			0x003c0000
+struct FREEINFO {
 	unsigned int addr, size;
 };
-struct MEMMAN {		/* �������Ǘ� */
+struct MEMMAN {
 	int frees, maxfrees, lostsize, losts;
 	struct FREEINFO free[MEMMAN_FREES];
 };
@@ -265,17 +265,17 @@ void make_menu(struct SHEET *sht, int n);//制作菜单图层
 /***** file.c *****/
 #define ROOT_DIR_ADDR	0x00400000
 #define ROOT_DATA_ADDR	0x00500000
-#define LAST_DATA_ADDR	0x00600000	// �f�[�^�Ǘ��̈�̏I���+1
-#define MAX_FINFO_NUM 50	// �t�@�C�����̍ő�o�^��
-#define MAX_NAME_LENGTH 8	// �f�B���N�g����/�t�@�C�����̍ő啶����
+#define LAST_DATA_ADDR	0x00600000
+#define MAX_FINFO_NUM 50
+#define MAX_NAME_LENGTH 8
 
-/* finfo->fdata->head.char�p�̃r�b�g�z��
- * 0x08, 0x10, 0x20, 0x40, 0x80�͖��g�p  */
-#define STAT_ALL	0xFF	/* �r������p */
+/* finfo->fdata->head.char
+ * 0x08, 0x10, 0x20, 0x40, 0x80  */
+#define STAT_ALL	0xFF
 #define STAT_VALID	0x01	/* valid bit */
 #define STAT_CONT	0x02	/* continuous bit */
-#define STAT_BUF	0x04	/* buffer bit:�o�b�t�@�̈�ɂ���t�@�C���f�[�^�ł��邱�Ƃ����� */
-#define STAT_OPENED	0x08	/* file open����Ă��邩�ǂ���������(�f�t�H���g��0) */
+#define STAT_BUF	0x04	/* buffer bit */
+#define STAT_OPENED	0x08	/* file open */
 
 /*@finfo->type
  * 0x10: 路径
@@ -287,11 +287,10 @@ void make_menu(struct SHEET *sht, int n);//制作菜单图层
 #define FTYPE_SYS	0x40
 #define FTYPE_OTHER	0x80
 
-/* �u���b�N�Ɋւ����` */
-#define BLOCK_SIZE 1024	// �t�@�C���f�[�^�̃T�C�Y(default��4,096)
-#define BODY_SIZE (BLOCK_SIZE - sizeof(struct HEAD))	//1�u���b�N������̎��f�[�^�̃T�C�Y
-#define BODY_SIZE_OFFSET 128	// �]���Ɋm�ۂ���T�C�Y(�����Ă��悢�H)
-#define MAX_BLOCK_NUM 50 // �ő�u���b�N��(����ȏ�̃u���b�N�̊m�ۂ͋����Ȃ�)
+#define BLOCK_SIZE 1024
+#define BODY_SIZE (BLOCK_SIZE - sizeof(struct HEAD))
+#define BODY_SIZE_OFFSET 128
+#define MAX_BLOCK_NUM 50
 struct FILEINFO {
 	unsigned char name[MAX_NAME_LENGTH], ext[3], type;
 	char reserve[10];
@@ -314,27 +313,26 @@ struct MYDIRINFO {
 	struct MYFILEINFO finfo[MAX_FINFO_NUM];
 	unsigned char name[MAX_NAME_LENGTH];
 	struct MYDIRINFO *parent_dir;
-	struct MYDIRINFO *this_dir; // ����͕ʂɂȂ��Ă���薳���͂�
+	struct MYDIRINFO *this_dir;
 };
 
 /* my original file data */
 struct HEAD{
 	unsigned char stat;
 	char name[12];
-	struct MYFILEDATA *this_fdata;	// �f�[�^�̈�̃A�h���X
-	struct MYDIRINFO *this_dir;		// �ܗL���Ă���f�B���N�g���̃A�h���X
-	struct MYFILEDATA *next_fdata;	// ���̃t�@�C���f�[�^(�f�[�^����𒴂��Ă����ꍇ�g�p����)
-	// next_data�̃f�t�H���g�̒l��0x0000 0000(�G���hflag bit�������Ă��鎞�Ɠ���)
+	struct MYFILEDATA *this_fdata;
+	struct MYDIRINFO *this_dir;	
+	struct MYFILEDATA *next_fdata;
 	/* stat is a bit arguments shown below
 	 * valid bit: 0x01
-	 * continuous bit: 0x02�@(����������t�@�C���B�����̃t�@�C���f�[�^����\������Ă���)
-	 * end file: 0x04 (����Ȃ��H)
+	 * continuous bit: 0x02
+	 * end file: 0x04
 	 * opened file 0x08
 	 */
 };
 struct MYFILEDATA{
 	struct HEAD head;
-	char body[BODY_SIZE];	// ���v�T�C�Y��1024byte�ɂȂ�悤�ɂ���
+	char body[BODY_SIZE];
 };
 
 void file_readfat(int *fat, unsigned char *img);
@@ -342,15 +340,10 @@ void file_loadfile(int clustno, int size, char *buf, int *fat, char *img);
 struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max);
 char *file_loadfile2(int clustno, int *psize, int *fat);
 struct MYFILEINFO *myfinfo_search(char *name, struct MYDIRINFO *dinfo, int max);
-// �t�@�C�����Ǘ��̈悩��A�g���Ă��Ȃ��f�B���N�g����Ԃ�T���A�����������̂��A���̏ꏊ��Ԃ�
 struct MYDIRINFO *get_newdinfo();
-// �f�[�^�Ǘ��̈�̎g���Ă��Ȃ���Ԃ�T���A���̏ꏊ��������
 struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata);
-// �t�@�C�����f�[�^�Ǘ��̈悩��R�s�[���āA�R�s�[��̔Ԓn��������
 struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo);
-// �f�[�^�Ǘ��̈�̊Y���t�@�C�����I�[�v������Ă�����A��������������Astatus bit��opened������������B
 int myfclose(struct MYFILEDATA *opened_fdata);
-// �f�[�^�Ǘ��̈�̊Y���t�@�C�����Z�[�u�\�Ȃ�΁Afdata->body�̓��e��ۑ�����
 int myfsave(struct MYFILEDATA *opened_fdata);
 int myfwrite(struct MYFILEDATA *fdata, char *str);
 int myfread(char *str, struct MYFILEDATA *fdata);
@@ -362,7 +355,7 @@ unsigned int add_status_myfdata(struct MYFILEDATA *fdata, unsigned char stat);
 
 
 /* console.c */
-#define MAX_CMDLINE	50	// �R�}���h���C���̓��͕�������
+#define MAX_CMDLINE	50
 
 struct CONSOLE {
 	struct SHEET *sht;
@@ -473,12 +466,11 @@ struct process{
 	struct TASK *task;
 	struct process *next;
 };
-struct S{//�ź���
-	struct process *list_last;//ָ����ǰ�б�����һ���ڵ㣨����null�����б���Ϊnull��
-	struct process *list_first;//ָ���б���һ���ڵ㣨�б���ʱΪnull��
+struct S{
+	struct process *list_last;
+	struct process *list_first;
 	int value;
 };
-//��ʼ���ź���
 void init_S();
 //svar.c
 //用户态的竞争条件
@@ -512,7 +504,7 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 void init_mouse_cursor8(char *mouse, char bc);
 void putblock8_8(char *vram, int vxsize, int pxsize,
 	int pysize, int px0, int py0, char *buf, int bxsize);
-int read_picture(int *fat, short *vram, int x, int y); /* 锟斤拷锟斤！ */
+int read_picture(int *fat, short *vram, int x, int y);
 #define COL8_000000		0 // 黑色
 #define COL8_FF0000		1 // 红色
 #define COL8_00FF00		2 // 荧光绿

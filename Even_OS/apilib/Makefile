@@ -22,22 +22,22 @@ GOLIB    = $(TOOLPATH)golib00.exe
 COPY     = copy
 DEL      = del
 
-# デフォルト動作
+
 
 default :
 	$(MAKE) apilib.lib
 
-# ファイル生成規則
+
 
 apilib.lib : Makefile $(OBJS_API)
 	$(GOLIB) $(OBJS_API) out:apilib.lib
 
-# 一般規則
+
 
 %.obj : %.nas Makefile
 	$(NASK) $*.nas $*.obj $*.lst
 
-# コマンド
+
 
 clean :
 	-$(DEL) *.lst

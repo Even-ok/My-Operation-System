@@ -1,10 +1,10 @@
      1 00000000                                 ; naskfunc
      2 00000000                                 ; TAB=4
      3 00000000                                 
-     4 00000000                                 [FORMAT "WCOFF"]				; �I�u�W�F�N�g�t�@�C������郂�[�h	
-     5 00000000                                 [INSTRSET "i486p"]				; 486�̖��߂܂Ŏg�������Ƃ����L�q
-     6 00000000                                 [BITS 32]						; 32�r�b�g���[�h�p�̋@�B�����点��
-     7 00000000                                 [FILE "naskfunc.nas"]			; �\�[�X�t�@�C�������
+     4 00000000                                 [FORMAT "WCOFF"]				; 	
+     5 00000000                                 [INSTRSET "i486p"]				; 
+     6 00000000                                 [BITS 32]						; 
+     7 00000000                                 [FILE "naskfunc.nas"]			; 
      8 00000000                                 
      9 00000000                                 		GLOBAL	_io_hlt,_write_mem8, _io_cli, _io_sti, _io_stihlt
     10 00000000                                 		GLOBAL	_io_in8,  _io_in16,  _io_in32
@@ -32,8 +32,8 @@
     32 00000001 C3                              		RET
     33 00000002                                 
     34 00000002                                 _write_mem8:	; void write_mem8(int addr, int data);
-    35 00000002 8B 4C 24 04                     		MOV		ECX,[ESP+4]		; [ESP+4]��ŵ�ַ ����ecx
-    36 00000006 8A 44 24 08                     		MOV		AL,[ESP+8]		; [ESP+8]������� ����al
+    35 00000002 8B 4C 24 04                     		MOV		ECX,[ESP+4]		; [ESP+4]
+    36 00000006 8A 44 24 08                     		MOV		AL,[ESP+8]		; [ESP+8]
     37 0000000A 88 01                           		MOV		[ECX],AL
     38 0000000C C3                              		RET
     39 0000000D                                 
@@ -86,14 +86,14 @@
     86 0000004F C3                              		RET
     87 00000050                                 
     88 00000050                                 _io_load_eflags:	; int io_load_eflags(void);
-    89 00000050 9C                              		PUSHFD		; PUSH EFLAGS �Ƃ����Ӗ�
+    89 00000050 9C                              		PUSHFD		; PUSH EFLAGS 
     90 00000051 58                              		POP		EAX
     91 00000052 C3                              		RET
     92 00000053                                 
     93 00000053                                 _io_store_eflags:	; void io_store_eflags(int eflags);
     94 00000053 8B 44 24 04                     		MOV		EAX,[ESP+4]
     95 00000057 50                              		PUSH	EAX
-    96 00000058 9D                              		POPFD		; POP EFLAGS �Ƃ����Ӗ�
+    96 00000058 9D                              		POPFD		; POP EFLAGS 
     97 00000059 C3                              		RET
     98 0000005A                                 
     99 0000005A                                 _load_gdtr:		; void load_gdtr(int limit, int addr);
@@ -187,7 +187,7 @@
    187 000000EE 61                              		POPAD
    188 000000EF 1F                              		POP		DS
    189 000000F0 07                              		POP		ES
-   190 000000F1 83 C4 04                        		ADD		ESP,4			; INT 0x0c �ł��A���ꂪ�K�v
+   190 000000F1 83 C4 04                        		ADD		ESP,4			; INT 0x0c 
    191 000000F4 CF                              		IRETD
    192 000000F5                                 
    193 000000F5                                 _asm_inthandler0d:
@@ -201,17 +201,17 @@
    201 000000FF 8E D8                           		MOV		DS,AX
    202 00000101 8E C0                           		MOV		ES,AX
    203 00000103 E8 [00000000]                   		CALL	_inthandler0d
-   204 00000108 83 F8 00                        		CMP		EAX,0			; ���������Ⴄ
-   205 0000010B 75 75                           		JNE		_asm_end_app	; ���������Ⴄ
+   204 00000108 83 F8 00                        		CMP		EAX,0			; 
+   205 0000010B 75 75                           		JNE		_asm_end_app	; 
    206 0000010D 58                              		POP		EAX
    207 0000010E 61                              		POPAD
    208 0000010F 1F                              		POP		DS
    209 00000110 07                              		POP		ES
-   210 00000111 83 C4 04                        		ADD		ESP,4			; INT 0x0d �ł́A���ꂪ�K�v
+   210 00000111 83 C4 04                        		ADD		ESP,4			; INT 0x0d 
    211 00000114 CF                              		IRETD
    212 00000115                                 
    213 00000115                                 _memtest_sub:	; unsigned int memtest_sub(unsigned int start, unsigned int end)
-   214 00000115 57                              		PUSH	EDI						; �iEBX, ESI, EDI ���g�������̂Łj
+   214 00000115 57                              		PUSH	EDI						; EBX, ESI, EDI 
    215 00000116 56                              		PUSH	ESI
    216 00000117 53                              		PUSH	EBX
    217 00000118 BE AA55AA55                     		MOV		ESI,0xaa55aa55			; pat0 = 0xaa55aa55;
@@ -255,13 +255,13 @@
    255 00000161 FB                              		STI
    256 00000162 1E                              		PUSH	DS
    257 00000163 06                              		PUSH	ES
-   258 00000164 60                              		PUSHAD		; �ۑ��̂��߂�PUSH
-   259 00000165 60                              		PUSHAD		; hrb_api�ɂ킽�����߂�PUSH
+   258 00000164 60                              		PUSHAD		; PUSH
+   259 00000165 60                              		PUSHAD		; hrb_api PUSH
    260 00000166 66 8C D0                        		MOV		AX,SS
-   261 00000169 8E D8                           		MOV		DS,AX		; OS�p�̃Z�O�����g��DS��ES�ɂ������
+   261 00000169 8E D8                           		MOV		DS,AX		; 
    262 0000016B 8E C0                           		MOV		ES,AX
    263 0000016D E8 [00000000]                   		CALL	_hrb_api
-   264 00000172 83 F8 00                        		CMP		EAX,0		; EAX��0�łȂ���΃A�v���I������
+   264 00000172 83 F8 00                        		CMP		EAX,0		; 
    265 00000175 75 0B                           		JNE		_asm_end_app
    266 00000177 83 C4 20                        		ADD		ESP,32
    267 0000017A 61                              		POPAD
@@ -273,37 +273,37 @@
    273 0000017E                                 ;	EAXΪtss.esp0�ĵ�ַ
    274 0000017E 8B 20                           		MOV		ESP,[EAX]
    275 00000180 61                              		POPAD
-   276 00000181 C3                              		RET					; ����cmd_app		
+   276 00000181 C3                              		RET					; cmd_app		
    277 00000182                                 
    278 00000182                                 _asm_end_app:
    279 00000182                                 ;	EAX��tss.esp0�̔Ԓn
    280 00000182 8B 20                           		MOV		ESP,[EAX]
    281 00000184 C7 40 04 00000000               		MOV		DWORD [EAX+4],0
    282 0000018B 61                              		POPAD
-   283 0000018C C3                              		RET					; cmd_app�֋A��
+   283 0000018C C3                              		RET					; cmd_app
    284 0000018D                                 
    285 0000018D                                 _start_app:		; void start_app(int eip, int cs, int esp, int ds, int *tss_esp0);
-   286 0000018D 60                              		PUSHAD		; 32�r�b�g���W�X�^��S���ۑ����Ă���
-   287 0000018E 8B 44 24 24                     		MOV		EAX,[ESP+36]	; �A�v���p��EIP
-   288 00000192 8B 4C 24 28                     		MOV		ECX,[ESP+40]	; �A�v���p��CS
-   289 00000196 8B 54 24 2C                     		MOV		EDX,[ESP+44]	; �A�v���p��ESP
-   290 0000019A 8B 5C 24 30                     		MOV		EBX,[ESP+48]	; �A�v���p��DS/SS
-   291 0000019E 8B 6C 24 34                     		MOV		EBP,[ESP+52]	; tss.esp0�̔Ԓn
-   292 000001A2 89 65 00                        		MOV		[EBP  ],ESP		; OS�p��ESP��ۑ�
-   293 000001A5 8C 55 04                        		MOV		[EBP+4],SS		; OS�p��SS��ۑ�
+   286 0000018D 60                              		PUSHAD		; 
+   287 0000018E 8B 44 24 24                     		MOV		EAX,[ESP+36]	; EIP
+   288 00000192 8B 4C 24 28                     		MOV		ECX,[ESP+40]	; CS
+   289 00000196 8B 54 24 2C                     		MOV		EDX,[ESP+44]	; ESP
+   290 0000019A 8B 5C 24 30                     		MOV		EBX,[ESP+48]	; DS/SS
+   291 0000019E 8B 6C 24 34                     		MOV		EBP,[ESP+52]	; tss.esp0
+   292 000001A2 89 65 00                        		MOV		[EBP  ],ESP		; OS
+   293 000001A5 8C 55 04                        		MOV		[EBP+4],SS		; OS
    294 000001A8 8E C3                           		MOV		ES,BX
    295 000001AA 8E DB                           		MOV		DS,BX
    296 000001AC 8E E3                           		MOV		FS,BX
    297 000001AE 8E EB                           		MOV		GS,BX
-   298 000001B0                                 ;	�ȉ���RETF�ŃA�v���ɍs�����邽�߂̃X�^�b�N����
-   299 000001B0 83 C9 03                        		OR		ECX,3			; �A�v���p�̃Z�O�����g�ԍ���3��OR����
-   300 000001B3 83 CB 03                        		OR		EBX,3			; �A�v���p�̃Z�O�����g�ԍ���3��OR����
-   301 000001B6 53                              		PUSH	EBX				; �A�v����SS
-   302 000001B7 52                              		PUSH	EDX				; �A�v����ESP
-   303 000001B8 51                              		PUSH	ECX				; �A�v����CS
-   304 000001B9 50                              		PUSH	EAX				; �A�v����EIP
+   298 000001B0                                 ;
+   299 000001B0 83 C9 03                        		OR		ECX,3			; 
+   300 000001B3 83 CB 03                        		OR		EBX,3			; 
+   301 000001B6 53                              		PUSH	EBX				; SS
+   302 000001B7 52                              		PUSH	EDX				; ESP
+   303 000001B8 51                              		PUSH	ECX				; CS
+   304 000001B9 50                              		PUSH	EAX				; EIP
    305 000001BA CB                              		RETF
-   306 000001BB                                 ;	�A�v�����I�����Ă������ɂ͗��Ȃ�
+   306 000001BB                                 ;	
    307 000001BB                                 
    308 000001BB                                 [BITS	32]
    309 000001BB                                 backtoreal:
@@ -311,7 +311,7 @@
    311 000001BC 60                              	PUSHAD
    312 000001BD E9 0000006E                     	JMP		start2
    313 000001C2 00 00                           	db 0x00, 0x00
-   314 000001C4                                 protect16:;26�ֽ�
+   314 000001C4                                 protect16:;26
    315 000001C4                                 ;		mov     ax, 8
    316 000001C4                                 ;        mov     ds, ax
    317 000001C4                                 ;        mov     es, ax
@@ -330,10 +330,10 @@
    330 000001DE 00 00                           ALIGNB 16
    331  = 0000001C                              protect16_len EQU	$ - protect16
    332 000001E0                                 
-   333 000001E0                                 ;����Ĵ���Ϊ16λ����ģʽ����ʵģʽ���ܴ���
-   334 000001E0                                 ;����ģʽ���봫�͵��ڴ�0x0630����Ϊ������0x20 B
+   333 000001E0                                 ;
+   334 000001E0                                 ;
    335 000001E0                                 
-   336 000001E0                                 realmode:;27�ֽ�
+   336 000001E0                                 realmode:;27
    337 000001E0                                 ;        mov     ax, cs
    338 000001E0                                 ;		 mov     ds, ax
    339 000001E0                                 ;		 mov     es, ax
@@ -349,8 +349,8 @@
    349 000001E0                                 ;		nop
    350 000001E0                                 ;		sti
    351 000001E0                                 ;		nop
-   352 000001E0                                 ;		һ�´������������ʾģʽΪͼ��ģʽ���룬��goback֮ǰ���� BIOS�жϵ���ʹ�ܡ�
-   353 000001E0                                 ;		С�������������ֵ�ʹ��BIOS�жϳ����
+   352 000001E0                                 ;		
+   353 000001E0                                 ;		
    354 000001E0                                 ;		mov     ax, 0003h
    355 000001E0                                 ;		int     10h
    356 000001E0 8C C8                           db 0x8c, 0xc8
@@ -369,11 +369,11 @@
    369 000001FC 0670 0000                       dw 0x0670, 0x0000
    370 00000200                                 ALIGNB 16
    371  = 00000020                              realmode_len	EQU		$ - realmode
-   372 00000200                                 ; ���ϴ����Ϊʵģʽ�������ַ���ʾģʽ
-   373 00000200                                 ; ʵģʽ���ܴ��봫�͵�0x0650��,����32�ֽ�
+   372 00000200                                 ; 
+   373 00000200                                 ; 
    374 00000200                                 ;db 0xf4
    375 00000200                                 
-   376 00000200                                 GDTIDT:;38�ֽ�
+   376 00000200                                 GDTIDT:;38
    377 00000200 0000 0000 0000 0000             dw 0x0000, 0x0000, 0x0000, 0x0000
    378 00000208 FFFF 0000 9200 0000             dw 0xffff, 0x0000, 0x9200, 0x0000
    379 00000210 FFFF 0000 9800 0000             dw 0xffff, 0x0000, 0x9800, 0x0000
@@ -384,8 +384,8 @@
    384 00000222 0000 0000                       dw 0x0000, 0x0000
    385 00000226 00 00 00 00 00 00 00 00 00 00   ALIGNB 16
    386  = 00000030                              GDTIDT_lenth EQU	$ - GDTIDT
-   387 00000230                                 ;����ΪGDT��ITD��������
-   388 00000230                                 ;�������ݴ��͵�0x0600��������0x30 B�Ŀռ䡣
+   387 00000230                                 ;
+   388 00000230                                 ;
    389 00000230                                 start2:
    390 00000230 BB [00000200]                   	MOV		EBX, GDTIDT
    391 00000235 BA 00000600                     	MOV		EDX, 0x600
@@ -435,8 +435,8 @@
    435 00000285 CD 15                           db 0xcd, 0x15
    436 00000287 00 00 00 00 00 00 00 00 00      ALIGNB 16
    437  = 00000014                              shutdown_con_len	EQU		$ - shutdown_con
-   438 00000290                                 ; ���ϴ���ιػ�����
-   439 00000290                                 ; ʵģʽ���ܴ��봫�͵�0x0670����
+   438 00000290                                 ;
+   439 00000290                                 ; 
    440 00000290                                 
    441 00000290                                 shutdown_start:
    442 00000290 E8 FFFFFF26                     	CALL 	backtoreal
@@ -482,8 +482,8 @@
    482 000002D1 EA 00 00 FF FF                  db 0xea, 0x00, 0x00, 0xff, 0xff
    483 000002D6 00 00 00 00 00 00 00 00 00 00   ALIGNB 16
    484  = 0000001B                              reboot_con_len	EQU		$ - reboot_con
-   485 000002E0                                 ;���ϴ���Ϊ��������
-   486 000002E0                                 ;ʵģʽ�´��봫�͵�0x0670��
+   485 000002E0                                 ;
+   486 000002E0                                 ;
    487 000002E0                                 reboot_start:
    488 000002E0 E8 FFFFFED6                     	call 	backtoreal
    489 000002E5                                 

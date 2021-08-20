@@ -1,36 +1,42 @@
-/* �}���`�^�X�N�֌W */
+/* mtask.c, 多任务管理程序接口 */
 
 #include "bootpack.h"
 
+/* 系统任务管理结构体全局指针变量;
+ * 任务定时器全局指针变量。*/
 struct TASKCTL *taskctl;
 struct TIMER *task_timer;
 
+/* task_now,
+ * 获取系统任务中管理当前正运行任务的结构体基址。*/
 struct TASK *task_now(void)
 {
 	struct TASKLEVEL *tl = &taskctl->level[taskctl->now_lv];
 	return tl->tasks[tl->now];
 }
 
+/* task_add,
+ * 在系统任务管理结构体中加入task。*/
 void task_add(struct TASK *task)
 {
 	struct TASKLEVEL *tl = &taskctl->level[task->level];
 	tl->tasks[tl->running] = task;
 	tl->running++;
-	task->flags = 2; /* ���쒆 */
+	task->flags = 2; 
 	taskctl->runningNum++; 
 	taskctl->runningTasks[taskctl->runningNum] = task; 
 	return;
 }
 
+/* task_remove,
+ * 将task所管理任务从其任务层中移除。*/
 void task_remove(struct TASK *task)
 {
 	int i;
 	struct TASKLEVEL *tl = &taskctl->level[task->level];
 
-	/* task���ǂ��ɂ��邩��T�� */
 	for (i = 0; i < tl->running; i++) {
 		if (tl->tasks[i] == task) {
-			/* �����ɂ��� */
 			break;
 		}
 	}
@@ -38,15 +44,13 @@ void task_remove(struct TASK *task)
 	tl->running--;
 	taskctl->runningNum--;
 	if (i < tl->now) {
-		tl->now--; /* �����̂ŁA��������킹�Ă��� */
+		tl->now--;
 	}
 	if (tl->now >= tl->running) {
-		/* now���������Ȓl�ɂȂ��Ă�����A�C������ */
 		tl->now = 0;
 	}
-	task->flags = 1; /* �X���[�v�� */
+	task->flags = 1;
 
-	/* ���炵 */
 	for (; i < tl->running; i++) {
 		tl->tasks[i] = tl->tasks[i + 1];
 	}
@@ -54,13 +58,18 @@ void task_remove(struct TASK *task)
 	return;
 }
 
+/* task_switchsub,
+ * 遍历并记录当前应被调度运行任务的任务层。
+ * 
+ * 任务层[0,MAX_TASKLEVELS)的调度优先级依次降低。
+ * 若高优先级任务层中含处于可运行状态的任务时则
+ * 优先调度该任务层中的任务运行。*/
 void task_switchsub(void)
 {
 	int i;
-	/* ��ԏ�̃��x����T�� */
 	for (i = 0; i < MAX_TASKLEVELS; i++) {
 		if (taskctl->level[i].running > 0) {
-			break; /* �������� */
+			break; 
 		}
 	}
 	taskctl->now_lv = i;
@@ -68,6 +77,13 @@ void task_switchsub(void)
 	return;
 }
 
+/* task_idle,
+ * 空闲任务程序代码。
+ * 该程序任务代码位于任务管理的最低层,当系统
+ * 中没有其他任务运行时, 该任务会被调度运行。
+ *
+ * task_idle 让CPU进入休眠; 当复位或中断到来
+ * 时CPU才会被唤醒而继续执行下一条指令。*/
 void task_idle(void)
 {
 	for (;;) {
@@ -75,6 +91,12 @@ void task_idle(void)
 	}
 }
 
+/* task_init,
+ * 系统任务管理初始化,包括
+ * 初始化GDT和IDT;
+ * 初始化 管理系统所有任务运行的 结构体;同时为当
+ * 前程序分配任务管理结构体;设置闲置任务到优先级
+ * 最低任务层中,以在系统无其他任务运行时被调度运行。*/
 struct TASK *task_init(struct MEMMAN *memman)
 {
 	int i;
@@ -98,11 +120,11 @@ struct TASK *task_init(struct MEMMAN *memman)
 	}
 
 	task = task_alloc();
-	task->flags = 2;	/* ���쒆�}�[�N */
-	task->priority = 2; /* 0.02�b */
-	task->level = 0;	/* �ō����x�� */
+	task->flags = 2;	
+	task->priority = 2; 
+	task->level = 0;
 	task_add(task);
-	task_switchsub();	/* ���x���ݒ� */
+	task_switchsub();
 	load_tr(task->sel);
 	task_timer = timer_alloc();
 	timer_settime(task_timer, task->priority);
@@ -122,6 +144,9 @@ struct TASK *task_init(struct MEMMAN *memman)
 	return task;
 }
 
+/* task_alloc,
+ * 在系统任务管理结构体中遍历一个任务管理结构体并初始化,
+ * 若成功返回该任务管理结构体首地址, 失败则返回0。*/
 struct TASK *task_alloc(void)
 {
 	int i;
@@ -129,9 +154,9 @@ struct TASK *task_alloc(void)
 	for (i = 0; i < MAX_TASKS; i++) {
 		if (taskctl->tasks0[i].flags == 0) {
 			task = &taskctl->tasks0[i];
-			task->flags = 1; /* �g�p���}�[�N */
+			task->flags = 1; 
 			task->tss.eflags = 0x00000202; /* IF = 1; */
-			task->tss.eax = 0; /* �Ƃ肠����0�ɂ��Ă������Ƃɂ��� */
+			task->tss.eax = 0; 
 			task->tss.ecx = 0;
 			task->tss.edx = 0;
 			task->tss.ebx = 0;
@@ -147,51 +172,57 @@ struct TASK *task_alloc(void)
 			return task;
 		}
 	}
-	return 0; /* �����S���g�p�� */
+	return 0; 
 }
 
+/* task_run,
+ * 将task所管理程序任务的运行时间片设置为priority,然后将该任
+ * 务置在任务层level中以待被调度运行。task_run会置任务层调度
+ * 标志,这会让任务调度函数task_switch调用task_switchsub调度
+ * 含可运行任务的优先级最高的任务层中的任务运行。*/
 void task_run(struct TASK *task, int level, int priority)
 {
 	taskctl->runningNum++; 
 	taskctl->runningTasks[taskctl->runningNum] = task;
 	if (level < 0) {
-		level = task->level; /* ���x����ύX���Ȃ� */
+		level = task->level; 
 	}
 	if (priority > 0) {
 		task->priority = priority;
 	}
 
-	if (task->flags == 2 && task->level != level) { /* ���쒆�̃��x���̕ύX */
-		task_remove(task); /* ��������s�����flags��1�ɂȂ�̂ŉ���if�����s����� */
+	if (task->flags == 2 && task->level != level) {
+		task_remove(task); 
 	}
 	if (task->flags != 2) {
-		/* �X���[�v����N�������ꍇ */
 		task->level = level;
 		task_add(task);
 		taskctl->runningNum--;//新增
 	}
 
-	taskctl->lv_change = 1; /* ����^�X�N�X�C�b�`�̂Ƃ��Ƀ��x���������� */
+	taskctl->lv_change = 1;
 	return;
 }
 
+/* task_sleep,
+ * 将task所指任务休眠即将其从其所在任务层中移除, 若task所指
+ * 任务当前正在运行则在本任务休眠后调度优先级最高的任务运行。*/
 void task_sleep(struct TASK *task)
 {
 	struct TASK *now_task;
 	if (task->flags == 2) {
-		/* ���쒆�������� */
 		now_task = task_now();
-		task_remove(task); /* ��������s�����flags��1�ɂȂ� */
+		task_remove(task); 
 		if (task == now_task) {
-			/* �������g�̃X���[�v�������̂ŁA�^�X�N�X�C�b�`���K�v */
 			task_switchsub();
-			now_task = task_now(); /* �ݒ��ł́A�u���݂̃^�X�N�v�������Ă��炤 */
+			now_task = task_now(); 
 			farjmp(0, now_task->sel);
 		}
 	}
 	return;
 }
 
+/* task_switch,任务切换。*/
 void task_switch(void)
 {
 	struct TASKLEVEL *tl = &taskctl->level[taskctl->now_lv];

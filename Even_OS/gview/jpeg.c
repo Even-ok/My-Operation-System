@@ -1,24 +1,10 @@
-/*
- * JPEG decoding engine for DCT-baseline
- *
- *      copyrights 2003 by nikq | nikq::club.
- *
- * history::
- * 2003/04/28 | added OSASK-GUI ( by H.Kawai )
- * 2003/05/12 | optimized DCT ( 20-bits fixed point, etc...) -> line 407-464 ( by I.Tak. )
- * 2003/09/27 | PICTURE0.BIN(DLL)用に改造 ( by くーみん )
- * 2003/09/28 | 各種バグフィクス＆多少の最適化 ( by H.Kawai )
- *
- */
-
-
 typedef unsigned char UCHAR;
 
 struct DLL_STRPICENV { int work[16384]; };
 
 typedef struct
 {
-    int elem; //要素数
+    int elem;
     unsigned short code[256];
     unsigned char  size[256];
     unsigned char  value[256];
@@ -46,14 +32,14 @@ typedef struct
     int scan_id[3];
     int scan_ac[3];
     int scan_dc[3];
-    int scan_h[3];  // サンプリング要素数
-    int scan_v[3];  // サンプリング要素数
-    int scan_qt[3]; // 量子化テーブルインデクス
+    int scan_h[3];
+    int scan_v[3];
+    int scan_qt[3];
     
     // DRI
     int interval;
 
-    int mcu_buf[32*32*4]; //バッファ
+    int mcu_buf[32*32*4];
     int *mcu_yuv[4];
     int mcu_preDC[3];
     
@@ -71,7 +57,7 @@ typedef struct
     int bit_remain;
     int width_buf;
 
-	int base_img[64][64]; // 基底画像 ( [横周波数uπ][縦周波数vπ][横位相(M/8)][縦位相(N/8)]
+	int base_img[64][64];
 
     /* for dll 
     
@@ -134,7 +120,6 @@ int decode0_JPEG(struct DLL_STRPICENV *env,int size, UCHAR *fp0, int b_type, UCH
 
 //	if (jpeg->width == 0)
 //		return 8;
-	/* decode0ではinfoしてから呼ばれるので、これはない */
 
 	jpeg->width_buf = skip / (b_type & 0x7f) + jpeg->width;
     jpeg_decode(jpeg, buf, b_type);
@@ -161,12 +146,12 @@ unsigned short get_bits(JPEG *jpeg, int bit)
 			goto fin;
 		}
 		c = *jpeg->fp++;
-		if (c == 0xff) { // マーカエラーを防ぐため、FF -> FF 00 にエスケープされてる
+		if (c == 0xff) {
 			if (jpeg->fp >= jpeg->fp1) {
 				ret = 0;
 				goto fin;
 			}
-			jpeg->fp++; /* 00をskip */
+			jpeg->fp++;
 		}
 		buff = (buff << 8) | c;
 		remain += 8;
@@ -180,7 +165,7 @@ fin:
 	return ret;
 }
 
-// ------------------------ JPEG セグメント実装 -----------------
+// ------------------------ JPEG -----------------
 
 // start of frame
 int jpeg_sof(JPEG *jpeg)
@@ -190,7 +175,6 @@ int jpeg_sof(JPEG *jpeg)
 
 	if (jpeg->fp + 8 > jpeg->fp1)
 		goto err;
-	/* fp[2] は bpp */
 	jpeg->height = jpeg->fp[3] << 8 | jpeg->fp[4];
 	jpeg->width  = jpeg->fp[5] << 8 | jpeg->fp[6];
 	n = jpeg->compo_count = jpeg->fp[7]; // Num of compo, nf
@@ -242,7 +226,7 @@ int jpeg_dqt(JPEG *jpeg)
  		if (c & 0xf8) {
 			// 16 bit DQT
 			for (i = 0; i < 64; i++) {
-				jpeg->dqt[j][i] = jpeg->fp[0]; /* 下位は読み捨てている */
+				jpeg->dqt[j][i] = jpeg->fp[0];
 				jpeg->fp += 2;
 			}
 			size += -64 * 2;
@@ -279,8 +263,8 @@ int jpeg_dht(JPEG *jpeg)
 			goto err;
 		val = jpeg->fp[0];
 
-		tc = (val >> 4) & 0x0f; // テーブルクラス(DC/AC成分セレクタ)
-		th =  val       & 0x0f; // テーブルヘッダ(何枚目のプレーンか)
+		tc = (val >> 4) & 0x0f;
+		th =  val       & 0x0f;
 		table = &(jpeg->huff[tc][th]);
 
 		num = 0;
@@ -335,7 +319,6 @@ int jpeg_init(JPEG *jpeg)
 	jpeg->max_v = 0;
 	jpeg->bit_remain = 0;
 	jpeg->bit_buff   = 0;
-	// DRIリセット無し
 	jpeg->interval = 0;
 //	return;
 //}
@@ -384,7 +367,6 @@ int jpeg_init(JPEG *jpeg)
 			jpeg->fp += 3; /* 3bytes skip */
             goto fin;
 		} else {
-			/* 未対応 */
 			if (jpeg->fp + 2 > jpeg->fp1)
 				goto err;
 			jpeg->fp += jpeg->fp[0] << 8 | jpeg->fp[1];
@@ -400,7 +382,6 @@ fin:
 
 // MCU decode
 
-// デコード
 void jpeg_decode_init(JPEG *jpeg)
 {
 	int i, j;
@@ -430,7 +411,6 @@ void jpeg_decode_init(JPEG *jpeg)
 	return;
 }
 
-// ハフマン 1シンボル復号
 int jpeg_huff_decode(JPEG *jpeg,int tc,int th)
 {
     HUFF *h = &(jpeg->huff[tc][th]);
@@ -473,7 +453,7 @@ void jpeg_idct_init(int base_img[64][64])
             if (d == 0)
                 i = 4;
             for (m = 0; m < 8; m++){
-                tmpm[m] = cost[i]; // 横のCos波形
+                tmpm[m] = cost[i];
                 i=(i+d)&31;
             }
         }
@@ -483,11 +463,10 @@ void jpeg_idct_init(int base_img[64][64])
                 if (d == 0)
                     i=4;
                 for (n = 0; n < 8; n++){
-                    tmpn[n] = cost[i]; // 縦のCos波形
+                    tmpn[n] = cost[i];
                     i=(i+d)&31;
                 }
             }
-            // 掛け算して基底画像に
             for (m = 0; m < 8; m++) {
                 for (n = 0; n < 8; n++) {
                     base_img[u * 8 + v][m * 8 + n] = (tmpm[m] * tmpn[n])>>15;
@@ -507,19 +486,17 @@ void jpeg_idct(int *block, int *dest, int base_img[64][64])
 
     for (i = 0; i < 64; i++) {
         k = block[i];
-        if(k) { //0係数はステ
+        if(k) {
             for (j = 0; j < 64; j++) {
                 dest[j] += k * base_img[i][j];
             }
         }
     }
-    // 固定小数点を元に戻す+ 4で割る
     for (i = 0; i < 64; i++)
         dest[i] >>= 17;
     return;
 }
 
-// 符号化された数値を元に戻す
 int jpeg_get_value(JPEG *jpeg,int size)
 {
 	int val = 0;
@@ -533,8 +510,6 @@ int jpeg_get_value(JPEG *jpeg,int size)
     return val;
 }
 
-// ---- ブロックのデコード ---
-// ハフマンデコード＋逆量子化＋逆ジグザグ
 int jpeg_decode_huff(JPEG *jpeg,int scan,int *block, UCHAR *zigzag_table)
 {
     int size, len, val, run, index;
@@ -548,7 +523,6 @@ int jpeg_decode_huff(JPEG *jpeg,int scan,int *block, UCHAR *zigzag_table)
     jpeg->mcu_preDC[scan] += val;
     block[0] = jpeg->mcu_preDC[scan] * pQt[0];
 
-    //AC復号
     index = 1;
     while(index<64)
     {
@@ -565,7 +539,6 @@ int jpeg_decode_huff(JPEG *jpeg,int scan,int *block, UCHAR *zigzag_table)
         
         val = jpeg_get_value(jpeg,size);
         if(val>=0x10000) {
-            //マーカ発見
             return val;
         }
 
@@ -581,8 +554,6 @@ int jpeg_decode_huff(JPEG *jpeg,int scan,int *block, UCHAR *zigzag_table)
     return 0;
 }
 
-// ブロック (補間かけるには、ここで)
-// リサンプリング
 void jpeg_mcu_bitblt(int *src, int *dest, int width,
                      int x0, int y0, int x1, int y1)
 {
@@ -601,7 +572,6 @@ void jpeg_mcu_bitblt(int *src, int *dest, int width,
 	}
 }
 
-// MCU一個変換
 int jpeg_decode_mcu(JPEG *jpeg, UCHAR *zigzag_table)
 {
 	int scan, val;
@@ -609,26 +579,21 @@ int jpeg_decode_mcu(JPEG *jpeg, UCHAR *zigzag_table)
 	int *p, hh, vv;
 	int block[64], dest[64];
 
-	// mcu_width x mcu_heightサイズのブロックを展開
+	// mcu_width x mcu_height
 	for (scan = 0; scan < jpeg->scan_count; scan++) {
 		hh = jpeg->scan_h[scan];
 		vv = jpeg->scan_v[scan];
 		for (v = 0; v < vv; v++) {
             for (h = 0; h < hh; h++) {
-				// ブロック(8x8)のデコード
 				val = jpeg_decode_huff(jpeg, scan, block, zigzag_table);
 			//	if(val>=0x10000){
 			//		printf("marker found:%02x\n",val);
 			//	}
 
-				// 逆DCT
 				jpeg_idct(block, dest, jpeg->base_img);
-				// リサンプリング
 
-				// 書き込みバッファ
 				p = jpeg->mcu_buf + (scan << 10);
 
-                // 拡大転送
 				jpeg_mcu_bitblt(dest, p, jpeg->mcu_width,
 					jpeg->mcu_width * h / hh, jpeg->mcu_height * v / vv,
 					jpeg->mcu_width * (h + 1) / hh, jpeg->mcu_height * (v + 1) / vv);
@@ -725,13 +690,11 @@ void jpeg_decode(JPEG *jpeg, UCHAR *rgb, int b_type)
 	INIT_ZTABLE(48, 58, 59, 52, 45); INIT_ZTABLE(52, 38, 31, 39, 46);
 	INIT_ZTABLE(56, 53, 60, 61, 54); INIT_ZTABLE(60, 47, 55, 62, 63);
 
-	// MCUサイズ計算
 	jpeg_decode_init(jpeg);
 
 	h_unit = (jpeg->width + jpeg->mcu_width - 1) / jpeg->mcu_width;
 	v_unit = (jpeg->height + jpeg->mcu_height - 1) / jpeg->mcu_height;
 
-	// 1ブロック展開するかもしれない
 	mcu_count = 0;
 	for (v = 0; v < v_unit; v++) {
 		for (h = 0; h < h_unit; h++) {
@@ -739,8 +702,6 @@ void jpeg_decode(JPEG *jpeg, UCHAR *rgb, int b_type)
 			jpeg_decode_mcu(jpeg, zigzag_table);
 			jpeg_decode_yuv(jpeg, h, v, rgb, b_type & 0x7fff);
 			if (jpeg->interval > 0 && mcu_count >= jpeg->interval) {
-				// RSTmマーカをすっ飛ばす(FF hoge)
-				// hogeは読み飛ばしてるので、FFも飛ばす
 				jpeg->bit_remain -= (jpeg->bit_remain & 7);
 				jpeg->bit_remain -= 8;
 				jpeg->mcu_preDC[0] = 0;

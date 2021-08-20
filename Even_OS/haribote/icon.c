@@ -1,7 +1,6 @@
 #include "bootpack.h"
 //#include "apilib.h"
 
-//����ͼƬ
 int newBackGround(char *cmdline, int *fat, struct CONSOLE *cons)
 {
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
@@ -103,11 +102,10 @@ int newBackGround(char *cmdline, int *fat, struct CONSOLE *cons)
 	boxfill8(vram, x, COL8_848484, x - 47, y - 23, x - 47, y -  4);
 	boxfill8(vram, x, COL8_FFFFFF, x - 47, y -  3, x -  4, y -  3);
 	boxfill8(vram, x, COL8_FFFFFF, x -  3, y - 24, x -  3, y -  3);
-	putfonts8_asc_sht(shtctl->sheets[0], 8, binfo->scrny -20, COL8_000000, COL8_C6C6C6, "menu", 5);//����һ���˵��� 
+	putfonts8_asc_sht(shtctl->sheets[0], 8, binfo->scrny -20, COL8_000000, COL8_C6C6C6, "menu", 5);
 	sheet_refresh(shtctl->sheets[0], 0, 0, x, binfo->scrny);
 	return 0;
 }
-//ͼ��
 int InitIcon_xxx(struct SHEET *sht, int *fat, int number)
 {
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;

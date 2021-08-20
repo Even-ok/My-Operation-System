@@ -2,7 +2,7 @@
 
 #include <string.h>	/* strlen */
 
-int strtol(char *s, char **endp, int base);	/* 標準関数（stdlib.h） */
+int strtol(char *s, char **endp, int base);
 
 void waittimer(int timer, int time);
 void end(char *s);
@@ -13,20 +13,15 @@ void HariMain(void)
 	char s[32], *p, *r;
 	int win, timer, i, j, t = 120, l = 192 / 4, o = 4, q = 7, note_old = 0;
 
-	/* 音番号と周波数(mHz)の対応表 */
-	/* たとえば、O4Aは440Hzなので、440000 */
-	/* オクターブ16のAは1802240Hzなので、1802240000 */
-	/* 以下はオクターブ16のリスト(C～B) */
 	static int tonetable[12] = {
 		1071618315, 1135340056, 1202850889, 1274376125, 1350154473, 1430438836,
 		1515497155, 1605613306, 1701088041, 1802240000, 1909406767, 2022946002
 	};
 	static int notetable[7] = { +9, +11, +0 /* C */, +2, +4, +5, +7 };
 
-	/* コマンドライン解析 */
 	api_cmdline(s, 30);
-	for (p = s; *p > ' '; p++) { }	/* スペースが来るまで読み飛ばす */
-	for (; *p == ' '; p++) { }	/* スペースを読み飛ばす */
+	for (p = s; *p > ' '; p++) { }
+	for (; *p == ' '; p++) { }
 	i = strlen(p);
 	if (i > 12) {
 file_error:
@@ -36,13 +31,11 @@ file_error:
 		end(0);
 	}
 
-	/* ウィンドウの準備 */
 	win = api_openwin(winbuf, 256, 112, -1, "mmlplay");
 	api_putstrwin(win, 128, 32, 0, i, p);
 	api_boxfilwin(win, 8, 60, 247,  76, 7);
 	api_boxfilwin(win, 6, 86, 249, 105, 7);
 
-	/* ファイル読み込み */
 	i = api_fopen(p);
 	if (i == 0) {
 		goto file_error;
@@ -55,9 +48,9 @@ file_error:
 	api_fclose(i);
 	txtbuf[j] = 0;
 	r = txtbuf;
-	i = 0; /* 通常モード */
-	for (p = txtbuf; *p != 0; p++) {	/* 処理を簡単にするためにコメントや空白を消す */
-		if (i == 0 && *p > ' ') {	/* スペースや改行コードなどではない */
+	i = 0;
+	for (p = txtbuf; *p != 0; p++) {
+		if (i == 0 && *p > ' ') {
 			if (*p == '/') {
 				if (p[1] == '*') {
 					i = 1;
@@ -66,7 +59,7 @@ file_error:
 				} else {
 					*r = *p;
 					if ('a' <= *p && *p <= 'z') {
-						*r += 'A' - 'a';	/* 小文字は大文字に変換 */
+						*r += 'A' - 'a';
 					}
 					r++;
 				}
@@ -78,12 +71,12 @@ file_error:
 				*r = *p;
 				r++;
 			}
-		} else if (i == 1 && *p == '*' && p[1] == '/') {	/* ブロックコメント */
+		} else if (i == 1 && *p == '*' && p[1] == '/') {
 			p++;
 			i = 0;
-		} else if (i == 2 && *p == 0x0a) {	/* 行コメント */
+		} else if (i == 2 && *p == 0x0a) {
 			i = 0;
-		} else if (i == 3) {	/* 文字列 */
+		} else if (i == 3) {
 			*r = *p;
 			r++;
 			if (*p == 0x22) {
@@ -97,15 +90,12 @@ file_error:
 	}
 	*r = 0;
 
-	/* タイマの準備 */
 	timer = api_alloctimer();
 	api_inittimer(timer, 128);
 
-	/* メイン */
 	p = txtbuf;
 	for (;;) {
-		if (('A' <= *p && *p <= 'G') || *p == 'R') {	/* 音符・休符 */
-			/* 周波数計算 */
+		if (('A' <= *p && *p <= 'G') || *p == 'R') {
 			if (*p == 'R') {
 				i = 0;
 				s[0] = 0;
@@ -146,7 +136,6 @@ file_error:
 				}
 				note_old = i;
 			}
-			/* 音長計算 */
 			if ('0' <= *p && *p <= '9') {
 				i = 192 / strtol(p, &p, 10);
 			} else {
@@ -174,17 +163,17 @@ file_error:
 				}
 			}
 			waittimer(timer, i - j);
-		} else if (*p == '<') {	/* オクターブ-- */
+		} else if (*p == '<') {
 			p++;
 			o--;
-		} else if (*p == '>') {	/* オクターブ++ */
+		} else if (*p == '>') {
 			p++;
 			o++;
-		} else if (*p == 'O') {	/* オクターブ指定 */
+		} else if (*p == 'O') {
 			o = strtol(p + 1, &p, 10);
-		} else if (*p == 'Q') {	/* Qパラメータ指定 */
+		} else if (*p == 'Q') {
 			q = strtol(p + 1, &p, 10);
-		} else if (*p == 'L') { /* デフォルト音長指定 */ 
+		} else if (*p == 'L') {
 			l = strtol(p + 1, &p, 10);
 			if (l == 0) {
 				goto syntax_error;
@@ -194,10 +183,10 @@ file_error:
 				p++;
 				l += l / 2;
 			}
-		} else if (*p == 'T') {	/* テンポ指定 */
+		} else if (*p == 'T') {
 			t = strtol(p + 1, &p, 10);
-		} else if (*p == '$') {	/* 拡張コマンド */
-			if (p[1] == 'K') {	/* カラオケコマンド */
+		} else if (*p == '$') {
+			if (p[1] == 'K') {
 				p += 2;
 				for (; *p != 0x22; p++) {
 					if (*p == 0) {

@@ -1,8 +1,8 @@
-/* �E�B���h�E�֌W */
+/* window.c, 自制窗口(画面信息)的程序接口 */
 
 #include "bootpack.h"
 
-void make_window6(unsigned char *buf, int xsize, int ysize, char *title) //窗口绘制
+void make_window6(unsigned char *buf, int xsize, int ysize, char *title) 
 {
 	static char closebtn[14][16] = {
 		"OOOOOOOOOOOOOOO@",
@@ -130,7 +130,9 @@ void make_window7(unsigned char *buf, int xsize, int ysize, char *title) //窗�
 	return;
 }
 
-
+/* make_window8,
+ * 将自制窗口即x方向像素点数为xsize,
+ * y方向像素点数为ysize,包含title所指标题的窗口画面信息(色号)缓存到buf所指内存中。*/
 void make_window8(unsigned char *buf, int xsize, int ysize, char *title, char act)
 {
 	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         xsize - 1, 0        );
@@ -146,6 +148,9 @@ void make_window8(unsigned char *buf, int xsize, int ysize, char *title, char ac
 	return;
 }
 
+/* make_wtitle8,
+ * 将title所指标题和关闭按钮部分的画面信息(色号)缓存到buf所指画面中。act用于
+ * 标识标题字体颜色及标题背景色;act=0,背景色暗灰,字体亮灰;act!=0,背景色暗蓝,字体白色。*/
 void make_wtitle8(unsigned char *buf, int xsize, char *title, char act)
 {
 	static char closebtn[14][16] = {
@@ -193,6 +198,8 @@ void make_wtitle8(unsigned char *buf, int xsize, char *title, char act)
 	return;
 }
 
+/* putfonts8_asc_sht,
+ * 在sht所指结构体管理窗口中的(x,y)处显示s所指字符,共l(变量l)个。*/
 void putfonts8_asc_sht(struct SHEET *sht, int x, int y, int c, int b, char *s, int l)
 {
 	struct TASK *task = task_now();
@@ -207,6 +214,9 @@ void putfonts8_asc_sht(struct SHEET *sht, int x, int y, int c, int b, char *s, i
 	return;
 }
 
+/* make_textbox8,
+ * 将自制文本框的画面信息(色号)缓存到sht->buf成员所指内存段中,
+ * 使该文本框在sht->buf所指画面(窗口)的[(x0,y0), (x0+sx,y0+sy)]区域。*/
 void make_textbox8(struct SHEET *sht, int x0, int y0, int sx, int sy, int c)
 {
 	int x1 = x0 + sx, y1 = y0 + sy;
@@ -222,6 +232,9 @@ void make_textbox8(struct SHEET *sht, int x0, int y0, int sx, int sy, int c)
 	return;
 }
 
+/* change_wtitle8,
+ * 改变sht所指结构体管理窗口的标题。
+ * act=1标识sht所指窗口被选中位于屏幕最上层。*/
 void change_wtitle8(struct SHEET *sht, char act)
 {
 	int x, y, xsize = sht->bxsize;

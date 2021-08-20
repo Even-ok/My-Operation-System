@@ -7,12 +7,12 @@ IMGTOL   = $(TOOLPATH)imgtol.com
 COPY     = copy
 DEL      = del
 
-# �f�t�H���g����
+
 
 default :
 	$(MAKE) haribote.img
 
-# �t�@�C�������K��
+
 
 haribote.img : haribote/ipl09.bin haribote/haribote.sys Makefile \
 		noodle/noodle.hrb  appreader/appreader.hrb \
@@ -20,7 +20,7 @@ haribote.img : haribote/ipl09.bin haribote/haribote.sys Makefile \
 		userr/userr.hrb userw/userw.hrb \
 		consume/consume.hrb produce/produce.hrb shareadd/shareadd.hrb \
 		bball/bball.hrb invader/invader.hrb \
-		calc/calc.hrb tview/tview.hrb gview/gview.hrb \
+		calc/calc.hrb tview/tview.hrb mmlplay/mmlplay.hrb gview/gview.hrb \
 		producer/producer.hrb consumer/consumer.hrb sadd/sadd.hrb
 
 
@@ -51,13 +51,18 @@ haribote.img : haribote/ipl09.bin haribote/haribote.sys Makefile \
 		copy from:pictdata/night.bmp to:@: \
 		copy from:nihongo/nihongo.fnt to:@: \
 		copy from:chinese/HZK16.fnt to:@:\
+                                copy from:mmlplay/mmlplay.hrb to:@: \
+                                copy from:mmldata/kirakira.org to:@: \
+		copy from:mmldata/fujisan.org to:@: \
+		copy from:mmldata/daigo.org to:@: \
+		copy from:mmldata/daiku.org to:@: \
 		copy from:heloos.jpg to:@: \
 		copy from:picture/3.jpg to:@: \
 		copy from:picture/2.jpg to:@: \
 		copy from:picture/5.jpg to:@: \
 		imgout:haribote.img
 
-# �R�}���h
+
 
 run :
 	$(MAKE) haribote.img
@@ -106,7 +111,7 @@ run_os :
 	$(MAKE) run
 
 clean :
-# �������Ȃ�
+
 
 src_only :
 	$(MAKE) clean

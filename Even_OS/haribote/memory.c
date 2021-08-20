@@ -1,13 +1,17 @@
+/* memory.c, 内存管理程序接口 */
 //内存管理，采用固定分区分配
 
 #include "bootpack.h"
 #include <stdio.h>
+
+/* 用于将32位标志寄存器bit[18]置1;
+ * CR0寄存器bit[29..30]=(11)b时禁止CPU cache功能。*/
 #define EFLAGS_AC_BIT		0x00040000
 #define CR0_CACHE_DISABLE	0x60000000
 
-/*
-	返回当前剩余空间大小
-*/
+/* memtest,
+ * 检测内存地址空间[start,end)中起始于start的连续可用内存段。该函数返回
+ * 连续可用内存段末端地址i时,即表明内存地址空间[start, i)对应内存段可用。*/
 unsigned int memtest(unsigned int start, unsigned int end)//检查内存
 {
 	//先检查CPU是不是在486以上，如果是，就将缓存设为OFF。
@@ -42,6 +46,8 @@ unsigned int memtest(unsigned int start, unsigned int end)//检查内存
 	return i;
 }
 
+/* memman_init,
+ * 初始化内存管理结构体。*/
 void memman_init(struct MEMMAN *man)//初始化，设定为空
 {
 	man->frees = 0;			//可用信息数目
@@ -51,7 +57,8 @@ void memman_init(struct MEMMAN *man)//初始化，设定为空
 	return;
 }
 
-/*	得到空余内存大小的合计	*/
+/* memman_total,
+ * 通过man所指内存管理结构体统计当前空闲内存容量并返回。*/
 unsigned int memman_total(struct MEMMAN *man)
 {
 	unsigned int i, t = 0;
@@ -61,7 +68,9 @@ unsigned int memman_total(struct MEMMAN *man)
 	return t;
 }
 
-//分配（产生很多碎片）
+/* memman_alloc,
+ * 使用首次适应(FF)算法分配大小为size的内存块,
+ * 若分配成功则返回大小为size的内存块首地址,失败则返回0.*/
 unsigned int memman_alloc(struct MEMMAN *man, unsigned int size)
 {
 	unsigned int i, a;
@@ -85,7 +94,8 @@ unsigned int memman_alloc(struct MEMMAN *man, unsigned int size)
 	return 0; //没有可用空间
 }
 
-//释放内存
+/* memman_free,
+ * 释放内存块[addr, addr + size)。释放成功则返回0; 否则返回-1.*/
 int memman_free(struct MEMMAN *man, unsigned int addr, unsigned int size)
 {
 	int i, j;
@@ -149,8 +159,8 @@ int memman_free(struct MEMMAN *man, unsigned int addr, unsigned int size)
 	return -1; //释放内存失败
 }
 
-//以1字节为单位进行内存管理
-//分配
+/* memman_alloc_4k,
+ * 以4Kb为单位申请内存分配,若size非4Kb对齐则补齐4Kb。*/
 unsigned int memman_alloc_4k(struct MEMMAN *man, unsigned int size)//0X1000字节的大小是4KB
 {//向上舍入
 	unsigned int a;
@@ -159,7 +169,8 @@ unsigned int memman_alloc_4k(struct MEMMAN *man, unsigned int size)//0X1000字�
 	return a;
 }
 
-//释放
+/* memman_free_4k,
+ * 以4Kb对齐释放内存块addr */
 int memman_free_4k(struct MEMMAN *man, unsigned int addr, unsigned int size)
 {
 	int i;

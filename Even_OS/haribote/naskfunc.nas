@@ -1,11 +1,19 @@
 ; naskfunc
 ; TAB=4
 
-[FORMAT "WCOFF"]				; �I�u�W�F�N�g�t�@�C������郂�[�h	
-[INSTRSET "i486p"]				; 486�̖��߂܂Ŏg�������Ƃ����L�q
-[BITS 32]						; 32�r�b�g���[�h�p�̋@�B�����点��
-[FILE "naskfunc.nas"]			; �\�[�X�t�@�C�������
+; naskfunc.nas, 将只能用汇编语句实现或更益用汇编语句实现的功能
+; 通过汇编子程序提供给C程序调用,所有的参数都通过栈传递。现在常
+; 用的编译会适当选择用寄存器传参, 都通过栈传递参数可能是作者根
+; 据当时需要而改写gcc 编译器所得到的结果。该编译器在将 C全局标
+; 识符转换为汇编标识符时,会自动在C全局标识符前加'_'前缀。
 
+[FORMAT "WCOFF"]				; 	
+[INSTRSET "i486p"]				; 
+[BITS 32]						; 
+[FILE "naskfunc.nas"]			; 
+
+; GLOBAL 告知编译器其后跟随的标号为全局标识符;
+; EXTERN 告知编译器其后所声明标识符在其他文件中定义。
 		GLOBAL	_io_hlt,_write_mem8, _io_cli, _io_sti, _io_stihlt
 		GLOBAL	_io_in8,  _io_in16,  _io_in32
 		GLOBAL	_io_out8, _io_out16, _io_out32
@@ -27,101 +35,138 @@
 
 [SECTION .text]
 
+; _io_hlt,让CPU进入休眠。
+;
+; HLT 指令让CPU进入休眠;当复位,
+; 中断到来时才唤醒CPU继续执行下一条指令(RET)。
 _io_hlt:	; void io_hlt(void);
 		HLT
 		RET
 
 _write_mem8:	; void write_mem8(int addr, int data);
-		MOV		ECX,[ESP+4]		; [ESP+4]��ŵ�ַ ����ecx
-		MOV		AL,[ESP+8]		; [ESP+8]������� ����al
+		MOV		ECX,[ESP+4]		; [ESP+4] ecx
+		MOV		AL,[ESP+8]		; [ESP+8] al
 		MOV		[ECX],AL
 		RET
 
+; _io_cli,
+; 禁止CPU处理调用者所在任务中断。
 _io_cli:	; void io_cli(void);
 		CLI
 		RET
 
+; _io_sti,
+; 使能CPU处理调用者所在任务中断。
 _io_sti:	; void io_sti(void);
 		STI
 		RET
 
+; _io_stihlt,
+; 让CPU进入睡眠,显式允许中断唤醒CPU。
 _io_stihlt:	; void io_stihlt(void);
 		STI
 		HLT
 		RET
 
+; _io_in8,
+; 从I/O端口地址port读取1字节数据并返回。
 _io_in8:	; int io_in8(int port);
 		MOV		EDX,[ESP+4]		; port
 		MOV		EAX,0
 		IN		AL,DX
 		RET
 
+; _io_in16,
+; 从I/O端口地址port读取2字节数据并返回。
 _io_in16:	; int io_in16(int port);
 		MOV		EDX,[ESP+4]		; port
 		MOV		EAX,0
 		IN		AX,DX
 		RET
 
+; _io_in32,
+; 从I/O端口地址port读取4字节数据并返回。
 _io_in32:	; int io_in32(int port);
 		MOV		EDX,[ESP+4]		; port
 		IN		EAX,DX
 		RET
 
+; _io_out8,
+; 将data最低字节写往I/O端口地址port。
 _io_out8:	; void io_out8(int port, int data);
 		MOV		EDX,[ESP+4]		; port
 		MOV		AL,[ESP+8]		; data
 		OUT		DX,AL
 		RET
 
+; _io_out16,
+; 将data低2字节数据写往I/O端口地址port。
 _io_out16:	; void io_out16(int port, int data);
 		MOV		EDX,[ESP+4]		; port
 		MOV		EAX,[ESP+8]		; data
 		OUT		DX,AX
 		RET
 
+; _io_out32,
+; 将4字节的data写往I/O端口地址port。
 _io_out32:	; void io_out32(int port, int data);
 		MOV		EDX,[ESP+4]		; port
 		MOV		EAX,[ESP+8]		; data
 		OUT		DX,EAX
 		RET
 
+; _io_load_eflags,
+; 获取32位标志寄存器EFLAG的值并返回。
 _io_load_eflags:	; int io_load_eflags(void);
-		PUSHFD		; PUSH EFLAGS �Ƃ����Ӗ�
+		PUSHFD		; PUSH EFLAGS 
 		POP		EAX
 		RET
 
+; _io_store_eflags,
+; 将eflags赋值给标志寄存器EFLAG。
 _io_store_eflags:	; void io_store_eflags(int eflags);
 		MOV		EAX,[ESP+4]
 		PUSH	EAX
-		POPFD		; POP EFLAGS �Ƃ����Ӗ�
+		POPFD		; POP EFLAGS 
 		RET
 
+; _load_gdtr,
+; 将GDT内存信息加载给GDTR寄存器,addr为GDT基址,limit为GDT限长。
 _load_gdtr:		; void load_gdtr(int limit, int addr);
 		MOV		AX,[ESP+4]		; limit
 		MOV		[ESP+6],AX
 		LGDT	[ESP+6]
 		RET
 
+; _load_idtr,
+; 加载IDT内存信息给IDTR寄存器,addr为IDT基址,limit为IDT限长。
 _load_idtr:		; void load_idtr(int limit, int addr);
 		MOV		AX,[ESP+4]		; limit
 		MOV		[ESP+6],AX
 		LIDT	[ESP+6]
 		RET
 
+; _load_cr0,
+; 获取CR0寄存器值并返回。
 _load_cr0:		; int load_cr0(void);
 		MOV		EAX,CR0
 		RET
 
+; _store_cr0,
+; 将 cr0 设置给CR0寄存器。
 _store_cr0:		; void store_cr0(int cr0);
 		MOV		EAX,[ESP+4]
 		MOV		CR0,EAX
 		RET
 
+; _load_tr,
+; 将tr加载给TR任务寄存器,tr为任务号。
 _load_tr:		; void load_tr(int tr);
 		LTR		[ESP+4]			; tr
 		RET
 
-
+; _asm_inthandler20,
+; 定时器中断入口处理程序。
 _asm_inthandler20:
 		PUSH	ES
 		PUSH	DS
@@ -138,6 +183,8 @@ _asm_inthandler20:
 		POP		ES
 		IRETD
 
+; _asm_inthandler21,
+; 键盘中断入口处理承程序。
 _asm_inthandler21:
 		PUSH	ES
 		PUSH	DS
@@ -154,6 +201,8 @@ _asm_inthandler21:
 		POP		ES
 		IRETD
 
+; _asm_inthandler2c,
+; 鼠标中断处理入口程序。
 _asm_inthandler2c:
 		PUSH	ES
 		PUSH	DS
@@ -170,6 +219,8 @@ _asm_inthandler2c:
 		POP		ES
 		IRETD
 
+; _asm_inthandler0c,
+; 栈异常(如访问栈时超过了应用程序数据段)中断处理入口程序。
 _asm_inthandler0c:
 		STI
 		PUSH	ES
@@ -187,9 +238,11 @@ _asm_inthandler0c:
 		POPAD
 		POP		DS
 		POP		ES
-		ADD		ESP,4			; INT 0x0c �ł��A���ꂪ�K�v
+		ADD		ESP,4			; INT 0x0c 
 		IRETD
 
+; _asm_inthandler0d,
+; 保护异常中断处理入口程序。
 _asm_inthandler0d:
 		STI
 		PUSH	ES
@@ -201,17 +254,20 @@ _asm_inthandler0d:
 		MOV		DS,AX
 		MOV		ES,AX
 		CALL	_inthandler0d
-		CMP		EAX,0			; ���������Ⴄ
-		JNE		_asm_end_app	; ���������Ⴄ
+		CMP		EAX,0			;
+		JNE		_asm_end_app	; 
 		POP		EAX
 		POPAD
 		POP		DS
 		POP		ES
-		ADD		ESP,4			; INT 0x0d �ł́A���ꂪ�K�v
+		ADD		ESP,4			; INT 0x0d 
 		IRETD
 
+; _memtest_sub,
+; 以4Kb为单位测试[esp+12+4, esp+12+8)内存段中始于 esp+16 连续可用的内存段。
+; 对于每个4Kb内存块,测试其最后4字节,若该4字节可用则标识整4Kb内存块可用。
 _memtest_sub:	; unsigned int memtest_sub(unsigned int start, unsigned int end)
-		PUSH	EDI						; �iEBX, ESI, EDI ���g�������̂Łj
+		PUSH	EDI						; EBX, ESI, EDI 
 		PUSH	ESI
 		PUSH	EBX
 		MOV		ESI,0xaa55aa55			; pat0 = 0xaa55aa55;
@@ -236,6 +292,9 @@ mts_loop:
 		POP		ESI
 		POP		EDI
 		RET
+; 未检查完所有内存块时程序会执行到此处。
+; 恢复最后4Kb块的最后4字节内容,
+; 恢复相应寄存器并返回
 mts_fin:
 		MOV		[EBX],EDX				; *p = old;
 		POP		EBX
@@ -243,25 +302,31 @@ mts_fin:
 		POP		EDI
 		RET
 
+; _farjmp,
+; 实现段间跳转即CS:EIP=cs:eip。
 _farjmp:		; void farjmp(int eip, int cs);
 		JMP		FAR	[ESP+4]				; eip, cs
 		RET
 
+; _farcall,
+; 实现段间调用即CS:EIP=cs:eip。
 _farcall:		; void farcall(int eip, int cs);
 		CALL	FAR	[ESP+4]				; eip, cs
 		RET
 
+; _asm_hrb_api,
+; 系统调用(int 40h)入口处理程序。
 _asm_hrb_api:
 		STI
 		PUSH	DS
 		PUSH	ES
-		PUSHAD		; �ۑ��̂��߂�PUSH
-		PUSHAD		; hrb_api�ɂ킽�����߂�PUSH
+		PUSHAD		; 
+		PUSHAD		; hrb_api PUSH
 		MOV		AX,SS
-		MOV		DS,AX		; OS�p�̃Z�O�����g��DS��ES�ɂ������
+		MOV		DS,AX		; 
 		MOV		ES,AX
 		CALL	_hrb_api
-		CMP		EAX,0		; EAX��0�łȂ���΃A�v���I������
+		CMP		EAX,0		; 
 		JNE		_asm_end_app
 		ADD		ESP,32
 		POPAD
@@ -273,37 +338,41 @@ end_app:
 ;	EAXΪtss.esp0�ĵ�ַ
 		MOV		ESP,[EAX]
 		POPAD
-		RET					; ����cmd_app		
+		RET					; cmd_app		
 
+; _asm_end_app,
+; 结束应用程序即跳转调用启动引用程序的 _start_app 后续语句处。
 _asm_end_app:
 ;	EAX��tss.esp0�̔Ԓn
 		MOV		ESP,[EAX]
 		MOV		DWORD [EAX+4],0
 		POPAD
-		RET					; cmd_app�֋A��
+		RET					; cmd_app
 
+; _start_app,
+; 跳转执行cs:eip处(应用程序)指令,内核当前栈内存的寄存器将被备份在 tss_esp0 所指栈内存中。
 _start_app:		; void start_app(int eip, int cs, int esp, int ds, int *tss_esp0);
-		PUSHAD		; 32�r�b�g���W�X�^��S���ۑ����Ă���
-		MOV		EAX,[ESP+36]	; �A�v���p��EIP
-		MOV		ECX,[ESP+40]	; �A�v���p��CS
-		MOV		EDX,[ESP+44]	; �A�v���p��ESP
-		MOV		EBX,[ESP+48]	; �A�v���p��DS/SS
-		MOV		EBP,[ESP+52]	; tss.esp0�̔Ԓn
-		MOV		[EBP  ],ESP		; OS�p��ESP��ۑ�
-		MOV		[EBP+4],SS		; OS�p��SS��ۑ�
+		PUSHAD		; 
+		MOV		EAX,[ESP+36]	; 
+		MOV		ECX,[ESP+40]	; 
+		MOV		EDX,[ESP+44]	; 
+		MOV		EBX,[ESP+48]	; 
+		MOV		EBP,[ESP+52]	; 
+		MOV		[EBP  ],ESP		; 
+		MOV		[EBP+4],SS		; 
 		MOV		ES,BX
 		MOV		DS,BX
 		MOV		FS,BX
 		MOV		GS,BX
-;	�ȉ���RETF�ŃA�v���ɍs�����邽�߂̃X�^�b�N����
-		OR		ECX,3			; �A�v���p�̃Z�O�����g�ԍ���3��OR����
-		OR		EBX,3			; �A�v���p�̃Z�O�����g�ԍ���3��OR����
-		PUSH	EBX				; �A�v����SS
-		PUSH	EDX				; �A�v����ESP
-		PUSH	ECX				; �A�v����CS
-		PUSH	EAX				; �A�v����EIP
+;	
+		OR		ECX,3			; 
+		OR		EBX,3			; 
+		PUSH	EBX				; 
+		PUSH	EDX				; 
+		PUSH	ECX				; 
+		PUSH	EAX				; 
 		RETF
-;	�A�v�����I�����Ă������ɂ͗��Ȃ�
+;	
 
 [BITS	32]
 backtoreal:
@@ -311,7 +380,7 @@ backtoreal:
 	PUSHAD
 	JMP		start2
 	db 0x00, 0x00
-protect16:;26�ֽ�
+protect16:;26
 ;		mov     ax, 8
 ;        mov     ds, ax
 ;        mov     es, ax
@@ -330,10 +399,10 @@ dw 0x0650,0x0000
 ALIGNB 16
 protect16_len EQU	$ - protect16
 
-;����Ĵ���Ϊ16λ����ģʽ����ʵģʽ���ܴ���
-;����ģʽ���봫�͵��ڴ�0x0630����Ϊ������0x20 B
+;
+;
 
-realmode:;27�ֽ�
+realmode:;27
 ;        mov     ax, cs
 ;		 mov     ds, ax
 ;		 mov     es, ax
@@ -349,8 +418,8 @@ realmode:;27�ֽ�
 ;		nop
 ;		sti
 ;		nop
-;		һ�´������������ʾģʽΪͼ��ģʽ���룬��goback֮ǰ���� BIOS�жϵ���ʹ�ܡ�
-;		С�������������ֵ�ʹ��BIOS�жϳ����
+;
+;	
 ;		mov     ax, 0003h
 ;		int     10h
 db 0x8c, 0xc8
@@ -369,11 +438,11 @@ db 0xea
 dw 0x0670, 0x0000
 ALIGNB 16
 realmode_len	EQU		$ - realmode
-; ���ϴ����Ϊʵģʽ�������ַ���ʾģʽ
-; ʵģʽ���ܴ��봫�͵�0x0650��,����32�ֽ�
+; 
+; 
 ;db 0xf4
 
-GDTIDT:;38�ֽ�
+GDTIDT:;38
 dw 0x0000, 0x0000, 0x0000, 0x0000
 dw 0xffff, 0x0000, 0x9200, 0x0000
 dw 0xffff, 0x0000, 0x9800, 0x0000
@@ -384,8 +453,8 @@ dw 0x03ff
 dw 0x0000, 0x0000
 ALIGNB 16
 GDTIDT_lenth EQU	$ - GDTIDT
-;����ΪGDT��ITD��������
-;�������ݴ��͵�0x0600��������0x30 B�Ŀռ䡣
+;
+;
 start2:
 	MOV		EBX, GDTIDT
 	MOV		EDX, 0x600
@@ -435,8 +504,8 @@ db 0xb9, 0x03, 0x00
 db 0xcd, 0x15
 ALIGNB 16
 shutdown_con_len	EQU		$ - shutdown_con
-; ���ϴ���ιػ�����
-; ʵģʽ���ܴ��봫�͵�0x0670����
+; 
+; 
 
 shutdown_start:
 	CALL 	backtoreal
@@ -482,8 +551,8 @@ db 0x89, 0x1e, 0x72, 0x00
 db 0xea, 0x00, 0x00, 0xff, 0xff
 ALIGNB 16
 reboot_con_len	EQU		$ - reboot_con
-;���ϴ���Ϊ��������
-;ʵģʽ�´��봫�͵�0x0670��
+;
+;
 reboot_start:
 	call 	backtoreal
 

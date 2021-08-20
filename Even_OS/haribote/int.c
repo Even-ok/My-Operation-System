@@ -1,26 +1,28 @@
-/* Š„‚èž‚ÝŠÖŒW */
+/* int.c, å¯ç¼–ç¨‹ä¸­æ–­æŽ§åˆ¶å™¨(PIC)8259Aåˆå§‹åŒ–ç¨‹åºæŽ¥å£ */
 
 #include "bootpack.h"
 #include <stdio.h>
 
+/* init_pic,
+ * åˆå§‹åŒ–é…ç½®å¯ç¼–ç¨‹ä¸­æ–­æŽ§åˆ¶å™¨(PIC),
+ * ä¸ºPICåˆ†é…ä¸­æ–­å‘é‡[0x20, 0x2f],æš‚å±è”½æ‰€æœ‰ä¸­æ–­ã€‚*/
 void init_pic(void)
-/* PIC‚Ì‰Šú‰» */
 {
-	io_out8(PIC0_IMR,  0xff  ); /* ‘S‚Ä‚ÌŠ„‚èž‚Ý‚ðŽó‚¯•t‚¯‚È‚¢ */
-	io_out8(PIC1_IMR,  0xff  ); /* ‘S‚Ä‚ÌŠ„‚èž‚Ý‚ðŽó‚¯•t‚¯‚È‚¢ */
+	io_out8(PIC0_IMR,  0xff  );
+	io_out8(PIC1_IMR,  0xff  );
 
-	io_out8(PIC0_ICW1, 0x11  ); /* ƒGƒbƒWƒgƒŠƒKƒ‚[ƒh */
-	io_out8(PIC0_ICW2, 0x20  ); /* IRQ0-7‚ÍAINT20-27‚ÅŽó‚¯‚é */
-	io_out8(PIC0_ICW3, 1 << 2); /* PIC1‚ÍIRQ2‚É‚ÄÚ‘± */
-	io_out8(PIC0_ICW4, 0x01  ); /* ƒmƒ“ƒoƒbƒtƒ@ƒ‚[ƒh */
+	io_out8(PIC0_ICW1, 0x11  ); 
+	io_out8(PIC0_ICW2, 0x20  ); 
+	io_out8(PIC0_ICW3, 1 << 2); 
+	io_out8(PIC0_ICW4, 0x01  ); 
 
-	io_out8(PIC1_ICW1, 0x11  ); /* ƒGƒbƒWƒgƒŠƒKƒ‚[ƒh */
-	io_out8(PIC1_ICW2, 0x28  ); /* IRQ8-15‚ÍAINT28-2f‚ÅŽó‚¯‚é */
-	io_out8(PIC1_ICW3, 2     ); /* PIC1‚ÍIRQ2‚É‚ÄÚ‘± */
-	io_out8(PIC1_ICW4, 0x01  ); /* ƒmƒ“ƒoƒbƒtƒ@ƒ‚[ƒh */
+	io_out8(PIC1_ICW1, 0x11  ); 
+	io_out8(PIC1_ICW2, 0x28  );
+	io_out8(PIC1_ICW3, 2     ); 
+	io_out8(PIC1_ICW4, 0x01  ); 
 
-	io_out8(PIC0_IMR,  0xfb  ); /* 11111011 PIC1ˆÈŠO‚Í‘S‚Ä‹ÖŽ~ */
-	io_out8(PIC1_IMR,  0xff  ); /* 11111111 ‘S‚Ä‚ÌŠ„‚èž‚Ý‚ðŽó‚¯•t‚¯‚È‚¢ */
+	io_out8(PIC0_IMR,  0xfb  ); 
+	io_out8(PIC1_IMR,  0xff  );
 
 	return;
 }
