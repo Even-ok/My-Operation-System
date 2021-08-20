@@ -5,7 +5,7 @@
 #include <string.h>
 
 /**
- * �f�B�X�N�C���[�W����FAT�̈��k���Ƃ�
+ * 读取fat
  */
 void file_readfat(int *fat, unsigned char *img)
 {
@@ -19,7 +19,7 @@ void file_readfat(int *fat, unsigned char *img)
 }
 
 /**
- * �t�@�C����ǂݍ���
+ * 加载文件
  */
 void file_loadfile(int clustno, int size, char *buf, int *fat, char *img)
 {
@@ -53,13 +53,13 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 	}
 	j = 0;
 	for (i = 0; name[i] != 0; i++) {
-		if (j >= 11) { return 0; /* ������Ȃ����� */ }
+		if (j >= 11) { return 0; }
 		if (name[i] == '.' && j <= 8) {
 			j = 8;
 		} else {
 			s[j] = name[i];
 			if ('a' <= s[j] && s[j] <= 'z') {
-				/* �������͑啶���ɒ��� */
+				/* 转换成大写字母*/
 				s[j] -= 0x20;
 			}
 			j++;
@@ -75,15 +75,16 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 					goto next;
 				}
 			}
-			return finfo + i; /* �t�@�C������������ */
+			return finfo + i; 
 		}
 		next:
 		i++;
 	}
-	return 0; /* ������Ȃ����� */
+	return 0; 
 }
 
 /**
+ * 仿照原有系统finfo_search进行编写
  * search my file in my filesystem using name.
  * @name: Ex. "hoge.txt", "foo.hrb"
  * return dinfo addr if it succeeded.
@@ -100,14 +101,14 @@ struct MYFILEINFO *myfinfo_search(char *name, struct MYDIRINFO *dinfo, int max)
 	for (i = 0; name[i] != 0; i++) {
 		if (j >= 11) {
 			debug_print("file was not found in myfinfo_search(): int j is too high.\n");
-			return 0; /* ������Ȃ����� */
+			return 0; 
 		}
 		if (name[i] == '.' && j <= 8) {
 			j = 8;
 		} else {
 			s[j] = name[i];
 			if ('a' <= s[j] && s[j] <= 'z') {
-				/* �������͑啶���ɒ��� */
+				/* 转化为大写字母*/
 				s[j] -= 'a'-'A';
 			}
 			j++;
@@ -115,13 +116,13 @@ struct MYFILEINFO *myfinfo_search(char *name, struct MYDIRINFO *dinfo, int max)
 	}
 
 	for (i = 0; i < max; ) {
-		// �t�@�C�����������ꍇ�A����ȏ��Ƀt�@�C�����Ȃ��̂ŏ������I��������B
+		// 文件找不到
 		if (dinfo->finfo[i].name[0] == 0x00) {
 			break;
 		}
 
-		/* �t�@�C����������ꍇ, finfo��filetype�̎��ʂ����� */
-		/* finfo���t�@�C���̏ꍇ(���͂Q��ނ����Ȃ�) */
+		/* 只有ftype为0x20才是能打开的文件*/
+		
 		if (dinfo->finfo[i].type == 0x20) {
 			for (j = 0; j < 11; j++) {
 				if (dinfo->finfo[i].name[j] != s[j]) {
@@ -129,25 +130,25 @@ struct MYFILEINFO *myfinfo_search(char *name, struct MYDIRINFO *dinfo, int max)
 				}
 			}
 			//debug_print("file was found!\n");
-			return dinfo->finfo + i; /* �t�@�C������������ */
+			return dinfo->finfo + i; 
 
-			/* finfo���f�B���N�g���̏ꍇ */
+			/* 是一个路径 */
 		}else if(dinfo->finfo[i].type == 0x10){
-			// �f�B���N�g���͊g���q���Ȃ��̂Ńt�@�C����������r����
+			
 			for (j = 0; j < 8; j++) {
 				if (dinfo->finfo[i].name[j] != s[j]) {
 					goto next;
 				}
 			}
 			//debug_print("directory was found!\n");
-			return dinfo->finfo + i; /* �f�B���N�g������������ */
+			return dinfo->finfo + i; 
 		}
 		next:
 		i++;
 	}
 
 	debug_print("file/directory was not found in myfinfo_search()\n");
-	return 0; /* ������Ȃ����� */
+	return 0; 
 }
 
 /**
@@ -175,7 +176,7 @@ char *file_loadfile2(int clustno, int *psize, int *fat)
 
 
 /**
- * �t�@�C�����Ǘ��̈悩��A�g���Ă��Ȃ��f�B���N�g����Ԃ�T���A�����������̂��A���̏ꏊ��Ԃ�
+ * 获取新的路径信息
  */
 struct MYDIRINFO *get_newdinfo(){
 	char s[50];
@@ -190,7 +191,6 @@ struct MYDIRINFO *get_newdinfo(){
 	debug_print(s);
 	//*/
 
-	// �L����dinfo������/�\������
 	for(i=0, temp_dinfo = dinfo; temp_dinfo->this_dir != 0x00000000 ; i++, temp_dinfo++){
 		dir_num++;
 		this_dinfo = temp_dinfo->this_dir;
@@ -210,7 +210,6 @@ struct MYDIRINFO *get_newdinfo(){
 	debug_print(s);
 	//*/
 
-	/* �V�����f�B���N�g���̏����� */
 	new_dinfo = (dinfo + dir_num + 1);
 	sprintf(new_dinfo->name, "");
 	new_dinfo->parent_dir = 0;
@@ -219,9 +218,9 @@ struct MYDIRINFO *get_newdinfo(){
 	return new_dinfo;
 }
 
-/* �t�@�C�����f�[�^�Ǘ��̈悩��R�s�[���āA�R�s�[��̔Ԓn��������
- * return struct MYFILEDATA: �R�s�[��̔Ԓn�Ɋi�[����Ă���t�@�C���f�[�^
- * return 0: ���s
+/* 打开文件
+ * return struct MYFILEDATA: successly find
+ * return 0: can't find
  */
 struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 	// �Ƃ肠�������[�g�f�B���N�g���ɂ���t�@�C���ɑ΂��Ă̂ݎ��s���邱�Ƃɂ���B
@@ -233,12 +232,11 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 	int block_count, alloc_size;
 	char s[BODY_SIZE + 128];
 	if(finfo == 0 || (finfo->type & FTYPE_DIR) != 0){
-		/* �Y������t�@�C����ROOT�f�B���N�g���ɑ��݂��Ȃ������ꍇ
-		 * �܂��́A�Y������t�@�C�����f�B���N�g���ł������ꍇ */
+		//找不到文件，或者是该文件是路径
 		debug_print("In function myfopen(): file was not found.\n");
 		return 0;
 	}else{
-		/* open�̂Ƃ��ɂ�STAT_OPENED�͊m�F���Ȃ� (�v����)*/
+		/* 把文件的状态该成STAT_OPENED*/
 		add_status_myfdata(finfo->fdata, STAT_OPENED);
 		sprintf(s, "fdata = 0x%08x\n[debug] head.this_fdata = 0x%08x\n[debug] head.this_dir = 0x%08x\n[debug] head.stat = 0x%02x\n",
 				finfo->fdata,
@@ -249,7 +247,7 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 		sprintf(s, "body = %s[EOF]\n", finfo->fdata->body);
 		debug_print(s);
 
-		// �m�ۂ��郁�����̃T�C�Y���v�Z
+		// 获得该文件内存分配情况
 		block_count = get_blocknum_myfdata(finfo->fdata);	// �d�l���Ă���u���b�N�����擾
 		alloc_size = block_count * BLOCK_SIZE;		// �S�u���b�N���̕��������������m��
 
@@ -260,7 +258,7 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 
 		mem_addr = memman_alloc(memman, alloc_size);
 
-		/* �m�ۂ����̈�̏����� */
+		/* 获得文件内容所在地址 */
 		temp_addr = (unsigned int *)mem_addr;
 		sprintf(s ,"INIT temp_addr = 0x%08x\n", temp_addr);
 		for(i = 0; i<alloc_size; i++){
@@ -294,7 +292,7 @@ struct MYFILEDATA *myfopen(char *filename, struct MYDIRINFO *dinfo){
 	return 0;
 }
 
-/* �f�[�^�Ǘ��̈�̊Y���t�@�C�����I�[�v������Ă�����A��������������Astatus bit��opened������������B
+/* 关闭文件，若之前未保存操作，则不会自动保存
  * return 0: if success
  * return -1: if failed
  * */
@@ -304,26 +302,24 @@ int myfclose(struct MYFILEDATA *opened_fdata){
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 
 	if((fdata->head.stat & STAT_OPENED) == 0){
-		/* �I�[�v������Ă��Ȃ��t�@�C���̏ꍇ */
+		/* 文件的状态已经是被关闭的状态 */
 		debug_print("In function myfclose(): this file data is already closed.\n");
 		return -1;	// close���s
 	}else{
-		/* �I�[�v������Ă���t�@�C���̏ꍇ�A���f�[�^�̃X�e�[�^�X�ϐ���ύX������A
-		 * �m�ۂ��Ă������������������ */
-
-		/* �X�e�[�^�X�ϐ��̕ύX(open bit��܂�) */
+		
+		/* 通过十六进制运算，设定其值为已关闭 */
 		fdata->head.stat &= (STAT_ALL - STAT_OPENED);
 
-		/* �g�p���Ă����o�b�t�@�̈�̃�������� */
+		
 		memman_free_fdata(memman, (unsigned int)opened_fdata);
 
-		return 0;	// close����
+		return 0;	// close成功
 	}
 
-	return -1;	// close���s
+	return -1;	// close失败
 }
 
-/* �f�[�^�Ǘ��̈�̊Y���t�@�C�����Z�[�u�\�Ȃ�΁Afdata->body�̓��e��ۑ�����
+/* 
  * return 0: success
  * return -1: failed
  */
@@ -333,9 +329,9 @@ int myfsave(struct MYFILEDATA *opened_fdata){
 	struct MYFILEINFO *finfo;
 	struct TASK *task = task_now();
 
-	char s[200];	// 1000�����ȏ�̃f�[�^�̏ꍇ�ǂ�����H
+	char s[200];	// 1000
 
-	/* �����̎擾 */
+
 	fdata = opened_fdata->head.this_fdata;
 	dinfo = fdata->head.this_dir;
 	finfo = myfinfo_search(fdata->head.name, dinfo, MAX_FINFO_NUM);
@@ -348,23 +344,22 @@ int myfsave(struct MYFILEDATA *opened_fdata){
 
 
 	if((fdata->head.stat & STAT_OPENED) == 0){
-		/* �I�[�v������Ă��Ȃ��t�@�C���ɑ΂��ĕۑ����悤�Ƃ����ꍇ */
+		/* 检查该文件状态 */
 		sprintf(s, "In function myfsave():Can't save because this file data is not opened.\n");
 		debug_print(s);
-		return -1;	// close���s
+		return -1;	
 	}else{
-		myfread(s, opened_fdata);	// �o�b�t�@����t�@�C���f�[�^��ǂݍ���
-		myfwrite(fdata, s);			// �ǂݍ��񂾃t�@�C���f�[�^����������
+		myfread(s, opened_fdata);	// 读取文件内容到s中
+		myfwrite(fdata, s);			// 把s中内容写入到fdata中
 		finfo->size = get_size_myfdata(fdata);
-		return 0;	// close����
+		return 0;	
 	}
 
-	return -1;	// close���s
+	return -1;	
 }
 
-/* �f�[�^�Ǘ��̈�̎g���Ă��Ȃ���Ԃ�T���A�����������̂��A���̏ꏊ��������
- * return ��������MYFILEDATA�̔Ԓn�A�h���X
- * [CAUTION!]���̊֐����ł̓t�@�C���f�[�^���m�̃����N�͓\��Ȃ�
+/* 获取创建文件时新文件的内容
+ * return MYFILEDATA
  * Ex. fdata->head.next_fdata = new_fdata;
  */
 struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
@@ -385,15 +380,14 @@ struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
 	//*/
 
 	if(fdata->head.stat == STAT_ALL){
-		/* �V�K�t�@�C���쐬(mkfile�R�}���h)���̏��� */
+		/* 现在是mkfile打开该文件的状态 */
 		//debug_print("get_newfdata() was called by mkfile command.\n");
 		goto MKFILE;
 
 	}else if(ROOT_DATA_ADDR <= (unsigned int)fdata && (unsigned int)fdata < LAST_DATA_ADDR ){
-		MKFILE:
+		MKFILE:   //创建新文件
 
-		/* OPENED bit�����Ă��� = �f�[�^�Ǘ��̈�̂���t�@�C���V�K�f�[�^�̎擾 */
-		/* �f�[�^�Ǘ��̈���̃t�@�C���f�[�^�ɑ΂��āA�Ăяo���ꂽ�ꍇ */
+		/* OPENED bit */
 		/*
 		debug_print("Getting new file data in data manage domain.\n");
 		sprintf(s, "root_fdata = 0x%08x\n", root_fdata);
@@ -402,36 +396,32 @@ struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
 
 		temp_fdata = root_fdata;
 		while((temp_fdata->head.stat & STAT_VALID) != 0){
-			/* �f�[�^�Ǘ��̈����`�I�ɒT�����A�󂢂Ă���f�[�^�̈��T�� */
-			/* temp_fdata��valid bit�������Ă���� */
+			/* 该文件是无效文件 */
 			//sprintf(s, "fdata[%d] addr = 0x%08x\n", i, temp_fdata);
 			//debug_print(s);
-			temp_fdata += 1; // �ׂ̔Ԓn�Ɉړ�(���`�T���Ȃ̂ŁA�������x�͂߂��Ⴍ����x��[�v����])
+			temp_fdata += 1; 
 			i++;
 		}
-		/* valid bit��0��file data���������� */
+		/* valid bit */
 		new_fdata = temp_fdata;
 		//sprintf(s, "found invalid fdata[%d] addr = 0x%08x\n", i, new_fdata);
 		//debug_print(s);
 
-		/* �t�@�C���f�[�^�̏����� */
+		/* 到一个文件的最大体长度*/
 		for(i=0; i< BODY_SIZE; i++)new_fdata->body[i] = '\0';
-		new_fdata->head.stat = STAT_VALID;	// �����X�e�[�^�X��valid�̂ݗ����Ă�����
-		new_fdata->head.this_fdata = new_fdata;	// �����̖{���̔Ԓn���L��(open���ɕK�v)
+		new_fdata->head.stat = STAT_VALID;
+		new_fdata->head.this_fdata = new_fdata;	
 		new_fdata->head.this_dir = fdata->head.this_dir;
-		new_fdata->head.next_fdata = 0;		// �ԕ��Ƃ��Ďg��
+		new_fdata->head.next_fdata = 0;		// 该文件内容置空
 	}else{
 
-		/* OPENED bit�������Ă��� = �o�b�t�@�̈�ɂ�����V�K�t�@�C���f�[�^�擾 */
-		/* �������Ǘ��̈�ɂ���t�@�C���̏ꍇ�A
-		 * �V�����������̈���m�ۂ��A�����ɐV�����t�@�C���f�[�^���쐬���� */
+		/* OPENED bit*/
 		//debug_print("Getting new file data in buffer domain.\n");
 
-		// �m�ۂ��郁�����̃T�C�Y���v�Z�Ɗm��
-		alloc_size = BLOCK_SIZE;	// �m�ۂ���T�C�Y���v�Z
+		
+		alloc_size = BLOCK_SIZE;	
 		mem_addr = memman_alloc(memman, alloc_size);
 
-		/* �m�ۂ����̈�̏����� */
 		temp_addr = (unsigned int *)mem_addr;
 		for(i = 0; i<alloc_size; i++){
 			if(*temp_addr != 0){
@@ -461,11 +451,10 @@ struct MYFILEDATA *get_newfdata(struct MYFILEDATA *fdata){
 
 	//sprintf(s, "/********************************/\n");
 	//debug_print(s);
-	return new_fdata;	/* �擾�����t�@�C���f�[�^��Ԃ� */
+	return new_fdata;	
 }
 
 /**
- * interface to write data into file
  * @param fdata: string data to be written
  * @param str: string data to write
  * return 1 if it succeeded
@@ -481,10 +470,10 @@ int myfwrite(struct MYFILEDATA *fdata, char *str){
 	struct MYFILEDATA *new_fdata;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 
-	/* ���������� */
+	
 	i = j = 0;
 	block_num = 1;
-	prev_block_num = get_blocknum_myfdata(fdata);
+	prev_block_num = get_blocknum_myfdata(fdata);//获得其以前所在的位置
 
 	///* debugging
 	sprintf(s, "myfwrite() has been called.\n");
@@ -549,7 +538,7 @@ int myfwrite(struct MYFILEDATA *fdata, char *str){
 }
 
 /**
- * interface to read data from file
+ * read data from file
  * @param str: string data to read
  * @param body: string data to be read
  * return 1: succeeded
@@ -561,9 +550,9 @@ int myfread(char *str, struct MYFILEDATA *fdata){
 	int i=0;
 	sprintf(s, "myfread() has been called.\n");
 	debug_print(s);
-	sprintf(str, "");	// str�̏�����
+	sprintf(str, "");	// str初始化
 
-	do{ /* ���̃t�@�C���f�[�^�����݂����,�t�@�C���f�[�^��ǂݍ��ݑ����� */
+	do{ /* 把文件body中的内容都读出到str中 */
 		prev_fdata = fdata;
 		sprintf(s, "fdata->body[%d] = %s[EOF]\n", i, fdata->body);
 		debug_print(s);
@@ -578,7 +567,7 @@ int myfread(char *str, struct MYFILEDATA *fdata){
 }
 
 /**
- * interface to copy data
+ * copy data
  * @param fdata1: file data to be copied
  * @param fdata2: file data to copy
  * return 1: succeeded
@@ -591,7 +580,8 @@ int myfcopy(struct MYFILEDATA *fdata1, struct MYFILEDATA *fdata2){
 	debug_print(s);
 
 	for(;;){
-		memcpy(fdata1, fdata2, sizeof(struct MYFILEDATA));
+		memcpy(fdata1, fdata2, sizeof(struct MYFILEDATA));//内存拷贝函数
+		//即从源fdata1中拷贝n个字节到目标fdata2中
 		sprintf(s, "fdata->body[%d] was copied.\n", i);
 		debug_print(s);
 		i++;
@@ -599,16 +589,12 @@ int myfcopy(struct MYFILEDATA *fdata1, struct MYFILEDATA *fdata2){
 		if(fdata2->head.next_fdata == 0){
 			break;
 		}else{
-			/* �o�b�t�@�ł����g���Ȃ��Ƃ����O��(�v����) */
+			/* 指针移动 */
 			fdata2 = fdata2->head.next_fdata;
 
 			fdata1->head.next_fdata = fdata1 + 1;
 			fdata1++;
 
-			//if(fdata1->head.next_fdata == 0){
-			//	/* �R�s�[����鑤�̃u���b�N�������E���}�����ꍇ */
-			//	fdata1->head.next_fdata = get_newfdata(fdata1);
-			//}
 		}
 	}
 
@@ -672,17 +658,16 @@ unsigned int get_blocknum_myfdata(struct MYFILEDATA *fdata){
 	unsigned int block_num, data_size;
 	char s[50];	// for debugging
 	data_size = get_size_myfdata(fdata);
-	block_num = (data_size / BODY_SIZE) + 1;	// �u���b�N�̐����v�Z
+	block_num = (data_size / BODY_SIZE) + 1;	
 	sprintf(s, "used block number = %d\n", block_num);
 	debug_print(s);
 	return block_num;
 }
 
 /**
- * �t�@�C���f�[�^�ɃX�e�[�^�X�r�b�g��ǉ�����B
- * �ǉ�����X�e�[�^�X�r�b�g�����ɗ����Ă����ꍇ�͎��s����B
- * @param fdata: �ǉ������t�@�C���f�[�^
- * @param stat: �ǉ��������X�e�[�^�X�r�b�g
+ * 
+ * @param fdata: 文件流
+ * @param stat: 要更改的状态
  * return 1 if it succeeded.
  * return 0 if it failed.
  */
@@ -694,7 +679,7 @@ unsigned int add_status_myfdata(struct MYFILEDATA *fdata, unsigned char stat){
 	do{
 		prev_temp_fdata = temp_fdata;
 		if((temp_fdata->head.stat & stat) == stat){
-			/* �ǉ�����X�e�[�^�X�r�b�g�����ɗ����Ă����ꍇ, ���s*/
+			/* 已经是这个状态了，无需改变s*/
 			debug_print("***adding status bit is already valid.***\n");
 			return 0;
 		}

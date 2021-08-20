@@ -277,11 +277,11 @@ void make_menu(struct SHEET *sht, int n);//制作菜单图层
 #define STAT_BUF	0x04	/* buffer bit:�o�b�t�@�̈�ɂ���t�@�C���f�[�^�ł��邱�Ƃ����� */
 #define STAT_OPENED	0x08	/* file open����Ă��邩�ǂ���������(�f�t�H���g��0) */
 
-/*�@finfo->type�p�̃r�b�g�z��(����ł�, �f�B���N�g���ƃt�@�C���̂Q��ނ�����ʂ��Ă��Ȃ�)
- * 0x10: �f�B���N�g�����
- * 0x20: �t�@�C�����
- * 0x40: �V�X�e���t�@�C��
- * 0x80: ����ȊO�̏��(�f�B�X�N�̖��O�Ƃ�)*/
+/*@finfo->type
+ * 0x10: 路径
+ * 0x20: 文件
+ * 0x40: 系统文件
+ * 0x80: 其他*/
 #define FTYPE_DIR	0x10
 #define FTYPE_FILE	0x20
 #define FTYPE_SYS	0x40

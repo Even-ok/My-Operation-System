@@ -258,15 +258,16 @@ void HariMain(void)
     fifo32_put(&keycmd, key_leds);
 
     /* nihongo.fnt�̓ǂݍ��� */
-	fat = (int *) memman_alloc_4k(memman, 4 * 2880);
+	nihongo = (unsigned char*)memman_alloc_4k(memman, 0x5d5d * 32);
+	fat = (int*)memman_alloc_4k(memman, 4 * 2880);
 	file_readfat(fat, (unsigned char *) (ADR_DISKIMG + 0x000200));
-
-	finfo = file_search("nihongo.fnt", (struct FILEINFO *) (ADR_DISKIMG + 0x002600), 224);
+	finfo = file_search("HZK16.fnt", (struct FILEINFO *) (ADR_DISKIMG + 0x002600), 224);
 	if (finfo != 0) {
-		i = finfo->size;
-		nihongo = file_loadfile2(finfo->clustno, &i, fat);
+	//	i = finfo->size;
+	//	nihongo = file_loadfile2(finfo->clustno, &i, fat);
+		file_loadfile(finfo->clustno, finfo->size, nihongo, fat, (char*)(ADR_DISKIMG + 0x003e00));
 	} else {
-		nihongo = (unsigned char *) memman_alloc_4k(memman, 16 * 256 + 32 * 94 * 47);
+	//	nihongo = (unsigned char *) memman_alloc_4k(memman, 16 * 256 + 32 * 94 * 47);
 		for (i = 0; i < 16 * 256; i++) {
 			nihongo[i] = hankaku[i]; /* �t�H���g���Ȃ������̂Ŕ��p�������R�s�[ */
 		}
@@ -736,14 +737,17 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 					sheet_updown(sht_boot,  -1);
 					//sheet_updown(sht_dong,2);
 				} 
-				else if (flag_mima[7] == 1) //����������Ѿ�������enter��
+				else if (flag_mima[7] == 1) //密码输入错误的情况
 				{
-					wrong++;
+					wrong++;						
+					timer_init(timer4, &fifo, 2);
+					timer_settime(timer4, 60);
+					putfonts8_asc_sht(sht_boot, 350+112, 360, COL8_000000, 7,  "Wrong Number!", 13);
 					if(wrong==3)
 					{
-						sheet_updown(key_win,3);
+						//sheet_updown(key_win,3);
 						//timer_init(timer4, &fifo, 50);
-						putfonts8_asc_sht(key_win, 250+112, 300, COL8_000000, 7,  "After 3 seconds can you try again!", 34);
+						putfonts8_asc_sht(sht_boot, 270+112, 360, COL8_000000, 7,  "After 3 seconds can you try again!", 34);
 						//timer_settime(timer4, 300);
 						//sheet_updown(key_win,-1);
 						int i=0;
@@ -755,7 +759,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 						{
 							//sheet_updown(key_win,-1);
 							//wrong=0;
-							putfonts8_asc_sht(key_win, 250+112, 300, COL8_000000, 7,  "After 2 seconds can you try again!", 34);
+							putfonts8_asc_sht(sht_boot, 270+112, 360, COL8_000000, 7,  "After 2 seconds can you try again!", 34);
 						}
 						int i1=0;
 						while(i1<=500000000)
@@ -764,7 +768,7 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 						}
 						if(i1>=500000000)
 						{
-							putfonts8_asc_sht(key_win, 250+112, 300, COL8_000000, 7,  "After 1 seconds can you try again!", 34);
+							putfonts8_asc_sht(sht_boot, 270+112, 360, COL8_000000, 7,  "After 1 seconds can you try again!", 34);
 						}
 						int i2=0;
 						while(i2<=500000000)
@@ -773,15 +777,12 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 						}
 						if(i2>=500000000)
 						{
-							sheet_updown(key_win,-1);
+							putfonts8_asc_sht(sht_boot, 270+112, 360, COL8_000000, 9,  "                                     ", 33);
+							//sheet_updown(key_win,-1);
 							wrong=0;
 						}
 							
 					}
-						
-					timer_init(timer4, &fifo, 2);
-					timer_settime(timer4, 60);
-					putfonts8_asc_sht(sht_boot, 350+112, 360, COL8_000000, 7,  "Wrong Number!", 13);
 					putfonts8_asc_sht(sht_boot, 327-10+112, 403, 7, 7,  " ", 16);
 					//boxfill8(buf_boot, sht_boot->bxsize, 21,sht_boot->vx0 + 400-71, sht_boot->vy0 + 404,sht_boot->vx0 + 400+65, sht_boot->vy0 + 418);
 					cursor_pin = 327+112;//���ָ�ԭ
@@ -791,9 +792,9 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
 					flag_mima[6] = 1; 
 				}
 
-				if (i == 2) //�������
+				if (i == 2) //覆盖文字
 				{
-					putfonts8_asc_sht(sht_boot, 350+112, 360, COL8_000000, 28,  "                                     ", 33);
+					putfonts8_asc_sht(sht_boot, 350+112, 360, COL8_000000, 9,  "                                     ", 33);
 				}
             
 		}
@@ -973,13 +974,23 @@ static char mima[6] = {'1','2','3','4','5','6'};//��ʼ����
                     keywin_on(key_win);
                      count_pro+=1;
         		}
-                if(i == 256 + 0x3d && key_shift != 0){    /* Shift+F3 */  // 进程切换，进程处理
+                if(i == 256 + 0x3d && key_shift != 0){    /* Shift+F3 */  // 统计进程数
                         char strii[21]={0};
                         task = key_win->task;
                         sprintf(strii,"%d",count_pro);
                         cons_putstr0(task->cons," process number:\n");
                         cons_putstr0(task->cons,strii);
                         }
+				if(i == 256 + 0x3e && key_shift != 0){    /* Shift+F4 */  // 打开log
+                    if (key_win != 0) {
+                        keywin_off(key_win); //关闭命令行光标
+        			}
+                    key_win = open_log(shtctl, memtotal);
+                    sheet_slide(key_win,   512, 4);
+                    sheet_updown(key_win, shtctl->top);
+                    keywin_on(key_win);
+                     count_pro+=1;
+				}
                 if (i == 256 + 0x57) {	/* F11 */
                     sheet_updown(shtctl->sheets[1], shtctl->top - 1);
         		}

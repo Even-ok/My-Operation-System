@@ -19,6 +19,7 @@ void HariMain(void)
 	api_initmalloc();
 	buf = api_malloc(336 * 261);
 	win = api_openwin(buf, 336, 261, -1, "bingo");
+	win = api_openwin(buf, 336, 261, -1, "bingo");
 	api_boxfilwin(win, 6, 27, 329, 254, 0);
 	/* ª∂”≠ΩÁ√Ê */
 	sprintf(note, "¥∆–€’˘∞‘\0");

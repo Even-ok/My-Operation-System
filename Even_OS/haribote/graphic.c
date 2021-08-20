@@ -221,6 +221,26 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 			x += 8;
 		}
 	}
+		if (task->langmode == 3) {
+		for (; *s != 0x00; s++) {
+			if (task->langbyte1 == 0) {
+				if (0xa1 <= *s && *s <= 0xfe) {
+					task->langbyte1 = *s;
+				}
+				else {
+					putfont8(vram, xsize, x, y, c, hankaku + *s * 16);
+				}
+			}
+			else {
+				k = task->langbyte1 - 0xa1;
+				t = *s - 0xa1;
+				task->langbyte1 = 0;
+				font = nihongo + (k * 94 + t) * 32;
+				putfont32(vram, xsize, x - 8, y, c, font, font + 16);
+			}
+			x += 8;
+		}
+	}
 	return;
 }
 void init_mouse_cursor8(char *mouse, char bc)
@@ -427,56 +447,58 @@ void putfont8_ch(char *vram, int xsize, int x, int y, char c, char *font)
 	return;
 }
 
-void putfont32(char *vram, int xsize, int x, int y, char c, char *font1, char *font2)
+void putfont32(char* vram, int xsize, int x, int y, char c, char* font1, char* font2)
 {
-    int i,k,j,f;
-    char *p, d ;
-    j=0;
-    p=vram+(y+j)*xsize+x;
-    j++;
-    //上半部分
-    for(i=0;i<16;i++)
-    {
-        for(k=0;k<8;k++)
-        {
-            if(font1[i]&(0x80>>k))
-            {
-                p[k+(i%2)*8]=c;
-            }
-        }
-        for(k=0;k<8/2;k++)
-        {
-            f=p[k+(i%2)*8];
-            p[k+(i%2)*8]=p[8-1-k+(i%2)*8];
-            p[8-1-k+(i%2)*8]=f;
-        }
-        if(i%2)
-        {
-            p=vram+(y+j)*xsize+x;
-            j++;
-        }
-    }
-    //下半部分
-    for(i=0;i<16;i++)
-    {
-        for(k=0;k<8;k++)
-        {
-            if(font2[i]&(0x80>>k))
-            {
-                p[k+(i%2)*8]=c;
-            }
-        }
-        for(k=0;k<8/2;k++)
-        {
-            f=p[k+(i%2)*8];
-            p[k+(i%2)*8]=p[8-1-k+(i%2)*8];
-            p[8-1-k+(i%2)*8]=f;
-        }
-        if(i%2)
-        {
-            p=vram+(y+j)*xsize+x;
-            j++;
-        }
-    }
-    return;
+	int i, k, j, f;
+	char* p, d;
+	j = 0;
+	p = vram + (y + j) * xsize + x;
+	j++;
+	//上半部分
+	for (i = 0; i < 16; i++)
+	{
+		for (k = 0; k < 8; k++)
+		{
+			if (font1[i] & (0x80 >> k))
+			{
+				p[k + (i % 2) * 8] = c;
+			}
+		}
+		for (k = 0; k < 8 / 2; k++)
+		{
+			f = p[k + (i % 2) * 8];
+			p[k + (i % 2) * 8] = p[8 - 1 - k + (i % 2) * 8];
+			p[8 - 1 - k + (i % 2) * 8] = f;
+		}
+		if (i % 2)
+		{
+			p = vram + (y + j) * xsize + x;
+			j++;
+		}
+	}
+	//下半部分
+	for (i = 0; i < 16; i++)
+	{
+		for (k = 0; k < 8; k++)
+		{
+			if (font2[i] & (0x80 >> k))
+			{
+				p[k + (i % 2) * 8] = c;
+			}
+		}
+		for (k = 0; k < 8 / 2; k++)
+		{
+			f = p[k + (i % 2) * 8];
+			p[k + (i % 2) * 8] = p[8 - 1 - k + (i % 2) * 8];
+			p[8 - 1 - k + (i % 2) * 8] = f;
+		}
+		if (i % 2)
+		{
+			p = vram + (y + j) * xsize + x;
+			j++;
+		}
+	}
+	return;
 }
+
+

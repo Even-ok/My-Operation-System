@@ -12,7 +12,7 @@ int newBackGround(char *cmdline, int *fat, struct CONSOLE *cons)
 	struct DLL_STRPICENV *env;
 	unsigned char *vram = (shtctl->sheets[0])->buf;
 	int x = binfo->scrnx;
-	int y = binfo->scrny - 29;
+	int y = binfo->scrny;
 	int i, j, fsize, info[4],x0,y0;
 	unsigned char *filebuf, r, g, b;
 	char fileName[24];
@@ -88,7 +88,23 @@ int newBackGround(char *cmdline, int *fat, struct CONSOLE *cons)
 	memman_free_4k(memman, (int) filebuf, fsize);
 	memman_free_4k(memman, (int)picbuf, info[2] * info[3] * sizeof(struct RGB));
 	memman_free_4k(memman, (int)env, sizeof(struct DLL_STRPICENV));
-	sheet_refresh(shtctl->sheets[0], 0, 0, x, y);
+	boxfill8(vram, x, COL8_C6C6C6,  0,     y - 28, x -  1, y - 28);
+	boxfill8(vram, x, COL8_FFFFFF,  0,     y - 27, x -  1, y - 27);
+	boxfill8(vram, x, COL8_C6C6C6,  0,     y - 26, x -  1, y -  1);
+
+	boxfill8(vram, x, COL8_FFFFFF,  3,     y - 24, 59,     y - 24);
+	boxfill8(vram, x, COL8_FFFFFF,  2,     y - 24,  2,     y -  4);
+	boxfill8(vram, x, COL8_848484,  3,     y -  4, 59,     y -  4);
+	boxfill8(vram, x, COL8_848484, 59,     y - 23, 59,     y -  5);
+	boxfill8(vram, x, COL8_000000,  2,     y -  3, 59,     y -  3);
+	boxfill8(vram, x, COL8_000000, 60,     y - 24, 60,     y -  3);
+	
+	boxfill8(vram, x, COL8_848484, x - 47, y - 24, x -  4, y - 24);
+	boxfill8(vram, x, COL8_848484, x - 47, y - 23, x - 47, y -  4);
+	boxfill8(vram, x, COL8_FFFFFF, x - 47, y -  3, x -  4, y -  3);
+	boxfill8(vram, x, COL8_FFFFFF, x -  3, y - 24, x -  3, y -  3);
+	putfonts8_asc_sht(shtctl->sheets[0], 8, binfo->scrny -20, COL8_000000, COL8_C6C6C6, "menu", 5);//����һ���˵��� 
+	sheet_refresh(shtctl->sheets[0], 0, 0, x, binfo->scrny);
 	return 0;
 }
 //ͼ��
@@ -151,7 +167,7 @@ int InitIcon_xxx(struct SHEET *sht, int *fat, int number)
 	memman_free_4k(memman, (int) filebuf, fsize);
 	memman_free_4k(memman, (int)picbuf, info[2] * info[3] * sizeof(struct RGB));
 	memman_free_4k(memman, (int)env, sizeof(struct DLL_STRPICENV));
-	sheet_refresh(sht, 0, 0, sht->bxsize, sht->bysize);
+	sheet_refresh(sht, 0, 0, sht->bxsize, sht->bysize-35);
 	return 1;
 } 
 

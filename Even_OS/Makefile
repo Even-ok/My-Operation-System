@@ -16,7 +16,7 @@ default :
 
 haribote.img : haribote/ipl09.bin haribote/haribote.sys Makefile \
 		noodle/noodle.hrb  appreader/appreader.hrb \
-		type/type.hrb game/game.hrb\
+		type/type.hrb game/game.hrb chklang/chklang.hrb \
 		userr/userr.hrb userw/userw.hrb \
 		consume/consume.hrb produce/produce.hrb shareadd/shareadd.hrb \
 		bball/bball.hrb invader/invader.hrb \
@@ -27,8 +27,9 @@ haribote.img : haribote/ipl09.bin haribote/haribote.sys Makefile \
 	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
 		wbinimg src:haribote/ipl09.bin len:512 from:0 to:0 \
 		copy from:haribote/haribote.sys to:@: \
-		copy from:ipl09.nas to:@: \
+		copy from:haribote/ipl09.nas to:@: \
 		copy from:make.bat to:@: \
+		copy from:chklang/chklang.hrb to:@: \
 		copy from:appreader/appreader.hrb to:@: \
 		copy from:consume/consume.hrb to:@: \
 		copy from:consumer/consumer.hrb to:@: \
@@ -49,6 +50,7 @@ haribote.img : haribote/ipl09.bin haribote/haribote.sys Makefile \
 		copy from:pictdata/fujisan.jpg to:@: \
 		copy from:pictdata/night.bmp to:@: \
 		copy from:nihongo/nihongo.fnt to:@: \
+		copy from:chinese/HZK16.fnt to:@:\
 		copy from:heloos.jpg to:@: \
 		copy from:picture/3.jpg to:@: \
 		copy from:picture/2.jpg to:@: \
@@ -70,6 +72,7 @@ full :
 	$(MAKE) -C haribote
 	$(MAKE) -C apilib
 	$(MAKE) -C noodle
+	$(MAKE) -C chklang
 	$(MAKE) -C appreader
 	$(MAKE) -C consume
 	$(MAKE) -C consumer
@@ -86,6 +89,7 @@ full :
 	$(MAKE) -C tview
 	$(MAKE) -C gview
 	$(MAKE) -C game
+	$(MAKE) -C mmlplay 
 	$(MAKE) haribote.img
 
 run_full :
@@ -114,6 +118,7 @@ clean_full :
 	$(MAKE) -C appreader		clean
 	$(MAKE) -C consume		clean
 	$(MAKE) -C consumer		clean
+	$(MAKE) -C chklang		clean
 	$(MAKE) -C produce		clean
 	$(MAKE) -C producer		clean
 	$(MAKE) -C shareadd		clean
@@ -128,12 +133,14 @@ clean_full :
 	$(MAKE) -C tview		clean
 	$(MAKE) -C game		clean
 	$(MAKE) -C gview		clean
+	$(MAKE) -C mmlplay		clean
 
 src_only_full :
 	$(MAKE) -C haribote		src_only
 	$(MAKE) -C apilib		src_only
 	$(MAKE) -C appreader		src_only
 	$(MAKE) -C consume		src_only
+	$(MAKE) -C chklang		src_only
 	$(MAKE) -C produce		src_only
 	$(MAKE) -C consumer		src_only
 	$(MAKE) -C producer	src_only
@@ -149,6 +156,7 @@ src_only_full :
 	$(MAKE) -C tview		src_only
 	$(MAKE) -C game		src_only
 	$(MAKE) -C gview		src_only
+	$(MAKE) -C mmlplay		src_only
 	-$(DEL) haribote.img
 
 refresh :
